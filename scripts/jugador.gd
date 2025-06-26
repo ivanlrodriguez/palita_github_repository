@@ -1,5 +1,6 @@
 extends CharacterBody2D
 
+
 # Modos principales
 enum Modo { STANDING, CROUCHING, COPA }
 var modo_actual: Modo = Modo.STANDING
@@ -98,7 +99,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		time_since_click_der = 0.0
 		if not camera_look_active and not watering:
 			toggle_crouch()
-	
+
 	if event.is_action_pressed("press_F_to_FLIP"):
 		if modo_actual != Modo.CROUCHING:
 			return
@@ -143,9 +144,20 @@ func _unhandled_input(event: InputEvent) -> void:
 
 #================================
 
+
+	var new_zoom_value = current_zoom + (zoom_step * zoom_direction)
+	new_zoom_value = clamp(new_zoom_value, 0.2, 5)
+	#print(new_zoom_value)
+	# Tween = easing
+	var tween := create_tween()
+	tween.tween_property($Camera2D, "zoom", Vector2(new_zoom_value, new_zoom_value), 0.3) \
+		 .set_trans(Tween.TRANS_SINE) \
+		 .set_ease(Tween.EASE_OUT)
+
 # TRIGGERS MOVIMIENTO
 
 #================================
+
 
 
 func walk_start():

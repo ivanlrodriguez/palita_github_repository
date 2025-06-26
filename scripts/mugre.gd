@@ -1,6 +1,7 @@
 extends RigidBody2D
 class_name mugre
 
+
 enum MugreMode { PASSIVE, ACTIVE, RIGID, ORBITING }
 
 var current_mode := MugreMode.PASSIVE
