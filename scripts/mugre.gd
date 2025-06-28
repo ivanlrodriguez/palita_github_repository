@@ -28,8 +28,8 @@ var collsh: CollisionShape2D
 var orbit_enter_y_threshold := 0.0
 var orbit_start_time := 0.0
 var in_top_side = true
-var awoken := false
 var is_falling := false
+var tossed := false
 var entered_through_corazon_mundo := false
 var phase := 0.0
 
@@ -62,7 +62,8 @@ func _ready():
 	sprite.play("mugre_" + str(nmugre))
 	set_rigid_mode()
 	await get_tree().create_timer(0.1).timeout
-	set_passive_mode()
+	if linear_velocity == Vector2.ZERO:
+		set_passive_mode()
 
 # --- Mode switching ---
 
@@ -83,21 +84,11 @@ func set_collision_mask_bit(layer: int, enabled: bool) -> void:
 
 func set_passive_mode():
 	current_mode = MugreMode.PASSIVE
-	awoken = false
 	collsh.set_deferred("disabled", false)
 	set_deferred('freeze_mode', 0)
 	set_deferred("freeze", true)
 	set_process(false)
 	set_physics_process(false)
-
-func set_active_mode():
-	current_mode = MugreMode.ACTIVE
-	awoken = true
-	collsh.set_deferred("disabled", false)
-	set_deferred('freeze_mode', 1)
-	set_deferred("freeze", true)
-	set_process(false)
-	set_physics_process(true)
 
 func set_rigid_mode():
 	current_mode = MugreMode.RIGID
@@ -289,6 +280,8 @@ func fall_to_ground():
 
 func _physics_process(_delta: float) -> void:
 	if current_mode == MugreMode.RIGID:
+		if linear_velocity.length() < 0.1:
+			linear_velocity = Vector2.ZERO
 		if global_position.y > 1000.0: #rescate
 			print(self, ' rescatada')
 			global_position = Vector2.ZERO
@@ -307,6 +300,3 @@ func _physics_process(_delta: float) -> void:
 			apply_impulse(Vector2.from_angle(rand_angle) * randf_range(10, 100))
 			await get_tree().create_timer(1.0).timeout
 			set_passive_mode()
-
-func fall_chance_update():
-	fall_chance = max(0, 2500 - bodies_in_orbit)

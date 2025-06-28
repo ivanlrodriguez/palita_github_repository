@@ -51,6 +51,7 @@ var initial_click_world_pos: Vector2
 var initial_click_viewport_pos: Vector2
 var initial_player_world_pos: Vector2
 
+
 # inicialización
 func _ready():
 	main_camera.make_current()
@@ -61,12 +62,21 @@ func _ready():
 	"crouchO": $collpol_crouchO.position,
 	"modo_copa": $collpol_modo_copa.position,
 	}
-	#$collsh_standing.set_deferred("disabled", false)
+	$collsh_standing.set_deferred("disabled", false)
 	$standing_push_area.set_deferred("monitoring", true)
 	$area_copa.set_deferred("monitoring", true)
 	modo_actual = Modo.STANDING
 	apply_modo_settings()
 	animacion_idle()
+	for i in range(1, 12):
+		var index := str(i).pad_zeros(3)
+		pasos_standing_variants.append(load("res://assets/sfx/pasos_standing-%s.wav" % [index]))
+	for i in range(1, 7):
+		var index := str(i).pad_zeros(3)
+		pasos_crouching_variants.append(load("res://assets/sfx/pasos_crouching-%s.wav" % [index]))
+	for i in range(1, 6):
+		var index := str(i).pad_zeros(3)
+		toss_variants.append(load("res://assets/sfx/toss-%s.wav" % [index]))
 
 
 #================================
@@ -135,10 +145,15 @@ func _unhandled_input(event: InputEvent) -> void:
 	
 	# zoom
 	if event is InputEventMouseButton:
+		var zoom_normalized = inverse_lerp(0.2, 10, $Camera2D.zoom.x)
+
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			change_zoom(1)  # Zoom in
+			AudioServer.set_bus_volume_db(2, linear_to_db(zoom_normalized))
+			
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			change_zoom(-1)   # Zoom out
+			AudioServer.set_bus_volume_db(2, linear_to_db(zoom_normalized))
 
 
 #================================
@@ -234,7 +249,7 @@ func _on_standing_push_area_body_entered(body: Node2D) -> void:
 		return
 	if body is mugre:
 		push_dir = (body.global_position - global_position).normalized()
-		body.apply_impulse(push_dir * 0.2)
+		body.apply_impulse(push_dir * 5.0)
 	
 
 	if body is planta and not body.planta_arrancada:
@@ -293,6 +308,10 @@ func _on_area_base_pala_body_entered(body: Node2D) -> void:
 		if toss_component and toss_component.has_method("on_toss_triggered"):
 			connect("toss_triggered", Callable(toss_component, "on_toss_triggered"))
 			toss_component.in_toss_area = true
+	
+	if body is bomba:
+		body.set_physics_process(true)
+		body.set_deferred("freeze", false)
 
 
 
@@ -306,7 +325,22 @@ func _on_area_base_pala_body_exited(body: Node2D) -> void:
 
 func _on_mugre_awakening_body_entered(body: Node2D) -> void:
 	if body is mugre:
-		body.set_rigid_mode()
+		if body.current_mode != body.MugreMode.RIGID:
+			body.set_rigid_mode()
+
+func _on_mugre_awakening_body_exited(body: Node2D) -> void:
+	if body is mugre:
+		if body.current_mode == body.MugreMode.RIGID and not body.is_falling and not body.tossed and body.linear_velocity == Vector2.ZERO:
+			body.set_passive_mode()
+
+
+func _on_mugre_sleeper_body_exited(body: Node2D) -> void:
+	if body is mugre:
+		if body.current_mode == body.MugreMode.RIGID and not body.is_falling and not body.tossed:
+			body.set_passive_mode()
+
+
+
 
 
 
@@ -319,6 +353,8 @@ func _on_mugre_awakening_body_entered(body: Node2D) -> void:
 
 func perform_toss():
 	emit_signal("toss_triggered", self)
+	sfx_pasos_crouching.stop()
+	play_sfx_toss()
 
 
 func push(force: Vector2):
@@ -369,6 +405,7 @@ func apply_modo_settings():
 			$AnimatedSprite2D.z_index = 3
 			update_coll_mode("standing")
 			$area_base_pala.monitoring = false
+			sfx_pasos_crouching.stop()
 		
 		Modo.CROUCHING:
 			speedmod = 15
@@ -532,6 +569,7 @@ func movimiento_jugador(delta):
 		# Modo de colision
 		if modo_actual == Modo.CROUCHING:
 			update_coll_mode(dir_cardinal)
+			sfx_pasos_crouching.stop()
 
 
 func world_boundaries():
@@ -555,6 +593,7 @@ func _physics_process(delta: float) -> void:
 		world_boundaries()
 		movimiento_jugador(delta)
 		animacion_walking()
+		sfx_walking()
 
 
 #================================
@@ -570,13 +609,14 @@ func change_zoom(zoom_direction: int):  # direction is +1 (out) or -1 (in)
 	var zoom_step = current_zoom * 0.1  # 10% of current zoom
 
 	var new_zoom_value = current_zoom + (zoom_step * zoom_direction)
-	new_zoom_value = clamp(new_zoom_value, 0.2, 5)
+	new_zoom_value = clamp(new_zoom_value, 0.2, 10)
 
 	# Tween = easing
 	var tween := create_tween()
 	tween.tween_property($Camera2D, "zoom", Vector2(new_zoom_value, new_zoom_value), 0.3) \
 		 .set_trans(Tween.TRANS_SINE) \
 		 .set_ease(Tween.EASE_OUT)
+
 
 func _process(delta):
 	$mugre_awakening.rotation = mov_direction.angle()
@@ -610,15 +650,59 @@ func _process(delta):
 			main_camera.offset = Vector2.ZERO
 			camera_look_active = false
 
+#================================
 
-
-
-
+# SFX
 
 #================================
 
+var pasos_standing_variants: Array[AudioStream] = []
+@onready var sfx_pasos_standing: AudioStreamPlayer2D = $sfx_pasos_standing
+var pasos_crouching_variants: Array[AudioStream] = []
+@onready var sfx_pasos_crouching: AudioStreamPlayer2D = $sfx_pasos_crouching
+var toss_variants: Array[AudioStream] = []
+@onready var sfx_toss: AudioStreamPlayer2D = $sfx_toss
 
-func _on_mugre_sleeper_body_exited(body: Node2D) -> void:
-	if body is mugre:
-		if body.current_mode == body.MugreMode.RIGID and not body.is_falling:
-			body.set_passive_mode()
+var last_index := -1
+
+
+func sfx_walking():
+	if modo_actual == Modo.STANDING:
+		if speed > 19.5 and not sfx_pasos_standing.playing:
+			play_sfx_pasos_standing()
+	
+	if modo_actual == Modo.CROUCHING:
+		if speed < 3 and not sfx_pasos_crouching.playing:
+			play_sfx_pasos_crouching()
+
+var last_index_s := -1
+func play_sfx_pasos_standing():
+	var new_index = randi() % pasos_standing_variants.size()
+	while new_index == last_index_s:
+		new_index = randi() % pasos_standing_variants.size()
+	last_index_s = new_index
+	sfx_pasos_standing.pitch_scale = randf_range(0.95, 1.05)
+	sfx_pasos_standing.stream = pasos_standing_variants[new_index]
+	sfx_pasos_standing.play()
+
+var last_index_c := -1
+func play_sfx_pasos_crouching():
+	var new_index = randi() % pasos_crouching_variants.size()
+	while new_index == last_index_c:
+		new_index = randi() % pasos_crouching_variants.size()
+	last_index_c = new_index
+	sfx_pasos_crouching.pitch_scale = randf_range(0.95, 1.05)
+	sfx_pasos_crouching.stream = pasos_crouching_variants[new_index]
+	sfx_pasos_crouching.play()
+
+var last_index_t := -1
+func play_sfx_toss():
+	var new_index = randi() % toss_variants.size()
+	while new_index == last_index_t:
+		new_index = randi() % toss_variants.size()
+	last_index_t = new_index
+	sfx_toss.pitch_scale = randf_range(0.95, 1.05)
+	sfx_toss.stream = toss_variants[new_index]
+	sfx_toss.play()
+
+#================================

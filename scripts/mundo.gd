@@ -22,7 +22,8 @@ var planta_scene = preload("res://scenes/planta.tscn")
 var pasto_scene = preload("res://scenes/pasto.tscn")
 var area_limpia_checker_scene = preload("res://scenes/area_limpia_checker.tscn")
 var mugre_scene = preload("res://scenes/mugre.tscn")
-var aguas = preload("res://scenes/agua.tscn")
+var agua_scene = preload("res://scenes/agua.tscn")
+var bomba_scene = preload("res://scenes/bomba_de_agua.tscn")
 
 
 # boundary fisiks
@@ -55,7 +56,7 @@ var spawn_center: Vector2 = Vector2.ZERO # The center point of the donut
 
 
 func _ready() -> void:
-	#Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	y_sort_enabled = true
 	randomize()
 	planta_spawn()
 	mugre_spawn()
@@ -218,7 +219,11 @@ func _on_pasto_muerto(pasto_ref):
 func _on_reciclar(mugre_ref):
 	mugre_ref.queue_free()
 	mugre_reciclada_counter += 1
-	print(mugre_reciclada_counter)
+	if mugre_reciclada_counter == 10:
+		var bomba_de_agua = bomba_scene.instantiate()
+		var desde_recicladora = $recicladora.global_position + Vector2(25.0, -14.0)
+		bomba_de_agua.global_position = desde_recicladora
+		add_child(bomba_de_agua)
 
 
 var modo_cine := false
@@ -242,7 +247,7 @@ func _on_spawn_agua(bomba_ref):
 
 
 func agua_spawn(spawn_pos):
-	var agua_child = aguas.instantiate()
+	var agua_child = agua_scene.instantiate()
 	agua_counter += 1
 	agua_child.global_position = spawn_pos
 	agua_child.agua_toco_piso_signal.connect(_on_agua_toco_piso)
@@ -290,8 +295,7 @@ func _on_world_boundary_body_exited(body: Node2D) -> void:
 		bodies_in_orbit_count = max(0, bodies_in_orbit_count + 1)
 		body.add_to_group('bodies in orbit')
 		for orbiter in get_tree().get_nodes_in_group('bodies in orbit'):
-			orbiter.bodies_in_orbit = bodies_in_orbit_count
-			orbiter.fall_chance_update()
+			orbiter.fall_chance = max(0, 2500 - bodies_in_orbit_count)
 
 
 func _on_world_boundary_body_entered(body: Node2D) -> void:

@@ -21,6 +21,9 @@ func _on_body_entered(body: Node2D) -> void:
 	var distance_y_iso = abs(global_position.y - body.global_position.y) *2
 	var distance_to_body = Vector2(distance_x, distance_y_iso).length()
 	
+	if body is StaticBody2D:
+		area_limpia = false
+	
 	if body is planta:
 		if distance_to_body < 7.0:
 			area_limpia = false

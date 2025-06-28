@@ -1,7 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://bm23vdnravohh"]
+[gd_scene load_steps=11 format=3 uid="uid://bm23vdnravohh"]
 
 [ext_resource type="Texture2D" uid="uid://c8x8ia2jmxnww" path="res://assets/sprites/recicladora.png" id="1_0eus5"]
 [ext_resource type="Script" uid="uid://b5edbi7tc7d3a" path="res://scripts/recicladora.gd" id="1_662u3"]
+[ext_resource type="Texture2D" uid="uid://syh0d01rkeqs" path="res://assets/sprites/hueco.png" id="3_5mjmt"]
+[ext_resource type="Texture2D" uid="uid://t1ft3jbrxo4u" path="res://assets/sprites/cinta.png" id="4_57rya"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_662u3"]
 atlas = ExtResource("1_0eus5")
@@ -18,26 +20,82 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_qii2x"]
+atlas = ExtResource("3_5mjmt")
+region = Rect2(0, 0, 150, 150)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_nwlku"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qii2x")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_chnic"]
+atlas = ExtResource("4_57rya")
+region = Rect2(0, 0, 150, 150)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jvwtx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_chnic")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
 [node name="recicladora" type="StaticBody2D"]
-z_index = 1
+z_index = 3
 collision_layer = 17
-collision_mask = 17
+collision_mask = 0
 script = ExtResource("1_662u3")
 
-[node name="anim" type="AnimatedSprite2D" parent="."]
+[node name="cuerpo_anim" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, 5)
 sprite_frames = SubResource("SpriteFrames_uuec8")
 autoplay = "default"
 
+[node name="hueco_anim" type="AnimatedSprite2D" parent="."]
+z_index = 1
+z_as_relative = false
+position = Vector2(0, 5)
+sprite_frames = SubResource("SpriteFrames_nwlku")
+autoplay = "default"
+
+[node name="cinta_anim" type="AnimatedSprite2D" parent="."]
+z_index = 1
+z_as_relative = false
+position = Vector2(0, 5)
+sprite_frames = SubResource("SpriteFrames_jvwtx")
+autoplay = "default"
+
 [node name="collpol" type="CollisionPolygon2D" parent="."]
+position = Vector2(0, 5)
 polygon = PackedVector2Array(-20, -6, 22, 15, 38, 7, 43, 10, 47, 8, 61, 14, 75, 6, 17, -23)
 
+[node name="cinta" type="Area2D" parent="."]
+position = Vector2(0, 5)
+collision_layer = 0
+collision_mask = 18
+
+[node name="collpol_area_cinta" type="CollisionPolygon2D" parent="cinta"]
+polygon = PackedVector2Array(66, 12, 80, 5, 28, -21, 14, -15)
+
 [node name="hueco" type="Area2D" parent="."]
-z_index = 1
+position = Vector2(0, 5)
 collision_layer = 0
 collision_mask = 2
 
-[node name="collpol_hueco" type="CollisionPolygon2D" parent="hueco"]
-polygon = PackedVector2Array(-50, 13, -28, 24, -6, 13, -28, 3)
+[node name="collpol_area_hueco" type="CollisionPolygon2D" parent="hueco"]
+polygon = PackedVector2Array(-50, 13, -28, 24, -6, 13, -28, 2)
 
+[connection signal="body_entered" from="cinta" to="." method="_on_cinta_body_entered"]
+[connection signal="body_exited" from="cinta" to="." method="_on_cinta_body_exited"]
 [connection signal="body_entered" from="hueco" to="." method="_on_hueco_body_entered"]
 [connection signal="body_exited" from="hueco" to="." method="_on_hueco_body_exited"]

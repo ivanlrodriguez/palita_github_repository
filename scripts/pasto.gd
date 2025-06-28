@@ -204,6 +204,7 @@ func set_particles(particles: String, mode: String) -> void:
 
 func _on_timer_intoxicacion_timeout():
 	estado_pasto = Estado.INTOXICADO
+	$decay_intoxicacion.start()
 	levelup = 0
 	actualizar_sprite()
 	set_particles('intoxicacion', 'burst')
@@ -289,6 +290,7 @@ func _on_timer_reproduccion_timeout():
 
 func _on_decay_intoxicacion_timeout():
 	decay_counter = min(decay_counter + 1, 5)
+	print('pasto decay counter ', decay_counter)
 	check_death()
 	if estado_pasto == Estado.INTOXICADO:
 		$decay_intoxicacion.start()
@@ -296,6 +298,7 @@ func _on_decay_intoxicacion_timeout():
 
 func check_death():
 	if decay_counter >= 5:
+		print('pasto muerto')
 		estado_pasto = Estado.MUERTO
 		actualizar_sprite()
 		var timers := [
@@ -307,5 +310,7 @@ func check_death():
 			]
 		for i in timers:
 			i.stop()
+		set_particles('intoxicacion', 'off')
+		set_particles('curacion', 'off')
 		emit_signal("pasto_muerto_signal", self)
 		set_process(false)

@@ -1,10 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://b1fp6b5nsr4br"]
+[gd_scene load_steps=7 format=3 uid="uid://b1fp6b5nsr4br"]
 
 [ext_resource type="Script" uid="uid://bvhn3jpnvk52w" path="res://scripts/bomba_de_agua.gd" id="1_fhwoo"]
 [ext_resource type="Texture2D" uid="uid://dkonvqosh0t6r" path="res://assets/sprites/bomba de agua.png" id="1_ftpvq"]
+[ext_resource type="PackedScene" uid="uid://cg276kgpdvbcl" path="res://scenes/tossable_component.tscn" id="3_uubxu"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_fhwoo"]
-size = Vector2(10, 6)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_fhwoo"]
+radius = 2.5
+height = 10.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_uubxu"]
 radius = 8.51469
@@ -12,15 +14,18 @@ radius = 8.51469
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jne1g"]
 size = Vector2(5, 1)
 
-[node name="bomba_de_agua" type="StaticBody2D"]
+[node name="bomba_de_agua" type="RigidBody2D"]
 z_index = 3
-collision_layer = 17
-collision_mask = 17
+collision_layer = 18
+collision_mask = 3
+gravity_scale = 0.0
+linear_damp = 10.0
+angular_damp = 10.0
 script = ExtResource("1_fhwoo")
 
 [node name="collsh" type="CollisionShape2D" parent="."]
-position = Vector2(0, 0.5)
-shape = SubResource("RectangleShape2D_fhwoo")
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_fhwoo")
 
 [node name="cadena" type="Line2D" parent="."]
 position = Vector2(0, -10.5)
@@ -52,4 +57,11 @@ position = Vector2(0, -10.5)
 position = Vector2(11.5, -3.5)
 shape = SubResource("RectangleShape2D_jne1g")
 
+[node name="tiempo_plantacion" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[node name="tossable_component" parent="." instance=ExtResource("3_uubxu")]
+
 [connection signal="input_event" from="brazo/manija" to="." method="_on_manija_input_event"]
+[connection signal="timeout" from="tiempo_plantacion" to="." method="_on_tiempo_plantacion_timeout"]

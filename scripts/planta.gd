@@ -14,6 +14,7 @@ var planta_crecida := false
 var da_frutos := false
 var planta_regada := false
 var plantada := true
+var tossed := false
 
 # Growth
 var nplanta := 1

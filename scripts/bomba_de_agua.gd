@@ -1,8 +1,15 @@
-extends StaticBody2D
+extends RigidBody2D
+class_name bomba
 
 signal stop_player_movement_signal()
 signal restore_player_movement_signal()
 signal spawn_agua_signal(bomba_ref)
+signal toss_triggered_signal(jugador_ref)
+
+# Movement
+var tossed := false
+var arrancada := true
+var planting := false
 
 var dragging := false
 var drag_strength: float
@@ -16,13 +23,69 @@ var spawn_area: Vector2
 var agua_spawn_cooldown := 0.05 # seconds between spawns
 var agua_spawn_timer := 0.0
 
+
+func set_collision_layer_bit(layer: int, enabled: bool) -> void:
+	if enabled:
+		collision_layer |= 1 << (layer - 1)  # Turn ON bit
+	else:
+		collision_layer &= ~(1 << (layer - 1))  # Turn OFF bit
+
+
+func set_collision_mask_bit(layer: int, enabled: bool) -> void:
+	if enabled:
+		collision_mask |= 1 << (layer - 1)
+	else:
+		collision_mask &= ~(1 << (layer - 1))
+
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_released('click_izq'):
+		dragging = false
+		emit_signal("restore_player_movement_signal")
+
+
 func _ready():
-	spawn_area = $spawn_area/spawn_area_collsh.global_position
+	set_deferred("freeze", false)
+	arrancada = true
 	var player = get_parent().get_node("jugador")
 	connect("stop_player_movement_signal", Callable(player, "_on_stop_player_movement"))
 	connect("restore_player_movement_signal", Callable(player, "_on_restore_player_movement"))
+	connect("toss_triggered_signal", Callable(player, "_on_toss_triggered"))
 	var mundo = get_parent()
 	connect("spawn_agua_signal", Callable(mundo, "_on_spawn_agua"))
+	# anim salida
+	z_index = 2
+	set_physics_process(false)
+	set_collision_layer_bit(2, false)
+	set_collision_mask_bit(1, false)
+	rotation = -PI/3
+	await get_tree().create_timer(6.3).timeout
+	z_index = 3
+	set_physics_process(true)
+	set_collision_layer_bit(2, true)
+	set_collision_mask_bit(1, true)
+	var tween := create_tween()
+	tween.tween_property(self, "rotation", 0.0, 1.0) \
+		 .set_trans(Tween.TRANS_SINE) \
+		 .set_ease(Tween.EASE_OUT)
+
+
+func _on_manija_input_event(_viewport: Viewport, event: InputEvent, _shape_idx: int) -> void:
+	if event.is_action_pressed('click_izq'):
+		dragging = true
+		set_process(true)
+		emit_signal("stop_player_movement_signal")
+
+
+func on_toss_triggered(_player_ref: Node):
+	if not $tossable_component.in_toss_area:
+		return
+	arrancada = true
+	set_collision_layer_bit(1, false)
+	set_collision_layer_bit(5, false)
+	set_collision_mask_bit(2, true)
+	set_physics_process(true)
 
 func _process(delta):
 	if dragging:
@@ -60,13 +123,34 @@ func _process(delta):
 	
 	$cadena.points = [start_point, tip_in_chain_space]
 
-func _on_manija_input_event(_viewport: Viewport, event: InputEvent, _shape_idx: int) -> void:
-	if event.is_action_pressed('click_izq'):
-		dragging = true
-		set_process(true)
-		emit_signal("stop_player_movement_signal")
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_released('click_izq'):
-		dragging = false
-		emit_signal("restore_player_movement_signal")
+
+func _physics_process(_delta: float) -> void:
+	rotation = clamp(rotation, -PI/2, PI)
+	if linear_velocity.length() < 0.1:
+		linear_velocity = Vector2.ZERO
+	if linear_velocity == Vector2.ZERO and not planting:
+		planting = true
+		$tiempo_plantacion.start()
+	elif linear_velocity != Vector2.ZERO:
+		set_collision_layer_bit(1, false)
+		set_collision_layer_bit(5, false)
+		set_collision_mask_bit(2, true)
+		planting = false
+		$tiempo_plantacion.stop()
+
+func _on_tiempo_plantacion_timeout() -> void:
+	planting = false
+	arrancada = false
+	set_collision_layer_bit(1, true)
+	set_collision_layer_bit(5, true)
+	set_collision_mask_bit(2, false)
+	set_physics_process(false)
+	set_deferred('freeze_mode', 0)
+	set_deferred("freeze", true)
+	var tween := create_tween()
+	tween.tween_property(self, "rotation", 0.0, 1.0) \
+		 .set_trans(Tween.TRANS_SINE) \
+		 .set_ease(Tween.EASE_OUT)
+	await get_tree().create_timer(1.0).timeout
+	spawn_area = $spawn_area/spawn_area_collsh.global_position
