@@ -99,9 +99,6 @@ func monitor_airtime() -> void:
 		await get_tree().physics_frame
 
 func landing():
-	if body is mugre:
-		if body.is_in_orbit or body.is_in_pre_orbit:
-			return
 	body.tossed = false
 	body.gravity_scale = 0
 	body.z_index = initial_zindex

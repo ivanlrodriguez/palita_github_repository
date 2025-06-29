@@ -4,19 +4,15 @@ class_name corazon_mundo
 func _on_area_teleport_body_entered(body: Node2D) -> void:
 
 	if body is mugre:
-		body.add_to_group("mugre_teleport")
-		particulas_intoxicacion_mugres()
+		#body.add_to_group("mugre_teleport")
+		#particulas_intoxicacion_mugres()
 		body.entered_through_corazon_mundo = true
-		body.phase = PI
-		body.snap_pos = body.global_position.normalized() * Vector2(500, 250)
-		body.set_orbit_mode()
-		body.enter_orbit_from_snap()
+		#body.enter_orbit_system()
 
 func _on_area_teleport_body_exited(body: Node2D) -> void:
 	if body is mugre:
-		body.remove_from_group("mugre_teleport")
-		await get_tree().create_timer(5.0).timeout
-		body.entered_through_corazon_mundo = false
+		pass
+		#body.remove_from_group("mugre_teleport")
 
 
 @onready var mugres_particles := $mugre_teleport
@@ -33,25 +29,24 @@ func particulas_intoxicacion_mugres():
 	mugres_particles.emission_points = points
 	mugres_particles.emitting = true
 
-
+var mugre_counter := 0
 func _on_area_repulsion_body_entered(body: Node2D) -> void:
 	if body is mugre:
-		if not body.entered_through_corazon_mundo:
+		mugre_counter = max(0, mugre_counter + 1)
+		if not body.entered_through_corazon_mundo and body.current_mode != body.MugreMode.RIGID:
 			body.set_rigid_mode()
-			body.add_to_group("atraer")
-
-
-func _on_area_repulsion_body_exited(body: Node2D) -> void:
-	if body is mugre:
-		body.remove_from_group("atraer")
-
-var frame_count := 0
-var actualizar : mugre
-func _process(_delta: float) -> void:
-	frame_count += 1
-	if frame_count >= 10:
-		for body in get_tree().get_nodes_in_group("atraer"):
-			if body.current_mode != body.MugreMode.RIGID and not body.entered_through_corazon_mundo:
-				body.set_rigid_mode()
+		if body.has_method('apply_impulse'):
 			var direction = body.global_position.direction_to(global_position).normalized()
-			body.apply_impulse(direction * 10)
+			body.apply_impulse(direction * 35)
+
+
+var area_monitoring: bool
+var flicker_timer := 0.0
+var flicker_interval := 0.03  # every ~6 frames at 60fps
+
+func _process(delta: float) -> void:
+	flicker_timer += delta
+	if flicker_timer >= flicker_interval:
+		flicker_timer = 0.0
+		area_monitoring = !area_monitoring
+		$area_repulsion.set_deferred("monitoring", area_monitoring)

@@ -223,7 +223,7 @@ func _on_reciclar(mugre_ref):
 		var bomba_de_agua = bomba_scene.instantiate()
 		var desde_recicladora = $recicladora.global_position + Vector2(25.0, -14.0)
 		bomba_de_agua.global_position = desde_recicladora
-		add_child(bomba_de_agua)
+		add_child.call_deferred(bomba_de_agua)
 
 
 var modo_cine := false
@@ -231,12 +231,9 @@ func _input(event): # reemplazar por bomba de agua
 	if event.is_action_pressed("letra_a"):
 		#agua_spawn(get_global_mouse_position())
 		$world_boundary.set_deferred("monitoring", false)
-		$mundo.visible = false
-		$corazon_mundo.visible = false
-		$bomba_de_agua.visible = false
 		modo_cine = true
-		await get_tree().create_timer(2.5).timeout
-		$palita_boceto_1.play()
+		#await get_tree().create_timer(2.5).timeout
+		#$palita_boceto_1.play()
 
 func _on_palita_boceto_1_finished() -> void:
 	$palita_boceto_1.play()
@@ -266,38 +263,14 @@ func _on_agua_toco_piso(agua_ref):
 		agua_ref.queue_free()
 		agua_counter -= 1
 
-var bodies_in_orbit_count := 0
+
 func _on_world_boundary_body_exited(body: Node2D) -> void:
 	if body is mugre:
-		if body.entered_through_corazon_mundo:
-			return
-		var velocity : Vector2 = body.linear_velocity
-		var min_speed := 100.0
-		var max_speed := 400.0
-		var clamped_speed : float = clamp(velocity.length(), min_speed, max_speed)
+		if is_instance_valid(body):
+			#await get_tree().physics_frame
+			body.enter_orbit_system()
 
-		velocity = velocity.normalized() * clamped_speed
-
-		var entry_pos := body.global_position
-		var launch_time := 1/(clamped_speed/100)  # time to reach snap point
-		var snap_pos := entry_pos + velocity * launch_time
-		
-		body.start_pre_orbit({
-			"entry_pos": entry_pos,
-			"velocity": velocity,
-			"snap_pos": snap_pos,
-			"launch_time": launch_time
-			})
-		
-		if modo_cine:
-			return
-		
-		bodies_in_orbit_count = max(0, bodies_in_orbit_count + 1)
-		body.add_to_group('bodies in orbit')
-		for orbiter in get_tree().get_nodes_in_group('bodies in orbit'):
-			orbiter.fall_chance = max(0, 2500 - bodies_in_orbit_count)
-
-
+var bodies_in_orbit_count := 0
 func _on_world_boundary_body_entered(body: Node2D) -> void:
 	if modo_cine:
 		return

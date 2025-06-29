@@ -706,6 +706,7 @@ shape = SubResource("CapsuleShape2D_lhlt4")
 visible = false
 position = Vector2(0, -0.445)
 collision_layer = 0
+collision_mask = 16
 
 [node name="collsh_soft" type="CollisionShape2D" parent="soft_coll"]
 visible = false

@@ -1,4 +1,4 @@
-[gd_scene load_steps=555 format=3 uid="uid://bddxsejrwhq3o"]
+[gd_scene load_steps=554 format=3 uid="uid://bddxsejrwhq3o"]
 
 [ext_resource type="Texture2D" uid="uid://dlad0udpkw8vq" path="res://assets/sprites/secuencia corazon/prueba centro mundo palita_00000.png" id="1_irbsk"]
 [ext_resource type="Texture2D" uid="uid://cu6mtnfi8k24y" path="res://assets/sprites/secuencia corazon/prueba centro mundo palita_00001.png" id="2_rjrdm"]
@@ -2201,17 +2201,13 @@ animations = [{
 radius = 25.0
 height = 82.0
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4wswm"]
-radius = 49.0
-height = 160.0
-
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_g0idr"]
 radius = 31.0
 height = 100.0
 
 [node name="corazon_mundo" type="StaticBody2D"]
 z_index = 3
-collision_layer = 19
+collision_layer = 16
 collision_mask = 0
 script = ExtResource("547_rjrdm")
 
@@ -2230,9 +2226,12 @@ z_index = 3
 collision_layer = 0
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="area_repulsion"]
-rotation = 1.5708
-shape = SubResource("CapsuleShape2D_4wswm")
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="area_repulsion"]
+polygon = PackedVector2Array(-70, 0, -68, -12, -61, -24, -49, -34, -35, -41, -18, -46, 0, -47, 0, -27, -18, -27, -25, -25, -30, -23, -37, -17, -41, -12, -43, -6, -43, 0, -42, 8, -39, 15, -34, 21, -30, 24, -23, 27, -17, 28, 0, 28, 0, 47, -18, 45, -35, 41, -50, 33, -61, 23, -67, 12)
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="area_repulsion"]
+rotation = 3.14159
+polygon = PackedVector2Array(-70, 0, -68, -12, -61, -24, -49, -34, -35, -41, -18, -46, 0, -47, -2.44784e-06, -28, -18, -28, -25, -26, -31, -23, -36, -20, -41, -14, -43, -6, -44, 3.8466e-06, -43, 7, -41, 13, -37, 19, -33, 23, -27, 26, -19, 27, 2.36042e-06, 27, 0, 47, -18, 45, -35, 41, -50, 33, -61, 23, -67, 12)
 
 [node name="area_teleport" type="Area2D" parent="."]
 collision_layer = 0
@@ -2267,4 +2266,3 @@ color_initial_ramp = ExtResource("550_nl524")
 [connection signal="body_entered" from="area_repulsion" to="." method="_on_area_repulsion_body_entered"]
 [connection signal="body_exited" from="area_repulsion" to="." method="_on_area_repulsion_body_exited"]
 [connection signal="body_entered" from="area_teleport" to="." method="_on_area_teleport_body_entered"]
-[connection signal="body_exited" from="area_teleport" to="." method="_on_area_teleport_body_exited"]

@@ -15,6 +15,14 @@ run/main_scene="uid://bt3yiolmr1400"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+orbit_system="*res://scripts/orbit_system.gd"
+
+[debug]
+
+file_logging/enable_file_logging=true
+
 [input]
 
 press_F_to_FLIP={

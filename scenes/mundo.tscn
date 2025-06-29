@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bt3yiolmr1400"]
+[gd_scene load_steps=16 format=3 uid="uid://bt3yiolmr1400"]
 
 [ext_resource type="Script" uid="uid://ik3swfhe15xk" path="res://scripts/mundo.gd" id="1_vwj67"]
 [ext_resource type="Texture2D" uid="uid://dxwfcfr0wcxvf" path="res://assets/sprites/secuencia estrellas/estrellas_00000.png" id="2_75jji"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://bddxsejrwhq3o" path="res://scenes/corazon_mundo.tscn" id="4_kxyy5"]
 [ext_resource type="PackedScene" uid="uid://bm23vdnravohh" path="res://scenes/recicladora.tscn" id="8_06eai"]
 [ext_resource type="PackedScene" uid="uid://ds63ymif64mly" path="res://scenes/save_system.tscn" id="8_6o2rw"]
+[ext_resource type="PackedScene" uid="uid://dlo4bsn4iesif" path="res://scenes/orbit_system.tscn" id="10_06eai"]
 
 [sub_resource type="Theme" id="Theme_wd5o3"]
 default_font = ExtResource("3_kxyy5")
@@ -29,6 +30,7 @@ height = 654.0
 [node name="mundo" type="Node2D"]
 y_sort_enabled = true
 script = ExtResource("1_vwj67")
+min_spawn_radius = 210.0
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
 current = true
@@ -134,7 +136,7 @@ position = Vector2(-8, 1)
 texture = ExtResource("2_jaeu2")
 
 [node name="jugador" parent="." instance=ExtResource("3_75jji")]
-position = Vector2(-73, -58)
+position = Vector2(-96, 9)
 
 [node name="Camera2D" type="Camera2D" parent="jugador"]
 zoom = Vector2(4, 4)
@@ -146,24 +148,33 @@ position_smoothing_enabled = true
 position = Vector2(-208, -131)
 
 [node name="world_boundary" type="Area2D" parent="."]
-visible = false
+z_index = 20
 collision_layer = 0
 collision_mask = 255
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="world_boundary"]
-polygon = PackedVector2Array(-446, -5, -418, -92, -386, -131, -339, -163, -317, -165, -291, -182, -235, -197, -212, -210, -155, -222, -68, -222, -43, -226, 2, -224, 41, -232, 98, -224, 138, -223, 150, -217, 161, -218, 180, -207, 194, -211, 233, -197, 244, -206, 341, -149, 406, -115, 436, -53, 445, -2, 433, 60, 401, 109, 328, 152, 241, 190, 177, 209, -1, 225, -180, 210, -250, 186, -310, 158, -388, 119, -436, 55)
+polygon = PackedVector2Array(-446, -5, -418, -92, -386, -131, -339, -163, -317, -165, -291, -182, -235, -197, -212, -210, -155, -222, -68, -222, -43, -226, 2, -224, 0, -25, -19, -25, -36, -16, -41, 1, -35, 17, -20, 25, 0.337952, 24.7535, -1, 225, -180, 210, -250, 186, -310, 158, -388, 119, -436, 55)
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="world_boundary"]
+polygon = PackedVector2Array(2, -224, 41, -232, 98, -224, 138, -223, 150, -217, 161, -218, 180, -207, 194, -211, 233, -197, 244, -206, 341, -149, 406, -115, 436, -53, 445, -2, 433, 60, 401, 109, 328, 152, 241, 190, 177, 209, -1, 225, 1, 26, 24, 24, 39, 12, 41, -2, 35, -17, 24, -24, 0, -25)
 
 [node name="capsula1" type="CollisionShape2D" parent="world_boundary"]
+visible = false
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_6o2rw")
+disabled = true
 
 [node name="capsula2" type="CollisionShape2D" parent="world_boundary"]
+visible = false
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_wd5o3")
+disabled = true
 
 [node name="capsula3" type="CollisionShape2D" parent="world_boundary"]
+visible = false
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_06eai")
+disabled = true
 
 [node name="spawn_boundary" type="Area2D" parent="."]
 visible = false
@@ -172,6 +183,8 @@ collision_mask = 128
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="spawn_boundary"]
 polygon = PackedVector2Array(-363, 0, -326, -90, -180, -154, -1, -171, 172, -150, 270, -125, 341, -73, 368, 2, 329, 82, 190, 147, 1, 175, -200, 144, -323, 86)
+
+[node name="orbit_system" parent="." instance=ExtResource("10_06eai")]
 
 [node name="save_system" parent="." instance=ExtResource("8_6o2rw")]
 

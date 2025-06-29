@@ -330,13 +330,13 @@ func _on_mugre_awakening_body_entered(body: Node2D) -> void:
 
 func _on_mugre_awakening_body_exited(body: Node2D) -> void:
 	if body is mugre:
-		if body.current_mode == body.MugreMode.RIGID and not body.is_falling and not body.tossed and body.linear_velocity == Vector2.ZERO:
+		if body.current_mode == body.MugreMode.RIGID and not body.tossed and body.linear_velocity.length() < 0.1:
 			body.set_passive_mode()
 
 
 func _on_mugre_sleeper_body_exited(body: Node2D) -> void:
 	if body is mugre:
-		if body.current_mode == body.MugreMode.RIGID and not body.is_falling and not body.tossed:
+		if body.current_mode == body.MugreMode.RIGID and not body.tossed:
 			body.set_passive_mode()
 
 
