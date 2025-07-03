@@ -99,6 +99,7 @@ func set_rigid_mode():
 func set_invisible_mode():
 	sprite.visible = false
 	set_passive_mode()
+	global_position = Vector2(9999.0, 9999.0)
 
 
 func enter_orbit_system():

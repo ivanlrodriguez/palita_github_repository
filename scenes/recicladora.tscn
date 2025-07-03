@@ -77,7 +77,7 @@ autoplay = "default"
 
 [node name="collpol" type="CollisionPolygon2D" parent="."]
 position = Vector2(0, 5)
-polygon = PackedVector2Array(-20, -6, 22, 15, 38, 7, 43, 10, 47, 8, 61, 14, 74.7303, 6.73103, 75, 2, 22, -25)
+polygon = PackedVector2Array(-20, -6, 22, 15, 38, 7, 43, 10, 47, 8, 61, 14, 74.7303, 6.73103, 75, 2, 21, -27)
 
 [node name="cinta" type="Area2D" parent="."]
 visible = false
@@ -92,12 +92,24 @@ polygon = PackedVector2Array(66, 12, 80, 5, 28, -21, 14, -15)
 [node name="hueco" type="Area2D" parent="."]
 position = Vector2(0, 5)
 collision_layer = 0
-collision_mask = 2
+collision_mask = 66
 
 [node name="collpol_area_hueco" type="CollisionPolygon2D" parent="hueco"]
-polygon = PackedVector2Array(-50, 13, -28, 24, -6, 13, -28, 2)
+polygon = PackedVector2Array(-50, 14, -28, 25, -6, 14, -28, 2)
+
+[node name="despawner" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 128
+
+[node name="collpol_despawner" type="CollisionPolygon2D" parent="despawner"]
+position = Vector2(0, 5)
+polygon = PackedVector2Array(-86, 0, -28, 30, 38, -5, 40, -2, -28, 36, -91, 3)
+
+[node name="collpol_area_hueco" type="CollisionPolygon2D" parent="."]
+position = Vector2(0, 5)
+polygon = PackedVector2Array(-44, 15, -28, 23, -11, 15, -28, 6)
 
 [connection signal="body_entered" from="cinta" to="." method="_on_cinta_body_entered"]
 [connection signal="body_exited" from="cinta" to="." method="_on_cinta_body_exited"]
 [connection signal="body_entered" from="hueco" to="." method="_on_hueco_body_entered"]
-[connection signal="body_exited" from="hueco" to="." method="_on_hueco_body_exited"]
+[connection signal="body_entered" from="despawner" to="." method="_on_despawner_body_entered"]

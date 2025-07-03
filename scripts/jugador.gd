@@ -250,9 +250,9 @@ func _on_standing_push_area_body_entered(body: Node2D) -> void:
 	if is_instance_valid(body):
 		if modo_actual != Modo.STANDING:
 			return
-		if body is mugre:
-			push_dir = (body.global_position - global_position).normalized()
-			body.apply_impulse(push_dir * 5.0)
+		#if body is mugre:
+			#push_dir = (body.global_position - global_position).normalized()
+			#body.apply_impulse(push_dir * 5.0)
 
 
 		if body is planta and not body.planta_arrancada:
@@ -337,13 +337,13 @@ func _on_mugre_awakening_body_entered(body: Node2D) -> void:
 
 func _on_mugre_awakening_body_exited(body: Node2D) -> void:
 	if body is mugre and is_instance_valid(body):
-		if body.current_mode == body.MugreMode.RIGID and not body.tossed and body.linear_velocity.length() < 0.1:
+		if body.current_mode == body.MugreMode.RIGID and not body.tossed and not body.reciclada:
 			body.set_passive_mode()
 
 
 func _on_mugre_sleeper_body_exited(body: Node2D) -> void:
 	if body is mugre and is_instance_valid(body):
-		if body.current_mode == body.MugreMode.RIGID and not body.tossed and body.linear_velocity.length() < 0.1:
+		if body.current_mode == body.MugreMode.RIGID and not body.tossed and not body.reciclada:
 			body.set_passive_mode()
 
 

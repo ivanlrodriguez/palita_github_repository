@@ -127,6 +127,7 @@ animations = [{
 [node name="mundo" type="Node2D"]
 y_sort_enabled = true
 script = ExtResource("1_vwj67")
+min_spawn_radius = 210.0
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
 current = true
@@ -250,30 +251,24 @@ position = Vector2(217, -98)
 [node name="world_boundary" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 255
-monitoring = false
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="world_boundary"]
-visible = false
 polygon = PackedVector2Array(-446, -5, -418, -92, -386, -131, -339, -163, -317, -165, -291, -182, -235, -197, -212, -210, -155, -222, -68, -222, -43, -226, 2, -224, 0, -25, -19, -25, -36, -16, -41, 1, -35, 17, -20, 25, 0.337952, 24.7535, -1, 225, -180, 210, -250, 186, -310, 158, -388, 119, -436, 55)
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="world_boundary"]
-visible = false
 polygon = PackedVector2Array(2, -224, 41, -232, 98, -224, 138, -223, 150, -217, 161, -218, 180, -207, 194, -211, 233, -197, 244, -206, 341, -149, 406, -115, 436, -53, 445, -2, 433, 60, 401, 109, 328, 152, 241, 190, 177, 209, -1, 225, 1, 26, 24, 24, 39, 12, 41, -2, 35, -17, 24, -24, 0, -25)
 
 [node name="capsula1" type="CollisionShape2D" parent="world_boundary"]
-visible = false
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_6o2rw")
 disabled = true
 
 [node name="capsula2" type="CollisionShape2D" parent="world_boundary"]
-visible = false
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_wd5o3")
 disabled = true
 
 [node name="capsula3" type="CollisionShape2D" parent="world_boundary"]
-visible = false
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_06eai")
 disabled = true
@@ -293,7 +288,7 @@ polygon = PackedVector2Array(-363, 0, -326, -90, -180, -154, -1, -171, 172, -150
 position = Vector2(-247, -145)
 
 [node name="jugador" parent="." instance=ExtResource("3_75jji")]
-position = Vector2(80, -2)
+position = Vector2(390, -51)
 
 [node name="Camera2D" type="Camera2D" parent="jugador"]
 zoom = Vector2(4, 4)

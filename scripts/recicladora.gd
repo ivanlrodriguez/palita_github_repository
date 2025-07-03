@@ -9,16 +9,18 @@ func _ready() -> void:
 func _on_hueco_body_entered(body: Node2D) -> void:
 	if body is mugre and is_instance_valid(body):
 		body.reciclada = true
-		if body.current_mode != body.MugreMode.RIGID:
-			body.set_rigid_mode()
-		if body.current_mode == body.MugreMode.RIGID:
-			body.gravity_scale = 1
+		body.tossed = false
+		body.set_rigid_mode()
+		body.gravity_scale = 1
+		body.set_collision_layer_bit(8, true)
+		body.set_collision_mask_bit(1, false)
+		body.set_collision_mask_bit(2, false)
+		body.set_collision_layer_bit(2, false)
 
-
-func _on_hueco_body_exited(body: Node2D) -> void:
+func _on_despawner_body_entered(body: Node2D) -> void:
 	if body is mugre and is_instance_valid(body):
+		body.set_invisible_mode()
 		emit_signal("reciclar_signal", body)
-
 
 func _on_cinta_body_entered(body: Node2D) -> void:
 	if body is RigidBody2D:

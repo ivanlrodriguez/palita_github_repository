@@ -2202,8 +2202,8 @@ radius = 25.0
 height = 82.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_g0idr"]
-radius = 34.0
-height = 106.0
+radius = 28.0
+height = 88.0
 
 [node name="corazon_mundo" type="StaticBody2D"]
 z_index = 3
@@ -2227,15 +2227,16 @@ collision_layer = 0
 collision_mask = 2
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="area_repulsion"]
-polygon = PackedVector2Array(-70, 0, -68, -12, -61, -24, -49, -34, -35, -41, -18, -46, 0, -47, 0, -27, -18, -27, -25, -25, -30, -23, -37, -17, -41, -12, -43, -6, -43, 0, -42, 8, -39, 15, -34, 21, -30, 24, -23, 27, -17, 28, 0, 28, 0, 47, -18, 45, -35, 41, -50, 33, -61, 23, -67, 12)
+polygon = PackedVector2Array(-73, 0, -71, -11, -65, -20, -58, -28, -43, -36, -26, -41, 0, -41, 0, -27, -18, -27, -25, -25, -30, -23, -37, -17, -41, -12, -43, -6, -43, 0, -42, 8, -39, 15, -34, 21, -30, 24, -23, 27, -17, 28, 0, 28, 0, 42, -20, 42, -37, 39, -55, 30, -65, 20, -71, 10)
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="area_repulsion"]
 rotation = 3.14159
-polygon = PackedVector2Array(-70, 0, -68, -12, -61, -24, -49, -34, -35, -41, -18, -46, 0, -47, -2.44784e-06, -28, -18, -28, -25, -26, -31, -23, -36, -20, -41, -14, -43, -6, -44, 3.8466e-06, -43, 7, -41, 13, -37, 19, -33, 23, -27, 26, -19, 27, 2.36042e-06, 27, 0, 47, -18, 45, -35, 41, -50, 33, -61, 23, -67, 12)
+polygon = PackedVector2Array(-74, -0.000187603, -72, -13.0002, -65.9999, -22.0002, -57.9999, -29.0001, -45.9999, -37.0001, -28.9999, -42.0001, 0.000106478, -42, -2.44784e-06, -28, -18, -28, -25, -26, -31, -23, -36, -20, -41, -14, -43, -6, -44, 3.8466e-06, -43, 7, -41, 13, -37, 19, -33, 23, -27, 26, -19, 27, 2.36042e-06, 27, -0.000103942, 41, -24.0001, 40.9999, -37.0001, 38.9999, -48.0001, 34.9999, -60.0001, 26.9998, -72, 13.9998)
 
 [node name="area_teleport" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 2
+monitoring = false
 
 [node name="capsula_area_teleport" type="CollisionShape2D" parent="area_teleport"]
 rotation = 1.5708

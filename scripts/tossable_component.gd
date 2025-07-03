@@ -45,7 +45,7 @@ func _ready():
 func on_toss_triggered(player_ref: Node):
 	if not in_toss_area:
 		return
-	body.z_index = 7
+	body.z_index = 3 # relative to buildings
 	jugador_ref = player_ref
 	initial_y_pos = body.global_position.y
 	player_initial_y_pos = jugador_ref.global_position.y
