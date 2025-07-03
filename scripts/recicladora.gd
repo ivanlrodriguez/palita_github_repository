@@ -7,13 +7,16 @@ func _ready() -> void:
 	connect("reciclar_signal", Callable(mundo, "_on_reciclar"))
 
 func _on_hueco_body_entered(body: Node2D) -> void:
-	if body is mugre:
-		body.set_rigid_mode()
-		body.gravity_scale = 1
+	if body is mugre and is_instance_valid(body):
+		body.reciclada = true
+		if body.current_mode != body.MugreMode.RIGID:
+			body.set_rigid_mode()
+		if body.current_mode == body.MugreMode.RIGID:
+			body.gravity_scale = 1
 
 
 func _on_hueco_body_exited(body: Node2D) -> void:
-	if body is mugre:
+	if body is mugre and is_instance_valid(body):
 		emit_signal("reciclar_signal", body)
 
 

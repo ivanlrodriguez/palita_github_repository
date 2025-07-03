@@ -122,6 +122,8 @@ shape = SubResource("RectangleShape2D_wrhic")
 
 [node name="agua_anim" type="AnimatedSprite2D" parent="."]
 modulate = Color(1, 1, 1, 0.643137)
+z_index = 1
+z_as_relative = false
 scale = Vector2(1.08, 1.08)
 sprite_frames = SubResource("SpriteFrames_3i8gb")
 animation = &"agua_1"

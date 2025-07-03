@@ -100,7 +100,7 @@ func _enter_orbit():
 	
 	
 	var direction = -sign(snap_pos.x)
-	speed = randf_range(0.05, 0.1) * direction * 3
+	speed = randf_range(0.05, 0.1) * direction
 	t_cross_x = acos(clamp(-center.x / a, -1.0, 1.0))
 	wiggle_vector = velocity.normalized() * 12
 

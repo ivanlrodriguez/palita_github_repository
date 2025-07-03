@@ -1,7 +1,12 @@
-[gd_scene load_steps=88 format=3 uid="uid://cyutw7vax147r"]
+[gd_scene load_steps=95 format=3 uid="uid://cyutw7vax147r"]
 
 [ext_resource type="Script" uid="uid://cjm4v7dv7fq5r" path="res://scripts/jugador.gd" id="1_lhlt4"]
 [ext_resource type="Texture2D" uid="uid://bh4txdisgnxoj" path="res://assets/sprites/palita 2.0.png" id="3_28edd"]
+[ext_resource type="AudioStream" uid="uid://bhq2al0m6yf2f" path="res://assets/sfx/palita_pasos_standing-001.ogg" id="3_xm55e"]
+[ext_resource type="AudioStream" uid="uid://o5cgou03dyny" path="res://assets/sfx/palita_pasos_standing-002.ogg" id="4_qimqe"]
+[ext_resource type="AudioStream" uid="uid://bo0tc6ks5q7dp" path="res://assets/sfx/palita_pasos_standing-003.ogg" id="5_l5m57"]
+[ext_resource type="AudioStream" uid="uid://b8r3xsb7sl77a" path="res://assets/sfx/palita_pasos_standing-004.ogg" id="6_6lqtn"]
+[ext_resource type="AudioStream" uid="uid://bstttrlofuo1y" path="res://assets/sfx/palita_pasos_standing-005.ogg" id="7_auomn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xn2h3"]
 atlas = ExtResource("3_28edd")
@@ -121,7 +126,7 @@ region = Rect2(160, 256, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3xan4"]
 atlas = ExtResource("3_28edd")
-region = Rect2(128, 0, 32, 32)
+region = Rect2(0, 192, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0wyy4"]
 atlas = ExtResource("3_28edd")
@@ -685,6 +690,16 @@ points = PackedVector2Array(-6, -7, -6, 7, 25, 30, 25, -30)
 [sub_resource type="CircleShape2D" id="CircleShape2D_lhlt4"]
 radius = 51.4781
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_pdyqb"]
+streams_count = 5
+stream_0/stream = ExtResource("3_xm55e")
+stream_1/stream = ExtResource("4_qimqe")
+stream_2/stream = ExtResource("5_l5m57")
+stream_3/stream = ExtResource("6_6lqtn")
+stream_4/stream = ExtResource("7_auomn")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_lhlt4"]
+
 [node name="jugador" type="CharacterBody2D"]
 z_as_relative = false
 collision_layer = 25
@@ -693,7 +708,7 @@ script = ExtResource("1_lhlt4")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_smehm")
-animation = &"crouchO"
+animation = &"crouch_idle_S"
 autoplay = "idle"
 offset = Vector2(0, -3)
 
@@ -719,6 +734,7 @@ visible = false
 position = Vector2(0, -0.445)
 collision_layer = 0
 collision_mask = 2
+monitoring = false
 
 [node name="collsh_standing_pies" type="CollisionShape2D" parent="standing_push_area"]
 visible = false
@@ -727,7 +743,6 @@ rotation = 1.5708
 shape = SubResource("CapsuleShape2D_k64kw")
 
 [node name="area_click_jugador" type="Area2D" parent="."]
-visible = false
 
 [node name="collsh_click_jugador" type="CollisionShape2D" parent="area_click_jugador"]
 position = Vector2(0, -6.5)
@@ -799,10 +814,22 @@ collision_mask = 2
 shape = SubResource("CircleShape2D_lhlt4")
 
 [node name="sfx_pasos_standing" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_pdyqb")
+max_polyphony = 2
 panning_strength = 0.0
 bus = &"SFX"
 
 [node name="sfx_pasos_crouching" type="AudioStreamPlayer2D" parent="."]
+panning_strength = 0.0
+bus = &"SFX"
+
+[node name="sfx_pasos_copa_vacia" type="AudioStreamPlayer2D" parent="."]
+panning_strength = 0.0
+bus = &"SFX"
+
+[node name="sfx_pasos_copa_llena" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_lhlt4")
+max_polyphony = 2
 panning_strength = 0.0
 bus = &"SFX"
 

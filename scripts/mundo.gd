@@ -86,7 +86,7 @@ func get_random_donut_spawn_position() -> Vector2:
 
 
 func _on_spawn_boundary_area_shape_entered(_area_rid: RID, area: Area2D, _area_shape_index: int, _local_shape_index: int) -> void:
-	if area is area_checker:
+	if area is area_checker or mugre_checker:
 		area.inside_spawn_boundary = true
 
 
@@ -217,13 +217,18 @@ func _on_pasto_muerto(pasto_ref):
 
 
 func _on_reciclar(mugre_ref):
-	mugre_ref.queue_free()
-	mugre_reciclada_counter += 1
-	if mugre_reciclada_counter == 10:
-		var bomba_de_agua = bomba_scene.instantiate()
-		var desde_recicladora = $recicladora.global_position + Vector2(25.0, -14.0)
-		bomba_de_agua.global_position = desde_recicladora
-		add_child.call_deferred(bomba_de_agua)
+	if is_instance_valid(mugre_ref):
+		mugre_reciclada_counter += 1
+		mugre_ref.set_invisible_mode()
+		mugre_manager.request_despawn(mugre_ref)
+		print(mugre_ref, ' freed')
+		if mugre_reciclada_counter == 10:
+			var bomba_de_agua = bomba_scene.instantiate()
+			var desde_recicladora = $recicladora.global_position + Vector2(25.0, -14.0)
+			bomba_de_agua.global_position = desde_recicladora
+			add_child.call_deferred(bomba_de_agua)
+	
+
 
 
 var modo_cine := false
@@ -265,18 +270,18 @@ func _on_agua_toco_piso(agua_ref):
 
 
 func _on_world_boundary_body_exited(body: Node2D) -> void:
-	if body is mugre:
-		if is_instance_valid(body):
-			#await get_tree().physics_frame
-			body.enter_orbit_system()
+	if body is mugre and not body.reciclada and is_instance_valid(body):
+		body.enter_orbit_system()
 
-var bodies_in_orbit_count := 0
-func _on_world_boundary_body_entered(body: Node2D) -> void:
-	if modo_cine:
-		return
-	if body is mugre:
-		bodies_in_orbit_count = max(0, bodies_in_orbit_count - 1)
-		body.remove_from_group('bodies in orbit')
-		for orbiter in get_tree().get_nodes_in_group('bodies in orbit'):
-			orbiter.bodies_in_orbit = bodies_in_orbit_count
-			orbiter.fall_chance_update()
+
+
+func _on_pointer_animation_finished() -> void:
+	$pointer.play("target_hold")
+
+
+func _on_ambient_finished() -> void:
+	$ambient.play()
+
+
+func _on_wisdoms_tragedy_finished() -> void:
+	$wisdoms_tragedy.play()

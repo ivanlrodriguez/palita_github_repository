@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://08ykletb16dr"]
+
+[ext_resource type="Script" uid="uid://bj14oim1c4l37" path="res://scripts/mugre_manager.gd" id="1_5mcly"]
+
+[node name="mugre_manager" type="Node2D"]
+script = ExtResource("1_5mcly")

@@ -7,29 +7,31 @@ var active := false
 var mugre_orbit_scene := preload("res://scenes/mugre_orbiting.tscn")  # Set this in the editor or preload()
 
 func _swap_to_pre_orbit(rigidbody_mugre: Node2D, orbit_data: Dictionary) -> void:
-	# Instantiate the lightweight mugre
-	var orbit_mugre = mugre_orbit_scene.instantiate() as mugre_orbiting
-	orbit_mugre.global_position = orbit_data.entry_pos
+	if is_instance_valid(rigidbody_mugre):
+		# Instantiate the lightweight mugre
+		var orbit_mugre = mugre_orbit_scene.instantiate() as mugre_orbiting
+		orbit_mugre.global_position = orbit_data.entry_pos
 
-	# Copy sprite variant and optional phase info
-	var id = rigidbody_mugre.mugre_id
-	var phase = rigidbody_mugre.phase
-	if rigidbody_mugre.entered_through_corazon_mundo:
-		orbit_mugre.is_in_pre_orbit = false
+		# Copy sprite variant and optional phase info
+		var id = rigidbody_mugre.mugre_id
+		var phase = rigidbody_mugre.phase
+		if rigidbody_mugre.entered_through_corazon_mundo:
+			orbit_mugre.is_in_pre_orbit = false
 
-	orbit_mugre.setup(orbit_data, id, phase)
+		orbit_mugre.setup(orbit_data, id, phase)
 
-	# Replace in scene tree
-	get_tree().current_scene.add_child.call_deferred(orbit_mugre)
-	rigidbody_mugre.queue_free()
+		# Replace in scene tree
+		get_tree().current_scene.add_child.call_deferred(orbit_mugre)
+		rigidbody_mugre.set_invisible_mode()
+		mugre_manager.request_despawn(rigidbody_mugre)
 
-	# Register for centralized orbit updates
-	orbiting_mugres.append(orbit_mugre)
+		# Register for centralized orbit updates
+		orbiting_mugres.append(orbit_mugre)
 
 func _process(delta: float) -> void:
 	for orbiter in orbiting_mugres:
 		orbiter.update_orbit(delta)
-		orbiter.fall_chance = max(0, 2500 - orbiting_mugres.size())
+		orbiter.fall_chance = max(4, int((2500 - orbiting_mugres.size()) / 100))
 
 var mugre_physics_scene := preload("res://scenes/mugre.tscn")
 

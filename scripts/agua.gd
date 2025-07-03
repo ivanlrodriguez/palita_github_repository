@@ -22,7 +22,7 @@ func cuando_toca_piso():
 	var actual_position_y = global_position.y
 	if actual_position_y - origin_position_y > piso_threshold:
 		toco_piso = true
-		z_index = 0
+		z_index = 1
 		freeze = true
 		$agua_anim.play('agua_splash')
 		$collsh_agua.disabled = true

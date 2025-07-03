@@ -10,6 +10,7 @@ var wspeedcount := 0.0
 var speedmod := 20.0
 var periodmod := 5.0
 const phasemod = 1.5
+@onready var pointer := $"../pointer"
 
 # fisica de empuje
 var external_push := Vector2.ZERO
@@ -68,16 +69,6 @@ func _ready():
 	modo_actual = Modo.STANDING
 	apply_modo_settings()
 	animacion_idle()
-	for i in range(1, 12):
-		var index := str(i).pad_zeros(3)
-		pasos_standing_variants.append(load("res://assets/sfx/pasos_standing-%s.wav" % [index]))
-	for i in range(1, 7):
-		var index := str(i).pad_zeros(3)
-		pasos_crouching_variants.append(load("res://assets/sfx/pasos_crouching-%s.wav" % [index]))
-	for i in range(1, 6):
-		var index := str(i).pad_zeros(3)
-		toss_variants.append(load("res://assets/sfx/toss-%s.wav" % [index]))
-
 
 #================================
 
@@ -94,6 +85,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	
 	elif event.is_action_released("click_izq"):
 		is_clicking = false
+	
+	if event.is_action_pressed("walk_stop"):
 		walk_stop()
 	
 	if event.is_action_pressed("click_der"):
@@ -146,14 +139,19 @@ func _unhandled_input(event: InputEvent) -> void:
 	# zoom
 	if event is InputEventMouseButton:
 		var zoom_normalized = inverse_lerp(0.2, 10, $Camera2D.zoom.x)
-
+		#var zoom_normalized_inverted = inverse_lerp(10, 0.2, $Camera2D.zoom.x)
+		#print(zoom_normalized_inverted)
+		
+		
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			change_zoom(1)  # Zoom in
 			AudioServer.set_bus_volume_db(2, linear_to_db(zoom_normalized))
+			#AudioServer.set_bus_volume_db(3, linear_to_db(zoom_normalized_inverted))
 			
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			change_zoom(-1)   # Zoom out
 			AudioServer.set_bus_volume_db(2, linear_to_db(zoom_normalized))
+			#AudioServer.set_bus_volume_db(3, linear_to_db(zoom_normalized_inverted))
 
 
 #================================
@@ -167,6 +165,8 @@ func walk_start():
 	walking = true
 	mov_target = get_global_mouse_position()
 	mov_direction = global_position.direction_to(mov_target)
+	pointer.global_position = mov_target
+	pointer.play("target_define")
 
 
 func walk_stop():
@@ -175,12 +175,14 @@ func walk_stop():
 	speed = 0
 	wspeedcount = 0
 	animacion_idle()
+	pointer.play("invisible")
 
 # area que rodea al jugador
 func _on_area_click_jugador_mouse_entered() -> void:
 	mouse_en_jugador = true
-	if not tossing or not watering:
-		walk_stop()
+	if is_clicking:
+		if not tossing or not watering:
+			walk_stop()
 
 
 func _on_area_click_jugador_mouse_exited() -> void:
@@ -245,21 +247,22 @@ func toggle_crouch():
 
 
 func _on_standing_push_area_body_entered(body: Node2D) -> void:
-	if modo_actual != Modo.STANDING:
-		return
-	if body is mugre:
-		push_dir = (body.global_position - global_position).normalized()
-		body.apply_impulse(push_dir * 5.0)
-	
+	if is_instance_valid(body):
+		if modo_actual != Modo.STANDING:
+			return
+		if body is mugre:
+			push_dir = (body.global_position - global_position).normalized()
+			body.apply_impulse(push_dir * 5.0)
 
-	if body is planta and not body.planta_arrancada:
-		push_dir = (body.global_position - global_position).normalized()
-		body.apply_impulse(push_dir * 10.0)
-		# Optional: If you want recoil, push the player too
-		if body.planta_crecida:
-			push(-push_dir * 45.0)
-		else:
-			push(-push_dir * 35.0)
+
+		if body is planta and not body.planta_arrancada:
+			push_dir = (body.global_position - global_position).normalized()
+			body.apply_impulse(push_dir * 10.0)
+			# Optional: If you want recoil, push the player too
+			if body.planta_crecida:
+				push(-push_dir * 45.0)
+			else:
+				push(-push_dir * 35.0)
 
 
 func _on_soft_coll_body_entered(body: Node2D) -> void:
@@ -269,78 +272,79 @@ func _on_soft_coll_body_entered(body: Node2D) -> void:
 
 
 func _on_area_copa_body_entered(body: Node2D) -> void:
-	if body is agua: # agregar la logica de item pickup
-		body.in_copa = true
-		agua_counter += 1
-		if agua_counter > 0 and modo_actual != Modo.COPA:
-			modo_actual = Modo.COPA
-			apply_modo_settings()
-			$AnimatedSprite2D.play("copa")
+	if is_instance_valid(body):
+		if body is agua: # agregar la logica de item pickup
+			body.in_copa = true
+			agua_counter += 1
+			if agua_counter > 0 and modo_actual != Modo.COPA:
+				modo_actual = Modo.COPA
+				apply_modo_settings()
+				$AnimatedSprite2D.play("copa")
 
 
 func _on_area_copa_body_exited(body: Node2D) -> void:
-	if body is agua:
-		agua_counter -= 1
-		body.in_copa = false
-		body.origin_position_y = body.global_position.y
-		body.piso_threshold = randf_range(1.0, 4.0)
-		if agua_counter <= 0 and modo_actual != Modo.CROUCHING: # se puede tirar el agua yendo a modo crouch
-			modo_actual = Modo.STANDING
-			apply_modo_settings()
+	if is_instance_valid(body):
+		if body is agua:
+			agua_counter -= 1
+			body.in_copa = false
+			body.origin_position_y = body.global_position.y
+			body.piso_threshold = randf_range(1.0, 4.0)
+			if agua_counter <= 0 and modo_actual != Modo.CROUCHING: # se puede tirar el agua yendo a modo crouch
+				modo_actual = Modo.STANDING
+				apply_modo_settings()
 
 
 func _on_area_base_pala_body_entered(body: Node2D) -> void:
-	if body is planta and not body.planta_arrancada:
-		push_dir = (body.global_position - global_position).normalized()
-		body.apply_impulse(push_dir * 10.0)
-		# Optional: If you want recoil, push the player too
-		if body.planta_crecida:
-			push(-push_dir * 35.0)
-		else:
-			push(-push_dir * 30.0)
-	
-	if body is corazon_mundo:
-		push_dir = (body.global_position - global_position).normalized()
-		push(-push_dir * 100)
-	# toss
-	if body is RigidBody2D:
-		var toss_component = body.get_node_or_null("tossable_component")  # Match name or path
-		if toss_component and toss_component.has_method("on_toss_triggered"):
-			connect("toss_triggered", Callable(toss_component, "on_toss_triggered"))
-			toss_component.in_toss_area = true
-	
-	if body is bomba:
-		body.set_physics_process(true)
-		body.set_deferred("freeze", false)
+	if is_instance_valid(body):
+		if body is planta and not body.planta_arrancada:
+			push_dir = (body.global_position - global_position).normalized()
+			body.apply_impulse(push_dir * 10.0)
+			# Optional: If you want recoil, push the player too
+			if body.planta_crecida:
+				push(-push_dir * 35.0)
+			else:
+				push(-push_dir * 30.0)
+		
+		if body is corazon_mundo:
+			push_dir = (body.global_position - global_position).normalized()
+			push(-push_dir * 100)
+		# toss
+		if body is RigidBody2D:
+			var toss_component = body.get_node_or_null("tossable_component")  # Match name or path
+			if toss_component and toss_component.has_method("on_toss_triggered"):
+				connect("toss_triggered", Callable(toss_component, "on_toss_triggered"))
+				toss_component.in_toss_area = true
+		
+		if body is bomba:
+			body.set_physics_process(true)
+			body.set_deferred("freeze", false)
 
 
 
 func _on_area_base_pala_body_exited(body: Node2D) -> void:
-	var toss_component = body.get_node_or_null("tossable_component")
-	if toss_component and toss_component.has_method("on_toss_triggered"):
-		disconnect("toss_triggered", Callable(toss_component, "on_toss_triggered"))
-		toss_component.in_toss_area = false
+	if is_instance_valid(body):
+		var toss_component = body.get_node_or_null("tossable_component")
+		if toss_component and toss_component.has_method("on_toss_triggered"):
+			disconnect("toss_triggered", Callable(toss_component, "on_toss_triggered"))
+			toss_component.in_toss_area = false
 
 
 
 func _on_mugre_awakening_body_entered(body: Node2D) -> void:
-	if body is mugre:
+	if body is mugre and is_instance_valid(body):
 		if body.current_mode != body.MugreMode.RIGID:
 			body.set_rigid_mode()
 
 func _on_mugre_awakening_body_exited(body: Node2D) -> void:
-	if body is mugre:
+	if body is mugre and is_instance_valid(body):
 		if body.current_mode == body.MugreMode.RIGID and not body.tossed and body.linear_velocity.length() < 0.1:
 			body.set_passive_mode()
 
 
 func _on_mugre_sleeper_body_exited(body: Node2D) -> void:
-	if body is mugre:
-		if body.current_mode == body.MugreMode.RIGID and not body.tossed:
+	if body is mugre and is_instance_valid(body):
+		if body.current_mode == body.MugreMode.RIGID and not body.tossed and body.linear_velocity.length() < 0.1:
 			body.set_passive_mode()
-
-
-
 
 
 
@@ -354,7 +358,7 @@ func _on_mugre_sleeper_body_exited(body: Node2D) -> void:
 func perform_toss():
 	emit_signal("toss_triggered", self)
 	sfx_pasos_crouching.stop()
-	play_sfx_toss()
+	sfx_toss.play()
 
 
 func push(force: Vector2):
@@ -421,7 +425,7 @@ func apply_modo_settings():
 		
 		Modo.COPA:
 			speedmod = 10
-			periodmod = 7.0
+			periodmod = 5.0
 			set_collision_layer_bit(1, false)
 			set_collision_mask_bit(1, true)
 			set_collision_layer_bit(5, false)
@@ -544,7 +548,10 @@ func animacion_walking():
 
 func movimiento_jugador(delta):
 	# Dirección
-	mov_target = get_global_mouse_position()
+	if is_clicking:
+		mov_target = get_global_mouse_position()
+		pointer.global_position = mov_target
+	
 	mov_direction = position.direction_to(mov_target)
 
 	# Carácter de movimiento: bobbing (sinusoide)
@@ -558,6 +565,10 @@ func movimiento_jugador(delta):
 	velocity.x = mov_direction.x * speed * 1.5 # por vista isométrica
 	velocity.y = mov_direction.y * speed
 	move_and_slide()
+	
+	if distance <= 0.1:
+		walk_stop()
+		walking = false
 	
 	# Cache direction once
 	dir_cardinal = get_direction_cardinal()
@@ -617,8 +628,11 @@ func change_zoom(zoom_direction: int):  # direction is +1 (out) or -1 (in)
 		 .set_trans(Tween.TRANS_SINE) \
 		 .set_ease(Tween.EASE_OUT)
 
-
+var time_now = 0.0
 func _process(delta):
+	time_now += delta
+	$"../wisdoms_tragedy".volume_linear = abs(sin(time_now/100))
+	$"../ambient".volume_linear = abs(sin(time_now/100)/2) + 0.5
 	$mugre_awakening.rotation = mov_direction.angle()
 
 	if click_der_pressed:
@@ -656,53 +670,30 @@ func _process(delta):
 
 #================================
 
-var pasos_standing_variants: Array[AudioStream] = []
-@onready var sfx_pasos_standing: AudioStreamPlayer2D = $sfx_pasos_standing
-var pasos_crouching_variants: Array[AudioStream] = []
-@onready var sfx_pasos_crouching: AudioStreamPlayer2D = $sfx_pasos_crouching
-var toss_variants: Array[AudioStream] = []
-@onready var sfx_toss: AudioStreamPlayer2D = $sfx_toss
 
-var last_index := -1
+@onready var sfx_pasos_standing: AudioStreamPlayer2D = $sfx_pasos_standing
+@onready var sfx_pasos_crouching: AudioStreamPlayer2D = $sfx_pasos_crouching
+@onready var sfx_pasos_copa_vacia: AudioStreamPlayer2D = $sfx_pasos_copa_vacia
+@onready var sfx_pasos_copa_llena: AudioStreamPlayer2D = $sfx_pasos_copa_llena
+@onready var sfx_toss: AudioStreamPlayer2D = $sfx_toss
 
 
 func sfx_walking():
 	if modo_actual == Modo.STANDING:
-		if speed > 19.5 and not sfx_pasos_standing.playing:
-			play_sfx_pasos_standing()
+		if speed > speedmod and not sfx_pasos_standing.playing:
+			#play_sfx_pasos_standing()
+			sfx_pasos_standing.play()
 	
 	if modo_actual == Modo.CROUCHING:
 		if speed < 3 and not sfx_pasos_crouching.playing:
-			play_sfx_pasos_crouching()
+			sfx_pasos_crouching.play()
+	
+	if modo_actual == Modo.COPA:
+		print(speed)
+		if speed > speedmod and not sfx_pasos_copa_vacia.playing:
+			sfx_pasos_copa_vacia.play()
+			if agua_counter >= 10:
+				sfx_pasos_copa_llena.play()
 
-var last_index_s := -1
-func play_sfx_pasos_standing():
-	var new_index = randi() % pasos_standing_variants.size()
-	while new_index == last_index_s:
-		new_index = randi() % pasos_standing_variants.size()
-	last_index_s = new_index
-	sfx_pasos_standing.pitch_scale = randf_range(0.95, 1.05)
-	sfx_pasos_standing.stream = pasos_standing_variants[new_index]
-	sfx_pasos_standing.play()
-
-var last_index_c := -1
-func play_sfx_pasos_crouching():
-	var new_index = randi() % pasos_crouching_variants.size()
-	while new_index == last_index_c:
-		new_index = randi() % pasos_crouching_variants.size()
-	last_index_c = new_index
-	sfx_pasos_crouching.pitch_scale = randf_range(0.95, 1.05)
-	sfx_pasos_crouching.stream = pasos_crouching_variants[new_index]
-	sfx_pasos_crouching.play()
-
-var last_index_t := -1
-func play_sfx_toss():
-	var new_index = randi() % toss_variants.size()
-	while new_index == last_index_t:
-		new_index = randi() % toss_variants.size()
-	last_index_t = new_index
-	sfx_toss.pitch_scale = randf_range(0.95, 1.05)
-	sfx_toss.stream = toss_variants[new_index]
-	sfx_toss.play()
 
 #================================

@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://nxb7k20xq5d3"]
+
+[ext_resource type="Script" uid="uid://bb01kc5cfbgxy" path="res://scripts/mugre_checker.gd" id="1_1coo8"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kep2t"]
+radius = 2.0
+
+[node name="mugre_checker" type="Area2D"]
+collision_layer = 0
+collision_mask = 255
+script = ExtResource("1_1coo8")
+
+[node name="collmugre_m" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_kep2t")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

@@ -21,6 +21,10 @@ func _ready():
 func _input(event):
 	if event.is_action_pressed("ui_cancel"):
 		visible = not visible
+		toggle_pause()
+
+func toggle_pause():
+	get_tree().paused = !get_tree().paused
 
 func _on_Start_pressed():
 	game_started = true

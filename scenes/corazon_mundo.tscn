@@ -2202,8 +2202,8 @@ radius = 25.0
 height = 82.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_g0idr"]
-radius = 31.0
-height = 100.0
+radius = 34.0
+height = 106.0
 
 [node name="corazon_mundo" type="StaticBody2D"]
 z_index = 3
