@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+signal advance_frame
+
 # Modos principales
 enum Modo { STANDING, CROUCHING, COPA }
 var modo_actual: Modo = Modo.STANDING
@@ -224,6 +226,8 @@ func modo_riego_tilt(delta):
 
 
 func toggle_crouch():
+	#emit_signal("advance_frame")
+	$"../recicladora".step_frame()
 	if watering:
 		return
 	

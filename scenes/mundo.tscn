@@ -153,6 +153,7 @@ collision_layer = 0
 collision_mask = 255
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="world_boundary"]
+position = Vector2(0, -1)
 polygon = PackedVector2Array(-446, -5, -418, -92, -386, -131, -339, -163, -317, -165, -291, -182, -235, -197, -212, -210, -155, -222, -68, -222, -43, -226, 2, -224, 0, -25, -19, -25, -36, -16, -41, 1, -35, 17, -20, 25, 0.337952, 24.7535, -1, 225, -180, 210, -250, 186, -310, 158, -388, 119, -436, 55)
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="world_boundary"]

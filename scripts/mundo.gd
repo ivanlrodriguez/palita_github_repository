@@ -60,6 +60,7 @@ func _ready() -> void:
 	randomize()
 	planta_spawn()
 	mugre_spawn()
+	$jugador/Camera2D.set ("zoom", Vector2(0.2,0.2) )
 
 
 func get_random_donut_spawn_position() -> Vector2:
@@ -280,3 +281,13 @@ func _on_world_boundary_body_entered(body: Node2D) -> void:
 		for orbiter in get_tree().get_nodes_in_group('bodies in orbit'):
 			orbiter.bodies_in_orbit = bodies_in_orbit_count
 			orbiter.fall_chance_update()
+			
+func intro():
+	#var zoom_final = 5
+	#var zoom_inicial = 0.2
+	$jugador/Camera2D.set ("zoom", Vector2(0.2,0.2) )
+	var current_zoom = $jugador/Camera2D.zoom.x  # assuming uniform scaling (x = y)
+	var tween := create_tween()
+	tween.tween_property($jugador/Camera2D, "zoom", Vector2(5.0, 5.0), 10) \
+		 .set_trans(Tween.TRANS_QUINT) \
+		 .set_ease(Tween.EASE_IN_OUT)

@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="palita"
-run/main_scene="uid://bt3yiolmr1400"
+run/main_scene="uid://n55sa0yxbiwd"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
