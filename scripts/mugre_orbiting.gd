@@ -132,7 +132,7 @@ func _update_active_orbit(delta: float) -> void:
 		z_index = -1
 		in_top_side = false
 		registered_cycle_start = false
-		if half_cycle_time > 10.0 and not defined_half_cycle_time:
+		if half_cycle_time > 1.0 and not defined_half_cycle_time:
 			defined_half_cycle_time = true
 	else:
 		z_index = 10
@@ -145,23 +145,26 @@ func _update_active_orbit(delta: float) -> void:
 
 
 func _check_for_fall(delta: float) -> void:
-	dice_timer += delta
 	if not defined_half_cycle_time:
 		return
-	randomize()
-	if in_top_side and dice_timer > randf_range(half_cycle_time, half_cycle_time * 2):
-		dice = randi_range(0, fall_chance)
-		dice_timer = 0.0
-	if dice == 0 and time_now - last_cycle_time > half_cycle_time * randf_range(0.3, 0.9):
-		fall_to_ground()
+	if in_top_side:
+		dice_timer += delta
+		randomize()
+		if dice_timer > randf_range(0, half_cycle_time):
+			dice = randi_range(0, fall_chance)
+			dice_timer = 0.0
+		if dice == 0 and time_now - last_cycle_time > half_cycle_time * randf_range(0.25, 0.7):
+			fall_to_ground()
 
 
 func calculate_ground_target() -> float:
 	var x2 = snap_pos.x
-	var y2 = snap_pos.y
+	var y2 = snap_pos.y *0.8
 	var x = global_position.x
 	var m = y2 / x2
 	var y = m * x
+	if snap_pos.y < 0:
+		y = y*1.5
 	return y
 
 func fall_to_ground():

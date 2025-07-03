@@ -28,8 +28,8 @@ radius = 204.0
 height = 778.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_06eai"]
-radius = 222.0
-height = 654.0
+radius = 431.0
+height = 1404.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_35q48"]
 atlas = ExtResource("13_35q48")
@@ -127,7 +127,8 @@ animations = [{
 [node name="mundo" type="Node2D"]
 y_sort_enabled = true
 script = ExtResource("1_vwj67")
-min_spawn_radius = 210.0
+min_spawn_radius = 250.0
+max_spawn_radius = 260.0
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
 current = true
@@ -271,7 +272,6 @@ disabled = true
 [node name="capsula3" type="CollisionShape2D" parent="world_boundary"]
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_06eai")
-disabled = true
 
 [node name="spawn_boundary" type="Area2D" parent="."]
 collision_layer = 0
@@ -288,7 +288,7 @@ polygon = PackedVector2Array(-363, 0, -326, -90, -180, -154, -1, -171, 172, -150
 position = Vector2(-247, -145)
 
 [node name="jugador" parent="." instance=ExtResource("3_75jji")]
-position = Vector2(390, -51)
+position = Vector2(-1, -196)
 
 [node name="Camera2D" type="Camera2D" parent="jugador"]
 zoom = Vector2(4, 4)

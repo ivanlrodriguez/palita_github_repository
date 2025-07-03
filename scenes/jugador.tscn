@@ -722,6 +722,7 @@ visible = false
 position = Vector2(0, -0.445)
 collision_layer = 0
 collision_mask = 16
+monitoring = false
 
 [node name="collsh_soft" type="CollisionShape2D" parent="soft_coll"]
 visible = false
@@ -734,6 +735,7 @@ visible = false
 position = Vector2(0, -0.445)
 collision_layer = 0
 collision_mask = 2
+monitoring = false
 
 [node name="collsh_standing_pies" type="CollisionShape2D" parent="standing_push_area"]
 visible = false

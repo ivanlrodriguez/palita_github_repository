@@ -60,7 +60,7 @@ func _ready():
 
 func _on_despawn_check_body_entered(body: Node2D) -> void:
 	if body is not mugre and is_instance_valid(self):
-		print(self, ' despawned')
+		#print(self, ' despawned')
 		reciclada = true
 		set_invisible_mode()
 		mugre_manager.request_despawn(self)

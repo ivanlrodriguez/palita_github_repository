@@ -22,9 +22,10 @@ func _swap_to_pre_orbit(rigidbody_mugre: Node2D, orbit_data: Dictionary) -> void
 
 		# Replace in scene tree
 		get_tree().current_scene.add_child.call_deferred(orbit_mugre)
-		rigidbody_mugre.set_invisible_mode()
-		mugre_manager.request_despawn(rigidbody_mugre)
-
+		#rigidbody_mugre.set_invisible_mode()
+		#mugre_manager.request_despawn(rigidbody_mugre)
+		rigidbody_mugre.queue_free() # PARA PRUEBA
+		
 		# Register for centralized orbit updates
 		orbiting_mugres.append(orbit_mugre)
 
@@ -52,11 +53,12 @@ func fell_from_orbit(orbit_mugre: Node2D):
 	else:
 		rigid_mugre.setup("medium")
 	rigid_mugre.nmugre = orbit_mugre.mugre_id[1]
-
+	
 	
 	rigid_mugre.set_rigid_mode()
 	get_tree().current_scene.add_child(rigid_mugre)
 	var rand_angle = randf_range(0, TAU)
 	rigid_mugre.apply_impulse(Vector2.from_angle(rand_angle) * randf_range(10, 100))
-	#await get_tree().create_timer(1.0).timeout
-	#rigid_mugre.set_passive_mode()
+	await get_tree().create_timer(0.5).timeout
+	if is_instance_valid(rigid_mugre):
+		rigid_mugre.set_passive_mode()

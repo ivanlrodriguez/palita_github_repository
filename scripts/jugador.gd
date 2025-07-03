@@ -329,7 +329,6 @@ func _on_area_base_pala_body_exited(body: Node2D) -> void:
 			toss_component.in_toss_area = false
 
 
-
 func _on_mugre_awakening_body_entered(body: Node2D) -> void:
 	if body is mugre and is_instance_valid(body):
 		if body.current_mode != body.MugreMode.RIGID:
