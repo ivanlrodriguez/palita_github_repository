@@ -12,22 +12,31 @@ var orbit_data = {
 	"launch_time": 0.0,
 }
 
-
 @onready var sprite := $sprite
 var collsh: CollisionShape2D
 var ntype: String
 var nmugre: int
-var mugre_id: Array
+var mugre_id := ['s', 1]
 
-var orbit_start_time := 0.0
-var in_top_side = true
 var tossed := false
 var entered_through_corazon_mundo := false
 var reciclada := false
 var phase := 0.0
 
+func reset():
+	set_passive_mode()
+	reciclada = false
+	entered_through_corazon_mundo = false
+	z_index = 2
+	gravity_scale = 0
+	set_collision_layer_bit(2, true)
+	set_collision_mask_bit(1, true)
+	set_collision_mask_bit(2, true)
 
 func setup(type: String):
+	
+	reset()
+	
 	if type == "small":
 		ntype = "s"
 		mass = 0.25
@@ -45,7 +54,6 @@ func setup(type: String):
 		$collmugre_s.set_deferred("disabled", true)
 
 func _ready():
-	
 	randomize()
 	nmugre = randi_range(1, 12)
 	mugre_id = [ntype, nmugre]
@@ -59,17 +67,19 @@ func _ready():
 			set_passive_mode()
 
 func _on_despawn_check_body_entered(body: Node2D) -> void:
-	if body is not mugre and is_instance_valid(self):
-		#print(self, ' despawned')
-		reciclada = true
-		set_invisible_mode()
-		mugre_manager.request_despawn(self)
-	elif is_instance_valid(self):
-		set_rigid_mode()
-		await get_tree().create_timer(0.1).timeout
-		if is_instance_valid(self):
-			set_passive_mode()
-			$despawn_check.set_deferred("monitoring", false)
+	if is_instance_valid(self):
+		if body is mugre:
+			set_rigid_mode()
+			await get_tree().create_timer(0.1).timeout
+			if is_instance_valid(self):
+				set_passive_mode()
+				$despawn_check.set_deferred("monitoring", false)
+		elif body is corazon_mundo:
+			entered_through_corazon_mundo = true
+			enter_orbit_system()
+		else:
+			reciclada = true
+			mugre_pool.return_to_pool(self)
 
 
 # --- Mode switching ---
@@ -99,7 +109,7 @@ func set_rigid_mode():
 func set_invisible_mode():
 	sprite.visible = false
 	set_passive_mode()
-	global_position = Vector2(9999.0, 9999.0)
+	global_position = Vector2(-9999.0, -9999.0)
 
 
 func enter_orbit_system():

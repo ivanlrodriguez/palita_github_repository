@@ -3,7 +3,7 @@ class_name mugre_orbiting
 
 var orbit_data: Dictionary
 var sprite: AnimatedSprite2D
-var mugre_id: Array
+var mugre_id := ['s', 1]
 var phase := 0.0
 
 var is_in_pre_orbit := false
@@ -26,21 +26,50 @@ var wiggle_damping := 4.0
 var orbit_start_time := 0.0
 var time_now := 0.0
 var in_top_side := true
-var half_cycle_time := 0.0
+var half_cycle_time := 9999.0
 var defined_half_cycle_time := false
 var registered_cycle_start := false
 var last_cycle_time := 0.0
 
 # Fall
+const fall_speed := 150
 var is_falling := false
-var fall_speed := 0.0
-var fall_duration := 0.6
+var hit_ground := false
 var fall_start_pos_y := 0.0
 var fall_target_pos_y := 0.0
+var dice_timer := 0.0
+var dice := 9999
+var fall_chance := 9999
+var throw_dice_cooldown := 9999.0
+
+func reset():
+	orbit_start_time = 0.0
+	defined_half_cycle_time = false
+	half_cycle_time = 9999.0
+	last_cycle_time = 0.0
+	registered_cycle_start = false
+	in_top_side = false
+	is_falling = false
+	hit_ground = false
+	dice_timer = 0.0
+	throw_dice_cooldown = 9999.0
+	dice = 9999
+	fall_chance = 9999
+	fall_start_pos_y = 0.0
+	fall_target_pos_y = 0.0
+	last_cycle_time = 0.0
+	pre_orbit_timer = 0.0
+	time_now = 0.0
+	t = 0.0
+
 
 func setup(data: Dictionary, id: Array, initial_phase: float = 0.0):
+	
+	reset()
+	
 	orbit_data = data
 	mugre_id = id
+	self.play(mugre_id[0] + "_" + str(mugre_id[1]))
 	phase = initial_phase
 
 	# Set pre-orbit values
@@ -54,12 +83,7 @@ func setup(data: Dictionary, id: Array, initial_phase: float = 0.0):
 	# Initial position
 	global_position = entry_pos
 
-func _ready():
-	self.play(mugre_id[0] + "_" + str(mugre_id[1]))
 
-var dice_timer := 0.0
-var dice := 9999
-var fall_chance := 9999
 
 func update_orbit(delta: float) -> void:
 	if is_in_pre_orbit:
@@ -82,10 +106,7 @@ func _enter_orbit():
 	is_in_pre_orbit = false
 	orbit_start_time = time_now
 	# Reset orbit tracking vars
-	t = 0.0
-	defined_half_cycle_time = false
-	registered_cycle_start = false
-	last_cycle_time = 0.0
+	
 	# calculate orbit + wiggle
 	center = (snap_pos + Vector2.ZERO) / 2.0
 	var entry_x = abs(snap_pos.x)
@@ -139,6 +160,7 @@ func _update_active_orbit(delta: float) -> void:
 		in_top_side = true
 		if not defined_half_cycle_time:
 			half_cycle_time = time_now - orbit_start_time
+			throw_dice_cooldown = randf_range(half_cycle_time * 0.3, half_cycle_time * 0.7)
 		elif not registered_cycle_start:
 			last_cycle_time = time_now
 			registered_cycle_start = true
@@ -149,12 +171,15 @@ func _check_for_fall(delta: float) -> void:
 		return
 	if in_top_side:
 		dice_timer += delta
-		randomize()
-		if dice_timer > randf_range(0, half_cycle_time):
+		if dice_timer > throw_dice_cooldown:
+			randomize()
 			dice = randi_range(0, fall_chance)
+			throw_dice_cooldown = randf_range(half_cycle_time * 0.3, half_cycle_time * 0.7)
 			dice_timer = 0.0
-		if dice == 0 and time_now - last_cycle_time > half_cycle_time * randf_range(0.25, 0.7):
+		var position_by_time = time_now - last_cycle_time
+		if dice == 0 and position_by_time > half_cycle_time * 0.3 and position_by_time < half_cycle_time * 0.7:
 			fall_to_ground()
+			print(self, 'fell')
 
 
 func calculate_ground_target() -> float:
@@ -172,13 +197,13 @@ func fall_to_ground():
 	is_in_pre_orbit = false
 	fall_start_pos_y = global_position.y
 	fall_target_pos_y = calculate_ground_target()
-	fall_speed = 150.0 
 
 func _update_fall(delta: float):
 	global_position.y += fall_speed * delta
 	
-	if global_position.y >= fall_target_pos_y:
+	if global_position.y >= fall_target_pos_y and not hit_ground:
 		orbit_system.fell_from_orbit(self)
+		hit_ground = true
 
 func wrap_angle_to_pi(angle: float, ref_x: float) -> float:
 	return fmod((-sign(ref_x) * angle + PI + phase), TAU) - PI

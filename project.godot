@@ -18,7 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 orbit_system="*res://scripts/orbit_system.gd"
-mugre_manager="*res://scripts/mugre_manager.gd"
+mugre_pool="*res://scripts/mugre_pool.gd"
 
 [debug]
 

@@ -11,7 +11,7 @@ extends Node2D
 # 4: agua
 # 5: staticbodies
 # 7: objetos en el aire (tossed, no en orbita)
-# 8: area checker y mugres recicladas
+# 8: area checker, mugres recicladas y world wall
 
 # Z INDEX relativo a Y enabled
 # todo cuerpo que esté en z_index = 3 sera relativo al jugador
@@ -30,6 +30,7 @@ var bomba_scene = preload("res://scenes/bomba_de_agua.tscn")
 var world_center: Vector2 = Vector2.ZERO
 var max_radius: float = 450.0
 var pull_strength: float = 10.0
+#signal world_boundary_exited
 
 # contadores y cantidades
 @export var cant_max_plantas := 100
@@ -44,7 +45,7 @@ var rand_y: float
 
 # donut_spawner.gd
 @export var min_spawn_radius: float = 45.0 # The inner radius of the donut hole
-@export var max_spawn_radius: float = 220.0 # The outer radius of the donut
+@export var max_spawn_radius: float = 230.0 # The outer radius of the donut
 var spawn_center: Vector2 = Vector2.ZERO # The center point of the donut
 
 # timers
@@ -60,6 +61,7 @@ func _ready() -> void:
 	randomize()
 	planta_spawn()
 	mugre_spawn()
+	
 
 
 func get_random_donut_spawn_position() -> Vector2:
@@ -92,7 +94,6 @@ func _on_spawn_boundary_area_shape_entered(_area_rid: RID, area: Area2D, _area_s
 
 func mugre_spawn():
 	for i in range(cant_max_mugres_s):
-
 		var mugres = mugre_scene.instantiate()
 		mugres.setup("small")
 		mugres.global_position = get_random_donut_spawn_position()
@@ -219,7 +220,7 @@ func _on_pasto_muerto(pasto_ref):
 func _on_reciclar(mugre_ref):
 	if is_instance_valid(mugre_ref):
 		mugre_reciclada_counter += 1
-		mugre_manager.request_despawn(mugre_ref)
+		mugre_pool.request_despawn(mugre_ref)
 		if mugre_reciclada_counter == 10:
 			var bomba_de_agua = bomba_scene.instantiate()
 			var desde_recicladora = $recicladora.global_position + Vector2(25.0, -14.0)
@@ -272,6 +273,9 @@ func _on_world_boundary_body_exited(body: Node2D) -> void:
 	if is_instance_valid(body):
 		if body is mugre and not body.reciclada:
 			body.enter_orbit_system()
+	#if body is CharacterBody2D:
+		#emit_signal('world_boundary_exited')
+		#print('signal emmited')
 
 
 
@@ -285,3 +289,14 @@ func _on_ambient_finished() -> void:
 
 func _on_wisdoms_tragedy_finished() -> void:
 	$wisdoms_tragedy.play()
+
+#func _physics_process(delta):
+	#var overlapping = $world_boundary_wall/wall_player_push.get_overlapping_areas()
+	#var player_inside = false
+#
+	#for area in overlapping:
+		#if area == $jugador:
+			#player_inside = true
+			#emit_signal('world_boundary_exited')
+			#print('signal emmited')
+			#break

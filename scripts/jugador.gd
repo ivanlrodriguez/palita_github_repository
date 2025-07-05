@@ -12,6 +12,7 @@ var periodmod := 5.0
 const phasemod = 1.5
 @onready var pointer := $"../pointer"
 
+
 # fisica de empuje
 var external_push := Vector2.ZERO
 var friction := 300.0
@@ -55,6 +56,7 @@ var initial_player_world_pos: Vector2
 
 # inicialización
 func _ready():
+	#get_parent().world_boundary_exited.connect(_on_world_boundary_exited)
 	main_camera.make_current()
 	collshape_original_positions = {
 	"crouchN": $collpol_crouchN.position,
@@ -106,7 +108,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if modo_actual != Modo.CROUCHING:
 			return
 		tossing = true
-		if is_clicking:
+		if walking:
 			walk_stop()
 		var animacion_toss = "toss" + dir_cardinal
 		$AnimatedSprite2D.play(animacion_toss)
@@ -250,9 +252,9 @@ func _on_standing_push_area_body_entered(body: Node2D) -> void:
 	if is_instance_valid(body):
 		if modo_actual != Modo.STANDING:
 			return
-		#if body is mugre:
-			#push_dir = (body.global_position - global_position).normalized()
-			#body.apply_impulse(push_dir * 5.0)
+		if body is mugre:
+			push_dir = (body.global_position - global_position).normalized()
+			body.apply_impulse(push_dir * 5.0)
 
 
 		if body is planta and not body.planta_arrancada:
@@ -582,12 +584,8 @@ func movimiento_jugador(delta):
 			sfx_pasos_crouching.stop()
 
 
-func world_boundaries():
-	var pos_jugador_x = global_position.x
-	var pos_jugador_y = global_position.y * 2
-	var pos_jugador = Vector2(pos_jugador_x, pos_jugador_y)
-	if pos_jugador.length() > 450:
-		push(global_position.direction_to(Vector2.ZERO) * 10)
+#func _on_world_boundary_exited():
+	#push(global_position.direction_to(Vector2.ZERO) * 10)
 
 
 func _physics_process(delta: float) -> void:
@@ -600,7 +598,6 @@ func _physics_process(delta: float) -> void:
 	modo_riego_tilt(delta)
 	
 	if walking:
-		world_boundaries()
 		movimiento_jugador(delta)
 		animacion_walking()
 		sfx_walking()

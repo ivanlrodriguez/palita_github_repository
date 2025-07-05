@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://bt3yiolmr1400"]
+[gd_scene load_steps=29 format=3 uid="uid://bt3yiolmr1400"]
 
 [ext_resource type="Script" uid="uid://ik3swfhe15xk" path="res://scripts/mundo.gd" id="1_vwj67"]
 [ext_resource type="Texture2D" uid="uid://dxwfcfr0wcxvf" path="res://assets/sprites/secuencia estrellas/estrellas_00000.png" id="2_75jji"]
@@ -13,23 +13,13 @@
 [ext_resource type="PackedScene" uid="uid://bm23vdnravohh" path="res://scenes/recicladora.tscn" id="8_06eai"]
 [ext_resource type="PackedScene" uid="uid://ds63ymif64mly" path="res://scenes/save_system.tscn" id="8_6o2rw"]
 [ext_resource type="PackedScene" uid="uid://dlo4bsn4iesif" path="res://scenes/orbit_system.tscn" id="10_06eai"]
+[ext_resource type="Script" uid="uid://b5y845y0xhsew" path="res://scripts/world_boundary_wall.gd" id="11_w7nu4"]
+[ext_resource type="PackedScene" uid="uid://08ykletb16dr" path="res://scenes/mugre_pool.tscn" id="12_f7ym0"]
 [ext_resource type="PackedScene" uid="uid://ci104613jlym6" path="res://scenes/galpon.tscn" id="12_m7g0u"]
 [ext_resource type="Texture2D" uid="uid://bh4txdisgnxoj" path="res://assets/sprites/palita 2.0.png" id="13_35q48"]
 
 [sub_resource type="Theme" id="Theme_wd5o3"]
 default_font = ExtResource("3_kxyy5")
-
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_6o2rw"]
-radius = 159.0
-height = 898.0
-
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wd5o3"]
-radius = 204.0
-height = 778.0
-
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_06eai"]
-radius = 431.0
-height = 1404.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_35q48"]
 atlas = ExtResource("13_35q48")
@@ -127,8 +117,8 @@ animations = [{
 [node name="mundo" type="Node2D"]
 y_sort_enabled = true
 script = ExtResource("1_vwj67")
-min_spawn_radius = 250.0
-max_spawn_radius = 260.0
+cant_max_mugres_s = 9200
+cant_max_mugres_m = 1100
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
 current = true
@@ -240,7 +230,8 @@ z_index = -10
 scale = Vector2(0.763889, 0.763889)
 texture = ExtResource("2_75jji")
 
-[node name="mundo" type="Sprite2D" parent="."]
+[node name="sprite_mundo" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(-8, 1)
 texture = ExtResource("2_jaeu2")
 
@@ -249,29 +240,38 @@ texture = ExtResource("2_jaeu2")
 [node name="recicladora" parent="." instance=ExtResource("8_06eai")]
 position = Vector2(217, -98)
 
+[node name="world_boundary_wall" type="StaticBody2D" parent="."]
+collision_layer = 128
+collision_mask = 0
+script = ExtResource("11_w7nu4")
+
+[node name="collpol_outer_left" type="CollisionPolygon2D" parent="world_boundary_wall"]
+polygon = PackedVector2Array(-450, -4, -421, -93, -388, -133, -340, -165, -318, -167, -292, -184, -237, -199, -215, -212, -154, -225, -68, -224, -44, -228, 0, -227, 0, -284, -65, -281, -225, -260, -270, -245, -345, -223, -424, -184, -493, -124, -512, -74, -530, 7, -487, 111, -435, 179, -313, 220, -186, 266, 0, 262, 0, 228, -181, 213, -252, 189, -313, 161, -391, 121, -439, 56)
+
+[node name="collpol_outer_right" type="CollisionPolygon2D" parent="world_boundary_wall"]
+position = Vector2(4, 0)
+polygon = PackedVector2Array(-4, -227, 40, -235, 98, -226, 134, -226, 146, -220, 158, -221, 177, -210, 191, -214, 229, -200, 240, -209, 339, -151, 404, -117, 435, -54, 443, 0, 431, 61, 399, 111, 327, 154, 241, 192, 174, 212, -4, 228, -4, 262, 176, 267, 270, 248, 407, 206, 472, 127, 495, 63, 523, 2, 508, -54, 482, -108, 446, -163, 362, -209, 256, -250, 189, -271, 145, -284, 86, -282, -4, -284)
+
+[node name="wall_player_push" type="Area2D" parent="world_boundary_wall"]
+collision_layer = 0
+collision_mask = 128
+
+[node name="collpol_outer_left" type="CollisionPolygon2D" parent="world_boundary_wall/wall_player_push"]
+polygon = PackedVector2Array(-450, -4, -421, -93, -388, -133, -340, -165, -318, -167, -292, -184, -237, -199, -215, -212, -154, -225, -68, -224, -44, -228, 0, -227, 0, -284, -65, -281, -225, -260, -270, -245, -345, -223, -424, -184, -493, -124, -512, -74, -530, 7, -487, 111, -435, 179, -313, 220, -186, 266, 0, 262, 0, 228, -181, 213, -252, 189, -313, 161, -391, 121, -439, 56)
+
+[node name="collpol_outer_right" type="CollisionPolygon2D" parent="world_boundary_wall/wall_player_push"]
+position = Vector2(4, 0)
+polygon = PackedVector2Array(-4, -227, 40, -235, 98, -226, 134, -226, 146, -220, 158, -221, 177, -210, 191, -214, 229, -200, 240, -209, 339, -151, 404, -117, 435, -54, 443, 0, 431, 61, 399, 111, 327, 154, 241, 192, 174, 212, -4, 228, -4, 262, 176, 267, 270, 248, 407, 206, 472, 127, 495, 63, 523, 2, 508, -54, 482, -108, 446, -163, 362, -209, 256, -250, 189, -271, 145, -284, 86, -282, -4, -284)
+
 [node name="world_boundary" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 255
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="world_boundary"]
+[node name="collpol_inner_left" type="CollisionPolygon2D" parent="world_boundary"]
 polygon = PackedVector2Array(-446, -5, -418, -92, -386, -131, -339, -163, -317, -165, -291, -182, -235, -197, -212, -210, -155, -222, -68, -222, -43, -226, 2, -224, 0, -25, -19, -25, -36, -16, -41, 1, -35, 17, -20, 25, 0.337952, 24.7535, -1, 225, -180, 210, -250, 186, -310, 158, -388, 119, -436, 55)
 
-[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="world_boundary"]
+[node name="collpol_inner_right" type="CollisionPolygon2D" parent="world_boundary"]
 polygon = PackedVector2Array(2, -224, 41, -232, 98, -224, 138, -223, 150, -217, 161, -218, 180, -207, 194, -211, 233, -197, 244, -206, 341, -149, 406, -115, 436, -53, 445, -2, 433, 60, 401, 109, 328, 152, 241, 190, 177, 209, -1, 225, 1, 26, 24, 24, 39, 12, 41, -2, 35, -17, 24, -24, 0, -25)
-
-[node name="capsula1" type="CollisionShape2D" parent="world_boundary"]
-rotation = 1.5708
-shape = SubResource("CapsuleShape2D_6o2rw")
-disabled = true
-
-[node name="capsula2" type="CollisionShape2D" parent="world_boundary"]
-rotation = 1.5708
-shape = SubResource("CapsuleShape2D_wd5o3")
-disabled = true
-
-[node name="capsula3" type="CollisionShape2D" parent="world_boundary"]
-rotation = 1.5708
-shape = SubResource("CapsuleShape2D_06eai")
 
 [node name="spawn_boundary" type="Area2D" parent="."]
 collision_layer = 0
@@ -282,13 +282,15 @@ polygon = PackedVector2Array(-363, 0, -326, -90, -180, -154, -1, -171, 172, -150
 
 [node name="orbit_system" parent="." instance=ExtResource("10_06eai")]
 
+[node name="mugre_pool" parent="." instance=ExtResource("12_f7ym0")]
+
 [node name="save_system" parent="." instance=ExtResource("8_6o2rw")]
 
-[node name="StaticBody2D" parent="." instance=ExtResource("12_m7g0u")]
-position = Vector2(-247, -145)
+[node name="galpon" parent="." instance=ExtResource("12_m7g0u")]
+position = Vector2(-246, -145)
 
 [node name="jugador" parent="." instance=ExtResource("3_75jji")]
-position = Vector2(-1, -196)
+position = Vector2(103, -188)
 
 [node name="Camera2D" type="Camera2D" parent="jugador"]
 zoom = Vector2(4, 4)

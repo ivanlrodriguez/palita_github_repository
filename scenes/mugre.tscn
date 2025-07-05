@@ -330,7 +330,7 @@ metadata/_custom_type_script = "uid://dba1tiwt5tcmg"
 
 [node name="despawn_check" type="Area2D" parent="."]
 collision_layer = 0
-collision_mask = 19
+collision_mask = 147
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="despawn_check"]
 shape = SubResource("CircleShape2D_5s5f4")
