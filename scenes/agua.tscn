@@ -1,14 +1,8 @@
-[gd_scene load_steps=28 format=3 uid="uid://csj61vn7g8omv"]
+[gd_scene load_steps=21 format=3 uid="uid://csj61vn7g8omv"]
 
 [ext_resource type="Script" uid="uid://cpd8ay1j4t5co" path="res://scripts/agua.gd" id="1_wrhic"]
 [ext_resource type="Texture2D" uid="uid://3vraw3hb5om8" path="res://assets/sprites/agua.png" id="2_astc6"]
-[ext_resource type="AudioStream" uid="uid://blos5hlxta1rm" path="res://assets/sfx/agua_spawn-001.ogg" id="3_u2lee"]
-[ext_resource type="AudioStream" uid="uid://cp3x4vlnfx7uj" path="res://assets/sfx/agua_spawn-002.ogg" id="4_rmhgw"]
-[ext_resource type="AudioStream" uid="uid://cibj51yhk2td8" path="res://assets/sfx/agua_spawn-003.ogg" id="5_haspw"]
-[ext_resource type="AudioStream" uid="uid://dqwm82jl8xdob" path="res://assets/sfx/agua_spawn-004.ogg" id="6_u3qnx"]
-[ext_resource type="AudioStream" uid="uid://74x2nm0ul3y3" path="res://assets/sfx/agua_spawn-005.ogg" id="7_uow1c"]
-[ext_resource type="AudioStream" uid="uid://b4e81km7vh61t" path="res://assets/sfx/agua_spawn-006.ogg" id="8_h06tr"]
-[ext_resource type="AudioStream" uid="uid://bifck4pmn4yaj" path="res://assets/sfx/agua_spawn-007.ogg" id="9_hy60b"]
+[ext_resource type="AudioStream" uid="uid://dc83gobgugo7y" path="res://assets/sfx/tres/sfx_spawn.tres" id="3_gx42f"]
 [ext_resource type="AudioStream" uid="uid://bu3yh5p3g5wxp" path="res://assets/sfx/agua_splash-001.ogg" id="10_l44hc"]
 [ext_resource type="AudioStream" uid="uid://yesdafk6l0gn" path="res://assets/sfx/agua_splash-002.ogg" id="11_hcayc"]
 [ext_resource type="AudioStream" uid="uid://iud0u5gpkwvt" path="res://assets/sfx/agua_splash-003.ogg" id="12_abvli"]
@@ -118,18 +112,6 @@ animations = [{
 "speed": 0.0
 }]
 
-[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_jqdxp"]
-random_pitch = 1.5
-random_volume_offset_db = 1.0
-streams_count = 7
-stream_0/stream = ExtResource("3_u2lee")
-stream_1/stream = ExtResource("4_rmhgw")
-stream_2/stream = ExtResource("5_haspw")
-stream_3/stream = ExtResource("6_u3qnx")
-stream_4/stream = ExtResource("7_uow1c")
-stream_5/stream = ExtResource("8_h06tr")
-stream_6/stream = ExtResource("9_hy60b")
-
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_45plh"]
 random_pitch = 1.1
 streams_count = 6
@@ -164,9 +146,14 @@ animation = &"agua_1"
 offset = Vector2(0.5, 0.5)
 
 [node name="sfx_spawn" type="AudioStreamPlayer2D" parent="."]
-stream = SubResource("AudioStreamRandomizer_jqdxp")
+stream = ExtResource("3_gx42f")
 max_distance = 50.0
+bus = &"SFX"
 
 [node name="sfx_splash" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamRandomizer_45plh")
 max_distance = 50.0
+
+[node name="sfx_spawn2" type="AudioStreamPlayer2D" parent="."]
+
+[node name="AudioStreamPlayer2D2" type="AudioStreamPlayer2D" parent="."]

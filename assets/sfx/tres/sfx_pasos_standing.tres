@@ -1,0 +1,29 @@
+[gd_resource type="AudioStreamRandomizer" load_steps=12 format=3 uid="uid://nt84j4rfbvpp"]
+
+[ext_resource type="AudioStream" uid="uid://bhq2al0m6yf2f" path="res://assets/sfx/palita_pasos_standing-001.ogg" id="1_1n45i"]
+[ext_resource type="AudioStream" uid="uid://o5cgou03dyny" path="res://assets/sfx/palita_pasos_standing-002.ogg" id="2_tsjqw"]
+[ext_resource type="AudioStream" uid="uid://qgl6kdr18q15" path="res://assets/sfx/palita_pasos_standing-011.ogg" id="3_51x4g"]
+[ext_resource type="AudioStream" uid="uid://bo0tc6ks5q7dp" path="res://assets/sfx/palita_pasos_standing-003.ogg" id="4_07v1h"]
+[ext_resource type="AudioStream" uid="uid://b8r3xsb7sl77a" path="res://assets/sfx/palita_pasos_standing-004.ogg" id="5_je2g8"]
+[ext_resource type="AudioStream" uid="uid://bstttrlofuo1y" path="res://assets/sfx/palita_pasos_standing-005.ogg" id="6_8a1y8"]
+[ext_resource type="AudioStream" uid="uid://dg0q1twvwg8px" path="res://assets/sfx/palita_pasos_standing-006.ogg" id="7_ilgom"]
+[ext_resource type="AudioStream" uid="uid://cmqd05pncilq8" path="res://assets/sfx/palita_pasos_standing-007.ogg" id="8_dwdgw"]
+[ext_resource type="AudioStream" uid="uid://ds620imal1ut3" path="res://assets/sfx/palita_pasos_standing-008.ogg" id="9_mm6ru"]
+[ext_resource type="AudioStream" uid="uid://c8fg0vrgd5rl7" path="res://assets/sfx/palita_pasos_standing-009.ogg" id="10_cfd1c"]
+[ext_resource type="AudioStream" uid="uid://db66wh64ef0pr" path="res://assets/sfx/palita_pasos_standing-010.ogg" id="11_ej1kc"]
+
+[resource]
+random_pitch = 1.2
+random_volume_offset_db = 1.5
+streams_count = 11
+stream_0/stream = ExtResource("1_1n45i")
+stream_1/stream = ExtResource("2_tsjqw")
+stream_2/stream = ExtResource("4_07v1h")
+stream_3/stream = ExtResource("5_je2g8")
+stream_4/stream = ExtResource("6_8a1y8")
+stream_5/stream = ExtResource("7_ilgom")
+stream_6/stream = ExtResource("8_dwdgw")
+stream_7/stream = ExtResource("9_mm6ru")
+stream_8/stream = ExtResource("10_cfd1c")
+stream_9/stream = ExtResource("11_ej1kc")
+stream_10/stream = ExtResource("3_51x4g")

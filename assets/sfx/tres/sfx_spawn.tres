@@ -1,0 +1,21 @@
+[gd_resource type="AudioStreamRandomizer" load_steps=8 format=3 uid="uid://dc83gobgugo7y"]
+
+[ext_resource type="AudioStream" uid="uid://blos5hlxta1rm" path="res://assets/sfx/agua_spawn-001.ogg" id="1_6xero"]
+[ext_resource type="AudioStream" uid="uid://cp3x4vlnfx7uj" path="res://assets/sfx/agua_spawn-002.ogg" id="2_u15m2"]
+[ext_resource type="AudioStream" uid="uid://cibj51yhk2td8" path="res://assets/sfx/agua_spawn-003.ogg" id="3_qgdo2"]
+[ext_resource type="AudioStream" uid="uid://dqwm82jl8xdob" path="res://assets/sfx/agua_spawn-004.ogg" id="4_e1jxy"]
+[ext_resource type="AudioStream" uid="uid://74x2nm0ul3y3" path="res://assets/sfx/agua_spawn-005.ogg" id="5_jxlq7"]
+[ext_resource type="AudioStream" uid="uid://b4e81km7vh61t" path="res://assets/sfx/agua_spawn-006.ogg" id="6_by6g8"]
+[ext_resource type="AudioStream" uid="uid://bifck4pmn4yaj" path="res://assets/sfx/agua_spawn-007.ogg" id="7_hbeyv"]
+
+[resource]
+random_pitch = 1.5
+random_volume_offset_db = 1.0
+streams_count = 7
+stream_0/stream = ExtResource("1_6xero")
+stream_1/stream = ExtResource("2_u15m2")
+stream_2/stream = ExtResource("3_qgdo2")
+stream_3/stream = ExtResource("4_e1jxy")
+stream_4/stream = ExtResource("5_jxlq7")
+stream_5/stream = ExtResource("6_by6g8")
+stream_6/stream = ExtResource("7_hbeyv")

@@ -1,0 +1,9 @@
+[gd_resource type="AudioStreamRandomizer" load_steps=2 format=3 uid="uid://dk1qai613tp6l"]
+
+[ext_resource type="AudioStream" uid="uid://bor7fc3e2i8eq" path="res://assets/sfx/bomba_manija.ogg" id="1_20tss"]
+
+[resource]
+random_pitch = 1.02
+random_volume_offset_db = 1.0
+streams_count = 1
+stream_0/stream = ExtResource("1_20tss")

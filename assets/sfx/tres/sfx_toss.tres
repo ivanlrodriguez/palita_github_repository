@@ -1,0 +1,15 @@
+[gd_resource type="AudioStreamRandomizer" load_steps=6 format=3 uid="uid://bmbh8ccmmohru"]
+
+[ext_resource type="AudioStream" uid="uid://dvwkhhhsyt4uu" path="res://assets/sfx/palita_toss-001.ogg" id="1_bpb25"]
+[ext_resource type="AudioStream" uid="uid://dh11vm13hdmda" path="res://assets/sfx/palita_toss-002.ogg" id="2_7q44e"]
+[ext_resource type="AudioStream" uid="uid://bbcyfol0x1bkj" path="res://assets/sfx/palita_toss-003.ogg" id="3_eqfga"]
+[ext_resource type="AudioStream" uid="uid://bljsand57yepd" path="res://assets/sfx/palita_toss-004.ogg" id="4_wxdr6"]
+[ext_resource type="AudioStream" uid="uid://8hso6saik0gr" path="res://assets/sfx/palita_toss-005.ogg" id="5_6o8ou"]
+
+[resource]
+streams_count = 5
+stream_0/stream = ExtResource("1_bpb25")
+stream_1/stream = ExtResource("2_7q44e")
+stream_2/stream = ExtResource("3_eqfga")
+stream_3/stream = ExtResource("4_wxdr6")
+stream_4/stream = ExtResource("5_6o8ou")

@@ -15,7 +15,7 @@ extends CanvasLayer
 var game_started = false
 
 func _ready():
-	AudioServer.set_bus_volume_db(2.0, -64.0)
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), -64.0)
 	set_process(false)
 	$main_menu.visible = false
 	$encuesta.visible = false
@@ -41,7 +41,7 @@ func toggle_pause():
 	get_tree().paused = !get_tree().paused
 
 func _on_start_pressed():
-	$main_menu/botones/menu_click.play()
+	$menu_click.play()
 	game_started = true
 	btn_continue.visible = true
 	btn_controls.visible = true
@@ -51,7 +51,7 @@ func _on_start_pressed():
 	get_tree().paused = false
 	player.intro_block = true
 	await get_tree().create_timer(3.0).timeout
-	$main_menu/botones/Start/intro_whoosh.play()
+	$intro_whoosh.play()
 	var tween_zoom := create_tween()
 	tween_zoom.tween_property(camara, "zoom", Vector2(5.0, 5.0), 15.0) \
 	 .set_trans(Tween.TRANS_SINE) \
@@ -62,15 +62,15 @@ func _on_start_pressed():
 
 
 func _on_continue_pressed():
-	$main_menu/botones/menu_click.play()
+	$menu_click.play()
 	visible = false
 	toggle_pause()
 
 
 func _on_controls_pressed():
-	$main_menu/botones/menu_click.play()
+	$menu_click.play()
 	controls_screen.show()
 
 func _on_options_pressed():
-	$main_menu/botones/menu_click.play()
+	$menu_click.play()
 	options_menu.show()

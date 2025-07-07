@@ -632,7 +632,7 @@ func change_sfx_bus_vol():
 	await get_tree().create_timer(0.3).timeout
 	var zoom_normalized = roundf(inverse_lerp(0.2, 10.0, $Camera2D.zoom.x) * 100) / 100
 	print(zoom_normalized)
-	AudioServer.set_bus_volume_db(2, linear_to_db(zoom_normalized) + 12)
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), linear_to_db(zoom_normalized) + 12)
 
 var time_now = 0.0
 func _process(delta):

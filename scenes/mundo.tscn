@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=3 uid="uid://bt3yiolmr1400"]
+[gd_scene load_steps=51 format=3 uid="uid://bt3yiolmr1400"]
 
 [ext_resource type="Script" uid="uid://ik3swfhe15xk" path="res://scripts/mundo.gd" id="1_vwj67"]
 [ext_resource type="Texture2D" uid="uid://tx70aws0hmqm" path="res://assets/sprites/mundo.png" id="2_jaeu2"]
@@ -11,27 +11,16 @@
 [ext_resource type="AudioStream" uid="uid://h0ff86ehxdbd" path="res://assets/sfx/mundo_wisdoms_tragedy.ogg" id="4_l7i8s"]
 [ext_resource type="PackedScene" uid="uid://bm23vdnravohh" path="res://scenes/recicladora.tscn" id="8_06eai"]
 [ext_resource type="PackedScene" uid="uid://dlo4bsn4iesif" path="res://scenes/orbit_system.tscn" id="10_06eai"]
-[ext_resource type="PackedScene" uid="uid://08ykletb16dr" path="res://scenes/mugre_pool.tscn" id="12_f7ym0"]
 [ext_resource type="PackedScene" uid="uid://ci104613jlym6" path="res://scenes/galpon.tscn" id="12_m7g0u"]
 [ext_resource type="Texture2D" uid="uid://bh4txdisgnxoj" path="res://assets/sprites/palita 2.0.png" id="13_35q48"]
 [ext_resource type="Theme" uid="uid://d0bl51v5u7vth" path="res://assets/themes/main.tres" id="17_vnytd"]
-[ext_resource type="Script" uid="uid://4f0cbe7d1rup" path="res://scripts/mugre_passive_despawner.gd" id="17_w7nu4"]
+[ext_resource type="Script" path="res://scripts/mugre_passive_despawner.gd" id="17_w7nu4"]
 [ext_resource type="PackedScene" uid="uid://biva5a2pmxany" path="res://scenes/planta.tscn" id="18_541k4"]
 [ext_resource type="AudioStream" uid="uid://b402qm3appje" path="res://assets/sfx/menu_click.ogg" id="18_c1ejn"]
 [ext_resource type="PackedScene" uid="uid://b1fp6b5nsr4br" path="res://scenes/bomba_de_agua.tscn" id="19_c1ejn"]
 [ext_resource type="AudioStream" uid="uid://1i145c0w6ow" path="res://assets/sfx/intro_whoosh.ogg" id="19_vnytd"]
+[ext_resource type="AudioStream" uid="uid://nt84j4rfbvpp" path="res://assets/sfx/tres/sfx_pasos_standing.tres" id="20_g6hv0"]
 [ext_resource type="Script" uid="uid://cwwwgryxj8f1e" path="res://scripts/sound_test.gd" id="21_ws26n"]
-[ext_resource type="AudioStream" uid="uid://bhq2al0m6yf2f" path="res://assets/sfx/palita_pasos_standing-001.ogg" id="22_1e7fx"]
-[ext_resource type="AudioStream" uid="uid://o5cgou03dyny" path="res://assets/sfx/palita_pasos_standing-002.ogg" id="23_vwmo8"]
-[ext_resource type="AudioStream" uid="uid://qgl6kdr18q15" path="res://assets/sfx/palita_pasos_standing-011.ogg" id="24_ypjrv"]
-[ext_resource type="AudioStream" uid="uid://bo0tc6ks5q7dp" path="res://assets/sfx/palita_pasos_standing-003.ogg" id="25_h4pmc"]
-[ext_resource type="AudioStream" uid="uid://b8r3xsb7sl77a" path="res://assets/sfx/palita_pasos_standing-004.ogg" id="26_nudmr"]
-[ext_resource type="AudioStream" uid="uid://bstttrlofuo1y" path="res://assets/sfx/palita_pasos_standing-005.ogg" id="27_gd61c"]
-[ext_resource type="AudioStream" uid="uid://dg0q1twvwg8px" path="res://assets/sfx/palita_pasos_standing-006.ogg" id="28_m5drr"]
-[ext_resource type="AudioStream" uid="uid://cmqd05pncilq8" path="res://assets/sfx/palita_pasos_standing-007.ogg" id="29_qbv70"]
-[ext_resource type="AudioStream" uid="uid://ds620imal1ut3" path="res://assets/sfx/palita_pasos_standing-008.ogg" id="30_5ytme"]
-[ext_resource type="AudioStream" uid="uid://c8fg0vrgd5rl7" path="res://assets/sfx/palita_pasos_standing-009.ogg" id="31_prwbo"]
-[ext_resource type="AudioStream" uid="uid://db66wh64ef0pr" path="res://assets/sfx/palita_pasos_standing-010.ogg" id="32_alf01"]
 [ext_resource type="Texture2D" uid="uid://6lmc8ecxmm2o" path="res://assets/sprites/audio_test.png" id="33_08etq"]
 [ext_resource type="Script" uid="uid://dgdcv4ndtfxkv" path="res://scripts/encuesta.gd" id="34_skmsv"]
 
@@ -165,22 +154,6 @@ default_font_size = 30
 default_font = ExtResource("3_kxyy5")
 default_font_size = 40
 
-[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_18uye"]
-random_pitch = 1.2
-random_volume_offset_db = 1.5
-streams_count = 11
-stream_0/stream = ExtResource("22_1e7fx")
-stream_1/stream = ExtResource("23_vwmo8")
-stream_2/stream = ExtResource("25_h4pmc")
-stream_3/stream = ExtResource("26_nudmr")
-stream_4/stream = ExtResource("27_gd61c")
-stream_5/stream = ExtResource("28_m5drr")
-stream_6/stream = ExtResource("29_qbv70")
-stream_7/stream = ExtResource("30_5ytme")
-stream_8/stream = ExtResource("31_prwbo")
-stream_9/stream = ExtResource("32_alf01")
-stream_10/stream = ExtResource("24_ypjrv")
-
 [sub_resource type="LabelSettings" id="LabelSettings_g6hv0"]
 paragraph_spacing = 124.79
 font_size = 25
@@ -248,18 +221,21 @@ stream = ExtResource("2_wd5o3")
 max_distance = 10000.0
 attenuation = 0.00571908
 panning_strength = 0.0
+bus = &"music"
 
 [node name="ambient" type="AudioStreamPlayer2D" parent="music"]
 stream = ExtResource("3_cae5a")
 max_distance = 10000.0
 attenuation = 0.0126914
 panning_strength = 0.0
+bus = &"music"
 
 [node name="wisdoms_tragedy" type="AudioStreamPlayer2D" parent="music"]
 stream = ExtResource("4_l7i8s")
 max_distance = 10000.0
 attenuation = 0.0136024
 panning_strength = 0.0
+bus = &"music"
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 process_mode = 3
@@ -296,8 +272,6 @@ zoom = Vector2(4, 4)
 position_smoothing_enabled = true
 
 [node name="orbit_system" parent="." instance=ExtResource("10_06eai")]
-
-[node name="mugre_pool" parent="." instance=ExtResource("12_f7ym0")]
 
 [node name="mugre_passive_despawner" type="StaticBody2D" parent="."]
 collision_layer = 2
@@ -464,6 +438,10 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("21_ws26n")
 
+[node name="sfx_pasos_standing" type="AudioStreamPlayer2D" parent="menu/sound_test"]
+stream = ExtResource("20_g6hv0")
+volume_db = 1.0
+
 [node name="negro" type="ColorRect" parent="menu/sound_test"]
 layout_mode = 1
 anchors_preset = 15
@@ -549,13 +527,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.698039)
-
-[node name="sfx_pasos_standing" type="AudioStreamPlayer2D" parent="menu/encuesta"]
-stream = SubResource("AudioStreamRandomizer_18uye")
-volume_db = 1.0
-max_distance = 200.0
-max_polyphony = 2
-bus = &"SFX"
 
 [node name="MarginContainer" type="MarginContainer" parent="menu/encuesta"]
 layout_mode = 1
@@ -656,9 +627,9 @@ frame_progress = 0.0754165
 [connection signal="pressed" from="menu/main_menu/botones/Continue" to="menu" method="_on_continue_pressed"]
 [connection signal="pressed" from="menu/main_menu/botones/Controls" to="menu" method="_on_controls_pressed"]
 [connection signal="pressed" from="menu/main_menu/botones/Options" to="menu" method="_on_options_pressed"]
+[connection signal="finished" from="menu/sound_test/sfx_pasos_standing" to="menu/sound_test" method="_on_sfx_pasos_standing_finished"]
 [connection signal="pressed" from="menu/sound_test/MarginContainer/VBoxContainer/prueba_sonido" to="menu/sound_test" method="_on_prueba_sonido_pressed"]
 [connection signal="toggled" from="menu/sound_test/MarginContainer/VBoxContainer/prueba_sonido" to="menu/sound_test" method="_on_prueba_sonido_toggled"]
 [connection signal="pressed" from="menu/sound_test/MarginContainer/VBoxContainer/listo" to="menu/sound_test" method="_on_listo_pressed"]
-[connection signal="finished" from="menu/encuesta/sfx_pasos_standing" to="menu" method="_on_sfx_pasos_standing_finished"]
 [connection signal="pressed" from="menu/encuesta/MarginContainer/VBoxContainer/Continue" to="menu" method="_on_continue_pressed"]
 [connection signal="pressed" from="menu/encuesta/MarginContainer/VBoxContainer/Continue" to="menu/encuesta" method="_on_continue_pressed"]

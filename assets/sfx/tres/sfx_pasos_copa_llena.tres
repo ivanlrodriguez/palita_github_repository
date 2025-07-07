@@ -1,0 +1,19 @@
+[gd_resource type="AudioStreamRandomizer" load_steps=7 format=3 uid="uid://bjd1631r10btv"]
+
+[ext_resource type="AudioStream" uid="uid://bktra6518tm4r" path="res://assets/sfx/palita_pasos_copa_llena-001.ogg" id="1_yfb3t"]
+[ext_resource type="AudioStream" uid="uid://d1ets8y8ugaa" path="res://assets/sfx/palita_pasos_copa_llena-002.ogg" id="2_36lfa"]
+[ext_resource type="AudioStream" uid="uid://bogn4237r3jdj" path="res://assets/sfx/palita_pasos_copa_llena-003.ogg" id="3_7grsi"]
+[ext_resource type="AudioStream" uid="uid://dshokx0374i21" path="res://assets/sfx/palita_pasos_copa_llena-004.ogg" id="4_m43de"]
+[ext_resource type="AudioStream" uid="uid://bforkr5s5wdn7" path="res://assets/sfx/palita_pasos_copa_llena-005.ogg" id="5_odqnx"]
+[ext_resource type="AudioStream" uid="uid://dv0iq6rio8qa4" path="res://assets/sfx/palita_pasos_copa_llena-006.ogg" id="6_yny4k"]
+
+[resource]
+random_pitch = 1.2
+random_volume_offset_db = 1.5
+streams_count = 6
+stream_0/stream = ExtResource("1_yfb3t")
+stream_1/stream = ExtResource("2_36lfa")
+stream_2/stream = ExtResource("3_7grsi")
+stream_3/stream = ExtResource("4_m43de")
+stream_4/stream = ExtResource("5_odqnx")
+stream_5/stream = ExtResource("6_yny4k")
