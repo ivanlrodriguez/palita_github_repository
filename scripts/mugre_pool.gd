@@ -7,10 +7,8 @@ var rigid: Array = []
 
 # Scene references
 var orbit_scene := preload("res://scenes/mugre_orbiting.tscn")
-var rigid_scene := preload("res://scenes/mugre.tscn")
 
 func _ready():
-	# Preload orbit mugres only; rigid mugres will fill naturally
 	for i in range(3500):
 		var orbit_body = orbit_scene.instantiate()
 		orbit_body.visible = false
@@ -39,6 +37,7 @@ func return_to_pool(node: Node2D) -> void:
 		node.set_passive_mode()
 		node.global_position = Vector2(-9999, -9999)
 		rigid.append(node)
+		print(rigid.size())
 	elif node is mugre_orbiting:
 		node.global_position = Vector2(-9999, -9999)
 		orbit.append(node)
@@ -52,7 +51,7 @@ func request_despawn(body: Node) -> void:
 	if is_instance_valid(body):
 		if body is mugre:
 			body.set_invisible_mode()
-		mugres_to_despawn = get_tree().get_nodes_in_group("a_despawnear")
+		mugres_to_despawn.append(body)
 		if not is_despawning:
 			_start_staggered_despawn()
 

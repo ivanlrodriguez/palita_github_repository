@@ -1,8 +1,11 @@
 extends StaticBody2D
 class_name corazon_mundo
 
-func _on_area_teleport_body_entered(body: Node2D) -> void:
+func _ready() -> void:
+	await get_tree().create_timer(1.5).timeout
+	$capsula_collsh.set_deferred('disabled', false)
 
+func _on_area_teleport_body_entered(body: Node2D) -> void:
 	if body is mugre:
 		#body.add_to_group("mugre_teleport")
 		#particulas_intoxicacion_mugres()
@@ -30,23 +33,43 @@ func particulas_intoxicacion_mugres():
 	mugres_particles.emitting = true
 
 var mugre_counter := 0
-func _on_area_repulsion_body_entered(body: Node2D) -> void:
+func _on_area_atraccion_body_entered(body: Node2D) -> void:
+	if body is planta:
+		return
 	if body is mugre:
 		mugre_counter = max(0, mugre_counter + 1)
-		if not body.entered_through_corazon_mundo and body.current_mode != body.MugreMode.RIGID:
+		if body.current_mode != body.MugreMode.RIGID:
 			body.set_rigid_mode()
 		if body.has_method('apply_impulse'):
+			body.being_pulled = true
 			var direction = body.global_position.direction_to(global_position).normalized()
-			body.apply_impulse(direction * 35)
+			body.apply_impulse(direction * 100)
+	
 
-
+func _on_area_atraccion_body_exited(body: Node2D) -> void:
+	if body is mugre:
+		body.being_pulled = false
+	
 var area_monitoring: bool
-var flicker_timer := 0.0
-var flicker_interval := 0.03  # every ~6 frames at 60fps
+var flicker_counter := 0
 
-func _process(delta: float) -> void:
-	flicker_timer += delta
-	if flicker_timer >= flicker_interval:
-		flicker_timer = 0.0
+func _process(_delta: float) -> void:
+	flicker_counter += 1
+	if flicker_counter > 2:
+		flicker_counter = 0
 		area_monitoring = !area_monitoring
-		$area_repulsion.set_deferred("monitoring", area_monitoring)
+		$area_atraccion.set_deferred("monitoring", area_monitoring)
+
+
+func _on_sfx_finished() -> void:
+	$sfx.play()
+
+
+func _on_area_sfx_body_entered(body: Node2D) -> void:
+	if body is CharacterBody2D and not $sfx.playing:
+		$sfx.play()
+
+
+func _on_area_sfx_body_exited(body: Node2D) -> void:
+	if body is CharacterBody2D:
+		$sfx.stop()

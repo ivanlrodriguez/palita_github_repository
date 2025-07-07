@@ -39,8 +39,8 @@ var origin_rotation: float
 const SPRING_STIFFNESS := 200.0
 
 
-
 func _ready():
+	$intox_anim.visible = false
 	origin_position = global_position
 	origin_rotation = rotation
 	randomize()
@@ -57,11 +57,13 @@ func _on_area_a_limpiar_body_entered(body: Node2D):
 		if mugre_counter >= 1:
 			mugres_particles.emitting = true
 		if mugre_counter >= 5:
-			if estado_planta != Estado.INTOXICADA:
+			if estado_planta != Estado.INTOXICADA and $timer_intoxicacion.is_stopped():
 				$timer_intoxicacion.start()
+				$sfx_timer_intoxicacion.play()
 				set_particles('intoxicacion', 'buildup')
 			if estado_planta == Estado.INTOXICADA:
 				$timer_curacion.stop()  # Cancel cure if it was running
+				$sfx_curacion.stop()
 				set_particles('curacion', 'off')
 
 
@@ -75,9 +77,11 @@ func _on_area_a_limpiar_body_exited(body: Node2D):
 		body.remove_from_group("mugre_in_area_planta")
 		if mugre_counter < 5:
 			$timer_intoxicacion.stop()  # Cancel intox if not enough mugres
+			$sfx_timer_intoxicacion.stop()
 			set_particles('intoxicacion', 'off')
-			if estado_planta == Estado.INTOXICADA and not planta_arrancada:
+			if estado_planta == Estado.INTOXICADA and not planta_arrancada and $timer_curacion.is_stopped():
 				$timer_curacion.start()
+				$sfx_timer_curacion.play()
 				set_particles('curacion', 'buildup')
 
 func particulas_intoxicacion_mugres():
@@ -148,18 +152,20 @@ func set_particles(particles: String, mode: String) -> void:
 			push_error("Unknown mode: %s" % mode)
 			return
 
-func _on_area_a_regar_body_exited(body: Node2D):
+func _on_area_a_regar_body_exited(body: Node2D) -> void:
 	if body is agua and body.toco_piso:
+		print('awita')
 		if planta_arrancada:
 			set_planta_arrancada(false)
 		if estado_planta == Estado.MUERTA:
 			return
-		if not planta_regada and not estado_planta == Estado.INTOXICADA:
+		if not planta_regada and estado_planta != Estado.INTOXICADA:
 			planta_regada = true
 			$timer_regada.start()
+			$sfx_regada.play()
 			await get_tree().create_timer(3.0).timeout
 			set_particles('curacion', 'continuous')
-			
+
 
 func _on_timer_regada_timeout() -> void:
 	if estado_planta == Estado.MUERTA:
@@ -182,11 +188,15 @@ func _on_timer_intoxicacion_timeout():
 	estado_planta = Estado.INTOXICADA
 	levelup = 0
 	$decay_intoxicacion.start()
+	$sfx_intoxicada.play()
 	actualizar_sprite()
+	toggle_intox_anim()
 	set_particles('curacion', 'off')
 	set_particles('intoxicacion', 'burst')
 	await get_tree().create_timer(3.0).timeout
 	set_particles('intoxicacion', 'continuous')
+
+
 
 func _on_timer_curacion_timeout():
 	if estado_planta == Estado.MUERTA:
@@ -194,7 +204,9 @@ func _on_timer_curacion_timeout():
 	estado_planta = Estado.SANA
 	levelup = 1
 	$decay_intoxicacion.stop()
+	$sfx_curacion.play()
 	actualizar_sprite()
+	toggle_intox_anim()
 	set_particles('intoxicacion', 'off')
 	set_particles('curacion', 'burst')
 	crecimiento()
@@ -240,7 +252,20 @@ func actualizar_sprite():
 			sprite = "p%d_m_%d" % [nplanta, level]
 	$sprite.play(sprite)
 
+func toggle_intox_anim():
+	if estado_planta == Estado.INTOXICADA:
+		$intox_anim.visible = true
+		$intox_anim.play("intox")
+		await $intox_anim.animation_finished
+		$intox_anim.play("calavera")
+	else:
+		var tween = create_tween()
+		tween.tween_property($intox_anim, "modulate:a", 0.0, 9.0)  # Fade out alpha over 2 seconds
+		await get_tree().create_timer(9.0).timeout
+		$intox_anim.visible = false
+
 func _process(_delta):
+	$intox_anim.rotation = -global_rotation
 	if estado_planta == Estado.MUERTA:
 		set_process(false)
 		return
@@ -307,6 +332,8 @@ func _physics_process(_delta):
 	if not planta_arrancada:
 		apply_force(force)
 		apply_torque(torque)
+		if not $sfx_chop.playing and distance_to_origin > 0.3 and $tossable_component.in_toss_area:
+			$sfx_chop.play()
 		if distance_to_origin > 3.0:
 			set_planta_arrancada(true)
 
@@ -315,6 +342,7 @@ func set_planta_arrancada(value: bool) -> void:
 		return  # No change, skip
 
 	planta_arrancada = value
+	sfx_arrancada_plantada()
 	levelup = 0 if value else 1
 	actualizar_sprite()
 
@@ -337,3 +365,9 @@ func set_planta_arrancada(value: bool) -> void:
 		if mugre_counter < 5 and estado_planta == Estado.INTOXICADA:
 			$timer_curacion.start()
 			set_particles('curacion', 'buildup')
+
+func sfx_arrancada_plantada():
+	if planta_arrancada:
+		$sfx_arrancada.play()
+	else:
+		$sfx_plantada.play()

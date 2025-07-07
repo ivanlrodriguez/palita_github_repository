@@ -951,15 +951,15 @@ one_shot = true
 wait_time = 120.0
 one_shot = true
 
-[node name="timer_curacion" type="Timer" parent="."]
-wait_time = 10.0
-one_shot = true
-
 [node name="timer_intoxicacion" type="Timer" parent="."]
 wait_time = 10.0
 one_shot = true
 
 [node name="decay_intoxicacion" type="Timer" parent="."]
+wait_time = 10.0
+one_shot = true
+
+[node name="timer_curacion" type="Timer" parent="."]
 wait_time = 10.0
 one_shot = true
 
@@ -969,6 +969,6 @@ one_shot = true
 [connection signal="body_exited" from="area_reproduccion" to="." method="_on_area_reproduccion_body_exited"]
 [connection signal="timeout" from="timer_crecimiento" to="." method="_on_timer_crecimiento_timeout"]
 [connection signal="timeout" from="timer_reproduccion" to="." method="_on_timer_reproduccion_timeout"]
-[connection signal="timeout" from="timer_curacion" to="." method="_on_timer_curacion_timeout"]
 [connection signal="timeout" from="timer_intoxicacion" to="." method="_on_timer_intoxicacion_timeout"]
 [connection signal="timeout" from="decay_intoxicacion" to="." method="_on_decay_intoxicacion_timeout"]
+[connection signal="timeout" from="timer_curacion" to="." method="_on_timer_curacion_timeout"]

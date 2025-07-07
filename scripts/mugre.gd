@@ -19,6 +19,7 @@ var nmugre: int
 var mugre_id := ['s', 1]
 
 var tossed := false
+var being_pulled := false
 var entered_through_corazon_mundo := false
 var reciclada := false
 var phase := 0.0
@@ -26,6 +27,7 @@ var phase := 0.0
 func reset():
 	set_passive_mode()
 	reciclada = false
+	being_pulled = false
 	entered_through_corazon_mundo = false
 	z_index = 2
 	gravity_scale = 0
@@ -44,6 +46,7 @@ func setup(type: String):
 		collsh = $collmugre_s
 		# desactivar la otra opcion
 		$collmugre_m.set_deferred("disabled", true)
+		$sfx_toco_piso.pitch_scale = 1.2
 		
 	elif type == "medium":
 		ntype = "m"
@@ -52,6 +55,7 @@ func setup(type: String):
 		collsh = $collmugre_m
 		# desactivar la otra opcion
 		$collmugre_s.set_deferred("disabled", true)
+		$sfx_toco_piso.pitch_scale = 0.8
 
 func _ready():
 	randomize()
@@ -63,7 +67,7 @@ func _ready():
 	await get_tree().create_timer(0.2).timeout
 	if is_instance_valid(self):
 		$despawn_check.set_deferred("monitoring", false)
-		if current_mode != MugreMode.PASSIVE:
+		if current_mode != MugreMode.PASSIVE and not reciclada:
 			set_passive_mode()
 
 func _on_despawn_check_body_entered(body: Node2D) -> void:
@@ -72,8 +76,9 @@ func _on_despawn_check_body_entered(body: Node2D) -> void:
 			set_rigid_mode()
 			await get_tree().create_timer(0.1).timeout
 			if is_instance_valid(self):
-				set_passive_mode()
-				$despawn_check.set_deferred("monitoring", false)
+				if current_mode != MugreMode.PASSIVE and not reciclada:
+					set_passive_mode()
+					$despawn_check.set_deferred("monitoring", false)
 		elif body is corazon_mundo:
 			entered_through_corazon_mundo = true
 			enter_orbit_system()
@@ -120,7 +125,7 @@ func enter_orbit_system():
 			"entry_pos": entry_pos,
 			"velocity": Vector2.ZERO,
 			"snap_pos": global_position.normalized() * Vector2(570, 300),
-			"launch_time": 0.0
+			"launch_time": 0.0,
 			}
 		phase = PI
 		orbit_system._swap_to_pre_orbit(self, orbit_data)
@@ -141,3 +146,6 @@ func enter_orbit_system():
 			"launch_time": launch_time
 			}
 		orbit_system._swap_to_pre_orbit(self, orbit_data)
+
+func play_sfx_toco_piso():
+	$sfx_toco_piso.play()

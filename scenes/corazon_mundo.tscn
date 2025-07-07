@@ -1,4 +1,4 @@
-[gd_scene load_steps=554 format=3 uid="uid://bddxsejrwhq3o"]
+[gd_scene load_steps=556 format=3 uid="uid://bddxsejrwhq3o"]
 
 [ext_resource type="Texture2D" uid="uid://dlad0udpkw8vq" path="res://assets/sprites/secuencia corazon/prueba centro mundo palita_00000.png" id="1_irbsk"]
 [ext_resource type="Texture2D" uid="uid://cu6mtnfi8k24y" path="res://assets/sprites/secuencia corazon/prueba centro mundo palita_00001.png" id="2_rjrdm"]
@@ -550,6 +550,7 @@
 [ext_resource type="Curve" uid="uid://bym4kmp07j42a" path="res://assets/curvas/fadeout particulas.tres" id="548_g0idr"]
 [ext_resource type="Gradient" uid="uid://dcyghf2lbyqvi" path="res://assets/gradientes/fadeout.tres" id="549_4wswm"]
 [ext_resource type="Gradient" uid="uid://c27oeu360nw6u" path="res://assets/gradientes/intoxicacion.tres" id="550_nl524"]
+[ext_resource type="AudioStream" uid="uid://3ork2c70cwsn" path="res://assets/sfx/corazon_mundo.ogg" id="551_nl524"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_irbsk"]
 animations = [{
@@ -2203,7 +2204,10 @@ height = 82.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_g0idr"]
 radius = 28.0
-height = 88.0
+height = 86.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_nl524"]
+radius = 86.0
 
 [node name="corazon_mundo" type="StaticBody2D"]
 z_index = 3
@@ -2220,23 +2224,23 @@ frame_progress = 0.852649
 [node name="capsula_collsh" type="CollisionShape2D" parent="."]
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_rjrdm")
+disabled = true
 
-[node name="area_repulsion" type="Area2D" parent="."]
+[node name="area_atraccion" type="Area2D" parent="."]
 z_index = 3
 collision_layer = 0
-collision_mask = 2
+collision_mask = 67
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="area_repulsion"]
-polygon = PackedVector2Array(-73, 0, -71, -11, -65, -20, -58, -28, -43, -36, -26, -41, 0, -41, 0, -27, -18, -27, -25, -25, -30, -23, -37, -17, -41, -12, -43, -6, -43, 0, -42, 8, -39, 15, -34, 21, -30, 24, -23, 27, -17, 28, 0, 28, 0, 42, -20, 42, -37, 39, -55, 30, -65, 20, -71, 10)
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="area_atraccion"]
+polygon = PackedVector2Array(-73, 0, -71, -11, -65, -20, -58, -28, -43, -36, -26, -41, 0, -41, 0, -28, -16, -28, -23, -27, -30, -24, -35, -20, -39, -14, -42, -7, -43, 0, -42, 8, -39, 15, -34, 21, -30, 24, -23, 27, -17, 28, 0, 28, 0, 42, -20, 42, -37, 39, -55, 30, -65, 20, -71, 10)
 
-[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="area_repulsion"]
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="area_atraccion"]
 rotation = 3.14159
-polygon = PackedVector2Array(-74, -0.000187603, -72, -13.0002, -65.9999, -22.0002, -57.9999, -29.0001, -45.9999, -37.0001, -28.9999, -42.0001, 0.000106478, -42, -2.44784e-06, -28, -18, -28, -25, -26, -31, -23, -36, -20, -41, -14, -43, -6, -44, 3.8466e-06, -43, 7, -41, 13, -37, 19, -33, 23, -27, 26, -19, 27, 2.36042e-06, 27, -0.000103942, 41, -24.0001, 40.9999, -37.0001, 38.9999, -48.0001, 34.9999, -60.0001, 26.9998, -72, 13.9998)
+polygon = PackedVector2Array(-74, -0.000187603, -72, -13.0002, -65.9999, -22.0002, -57.9999, -29.0001, -45.9999, -37.0001, -28.9999, -42.0001, 0.000106478, -42, -2.44784e-06, -28, -18, -28, -25, -26, -31, -23, -35, -20.0001, -40, -14.0001, -43, -6, -43, -0.000109013, -42, 6.99989, -39, 13.9999, -36, 18.9999, -29.0001, 23.9999, -23.0001, 26.9999, -16.0001, 28, -7.09851e-05, 28, -0.000103942, 41, -24.0001, 40.9999, -37.0001, 38.9999, -48.0001, 34.9999, -60.0001, 26.9998, -72, 13.9998)
 
 [node name="area_teleport" type="Area2D" parent="."]
 collision_layer = 0
-collision_mask = 2
-monitoring = false
+collision_mask = 66
 
 [node name="capsula_area_teleport" type="CollisionShape2D" parent="area_teleport"]
 rotation = 1.5708
@@ -2264,6 +2268,24 @@ scale_amount_curve = ExtResource("548_g0idr")
 color_ramp = ExtResource("549_4wswm")
 color_initial_ramp = ExtResource("550_nl524")
 
-[connection signal="body_entered" from="area_repulsion" to="." method="_on_area_repulsion_body_entered"]
-[connection signal="body_exited" from="area_repulsion" to="." method="_on_area_repulsion_body_exited"]
+[node name="sfx" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("551_nl524")
+max_distance = 100.0
+attenuation = 2.37841
+panning_strength = 2.0
+bus = &"SFX"
+area_mask = 32769
+
+[node name="area_sfx" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 256
+
+[node name="circulo_collsh" type="CollisionShape2D" parent="area_sfx"]
+shape = SubResource("CircleShape2D_nl524")
+
+[connection signal="body_entered" from="area_atraccion" to="." method="_on_area_atraccion_body_entered"]
+[connection signal="body_exited" from="area_atraccion" to="." method="_on_area_atraccion_body_exited"]
 [connection signal="body_entered" from="area_teleport" to="." method="_on_area_teleport_body_entered"]
+[connection signal="finished" from="sfx" to="." method="_on_sfx_finished"]
+[connection signal="body_entered" from="area_sfx" to="." method="_on_area_sfx_body_entered"]
+[connection signal="body_exited" from="area_sfx" to="." method="_on_area_sfx_body_exited"]

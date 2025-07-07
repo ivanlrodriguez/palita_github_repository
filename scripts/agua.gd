@@ -10,13 +10,14 @@ var toco_piso := false
 var in_copa := false # ver _on_area_copa_body_entered() en jugador
 
 func _ready() -> void:
-	z_index = 7
+	z_index = 4
 	randomize()
 	origin_position_y = global_position.y
 	piso_threshold = randf_range(12.0, 15.0)
 	var nagua = randi_range(1, 7)
 	var agua_sel: String = "agua_" + str(nagua)
 	$agua_anim.play(agua_sel)
+	$sfx_spawn.play()
 
 func cuando_toca_piso():
 	var actual_position_y = global_position.y
@@ -25,6 +26,7 @@ func cuando_toca_piso():
 		z_index = 1
 		freeze = true
 		$agua_anim.play('agua_splash')
+		$sfx_splash.play()
 		$collsh_agua.disabled = true
 		gravity_scale = 0.0
 		rotation = 0.0

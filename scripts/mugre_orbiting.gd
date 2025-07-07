@@ -6,7 +6,7 @@ var sprite: AnimatedSprite2D
 var mugre_id := ['s', 1]
 var phase := 0.0
 
-var is_in_pre_orbit := false
+var is_in_pre_orbit : bool
 var pre_orbit_timer := 0.0
 var entry_pos := Vector2.ZERO
 var snap_pos := Vector2.ZERO
@@ -62,14 +62,20 @@ func reset():
 	time_now = 0.0
 	t = 0.0
 
+var player: CharacterBody2D
+
+func _ready():
+	var jugador :=  "/root/mundo/jugador"
+	player = get_node(jugador)
 
 func setup(data: Dictionary, id: Array, initial_phase: float = 0.0):
+	set_process(false)
 	
 	reset()
 	
 	orbit_data = data
 	mugre_id = id
-	self.play(mugre_id[0] + "_" + str(mugre_id[1]))
+	play(mugre_id[0] + "_" + str(mugre_id[1]))
 	phase = initial_phase
 
 	# Set pre-orbit values
@@ -78,11 +84,17 @@ func setup(data: Dictionary, id: Array, initial_phase: float = 0.0):
 	velocity = data.velocity
 	launch_time = data.launch_time
 	pre_orbit_timer = 0.0
-	is_in_pre_orbit = true
+	if is_in_pre_orbit:
+		$sfx_mugre_flight.play()
+		$sfx_mugre_flight.pitch_scale = clamp(velocity.length()/100, 1, 4)
+		
+	if not is_in_pre_orbit:
+		_enter_orbit()
 
 	# Initial position
 	global_position = entry_pos
-
+	
+	set_process(true)
 
 
 func update_orbit(delta: float) -> void:
@@ -103,6 +115,8 @@ func _update_pre_orbit(delta: float) -> void:
 		_enter_orbit()
 
 func _enter_orbit():
+	$sfx_mugre_flight.pitch_scale = 0.5
+	$sfx_mugre_pop.play()
 	is_in_pre_orbit = false
 	orbit_start_time = time_now
 	# Reset orbit tracking vars
@@ -125,8 +139,21 @@ func _enter_orbit():
 	t_cross_x = acos(clamp(-center.x / a, -1.0, 1.0))
 	wiggle_vector = velocity.normalized() * 12
 
+func orbit_modulate():
+	if not player:
+		return
+	var distance := global_position.distance_to(player.global_position)
+	if distance > 200:
+		return
+	else:
+		if is_falling:
+			distance = fall_target_pos_y - global_position.y 
+		var fade := inverse_lerp(0.0, 200.0, clamp(distance, 0.0, 200.0))
+		var alpha := 0.4 + fade*0.6
+		modulate = Color(1, 1, 1, alpha)
+
+
 func _update_active_orbit(delta: float) -> void:
-	
 	time_now += delta
 	t += delta * speed
 	var angle = t + t0
@@ -144,6 +171,8 @@ func _update_active_orbit(delta: float) -> void:
 		wiggle = wiggle_vector * sin(t_fraction * PI * 4) * damping
 	
 	global_position = base_pos + wiggle
+	
+	orbit_modulate()
 	
 	# Z index logic
 	var flip_angle = fmod(t0 + t_cross_x, TAU)
@@ -179,7 +208,6 @@ func _check_for_fall(delta: float) -> void:
 		var position_by_time = time_now - last_cycle_time
 		if dice == 0 and position_by_time > half_cycle_time * 0.3 and position_by_time < half_cycle_time * 0.7:
 			fall_to_ground()
-			print(self, 'fell')
 
 
 func calculate_ground_target() -> float:

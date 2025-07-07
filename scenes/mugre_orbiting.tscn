@@ -1,7 +1,9 @@
-[gd_scene load_steps=28 format=3 uid="uid://lp2yss6yeiw3"]
+[gd_scene load_steps=32 format=3 uid="uid://lp2yss6yeiw3"]
 
 [ext_resource type="Texture2D" uid="uid://1si3tkm8qa3e" path="res://assets/sprites/mugre.png" id="1_s6g5t"]
 [ext_resource type="Script" uid="uid://b6q3wbh6fgdac" path="res://scripts/mugre_orbiting.gd" id="2_xbfqu"]
+[ext_resource type="AudioStream" uid="uid://da88o6x634pvd" path="res://assets/sfx/mugre_flight.ogg" id="3_6n7sj"]
+[ext_resource type="AudioStream" uid="uid://chvutpehj17gc" path="res://assets/sfx/mugre_pop.ogg" id="3_xbfqu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6n7sj"]
 atlas = ExtResource("1_s6g5t")
@@ -294,7 +296,37 @@ animations = [{
 "speed": 0.0
 }]
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_wl8tq"]
+random_pitch = 1.5
+random_volume_offset_db = 1.5
+streams_count = 1
+stream_0/stream = ExtResource("3_6n7sj")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_6n7sj"]
+random_pitch = 3.0
+random_volume_offset_db = 1.5
+streams_count = 1
+stream_0/stream = ExtResource("3_xbfqu")
+
 [node name="mugre_orbiting" type="AnimatedSprite2D"]
+z_index = 2
+z_as_relative = false
 sprite_frames = SubResource("SpriteFrames_8yrml")
 animation = &"m_10"
 script = ExtResource("2_xbfqu")
+
+[node name="sfx_mugre_flight" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_wl8tq")
+volume_db = -18.0
+pitch_scale = 2.0
+max_distance = 150.0
+max_polyphony = 10
+panning_strength = 3.0
+bus = &"SFX"
+
+[node name="sfx_mugre_pop" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_6n7sj")
+volume_db = -18.0
+max_distance = 200.0
+max_polyphony = 10
+bus = &"SFX"

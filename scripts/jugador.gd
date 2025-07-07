@@ -23,6 +23,7 @@ signal toss_triggered(jugador_ref)
 
 # coordenadas de movimiento
 var mov_target = Vector2.ZERO
+var cached_mov_target = Vector2.ZERO
 var mov_direction = Vector2.ZERO
 var prev_cardinal: String = get_direction_cardinal()
 var new_cardinal: String = get_direction_cardinal()
@@ -46,6 +47,7 @@ var collshape_original_positions := {}
 @onready var main_camera: Camera2D = $Camera2D
 var click_der_pressed := false
 var camera_look_active := false
+var intro_block := false
 var click_start_time := 0.0
 var time_since_click_der := 0.0
 var required_hold_time := 1.0 # Seconds
@@ -54,9 +56,10 @@ var initial_click_viewport_pos: Vector2
 var initial_player_world_pos: Vector2
 
 
+
 # inicialización
 func _ready():
-	#get_parent().world_boundary_exited.connect(_on_world_boundary_exited)
+	$area_click_jugador.visible = true
 	main_camera.make_current()
 	collshape_original_positions = {
 	"crouchN": $collpol_crouchN.position,
@@ -123,8 +126,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		$AnimatedSprite2D.play(crouch_dir_cardinal)
 		# crouching coll mode
 		update_coll_mode(dir_cardinal)
-		if is_clicking:
-			walk_start()
+		walk_start()
 	
 	if event.is_action_pressed("modo_riego"):
 		if modo_actual != Modo.COPA:
@@ -140,20 +142,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	
 	# zoom
 	if event is InputEventMouseButton:
-		var zoom_normalized = inverse_lerp(0.2, 10, $Camera2D.zoom.x)
-		#var zoom_normalized_inverted = inverse_lerp(10, 0.2, $Camera2D.zoom.x)
-		#print(zoom_normalized_inverted)
-		
-		
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			change_zoom(1)  # Zoom in
-			AudioServer.set_bus_volume_db(2, linear_to_db(zoom_normalized))
-			#AudioServer.set_bus_volume_db(3, linear_to_db(zoom_normalized_inverted))
-			
+			change_sfx_bus_vol()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			change_zoom(-1)   # Zoom out
-			AudioServer.set_bus_volume_db(2, linear_to_db(zoom_normalized))
-			#AudioServer.set_bus_volume_db(3, linear_to_db(zoom_normalized_inverted))
+			change_sfx_bus_vol()
+
 
 
 #================================
@@ -165,7 +160,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func walk_start():
 	walking = true
-	mov_target = get_global_mouse_position()
+	mov_target = cached_mov_target #esto es para cuando uno efectua un toss mientras camina
 	mov_direction = global_position.direction_to(mov_target)
 	pointer.global_position = mov_target
 	pointer.play("target_define")
@@ -252,19 +247,19 @@ func _on_standing_push_area_body_entered(body: Node2D) -> void:
 	if is_instance_valid(body):
 		if modo_actual != Modo.STANDING:
 			return
-		if body is mugre:
-			push_dir = (body.global_position - global_position).normalized()
-			body.apply_impulse(push_dir * 5.0)
-
-
-		if body is planta and not body.planta_arrancada:
-			push_dir = (body.global_position - global_position).normalized()
-			body.apply_impulse(push_dir * 10.0)
-			# Optional: If you want recoil, push the player too
-			if body.planta_crecida:
-				push(-push_dir * 45.0)
-			else:
-				push(-push_dir * 35.0)
+		if is_instance_valid(body):
+			if body is mugre:
+				push_dir = (body.global_position - global_position).normalized()
+				body.apply_impulse(push_dir * 5.0)
+			
+			if body is planta and not body.planta_arrancada:
+				push_dir = (body.global_position - global_position).normalized()
+				body.apply_impulse(push_dir * 10.0)
+				# Optional: If you want recoil, push the player too
+				if body.planta_crecida:
+					push(-push_dir * 45.0)
+				else:
+					push(-push_dir * 35.0)
 
 
 func _on_soft_coll_body_entered(body: Node2D) -> void:
@@ -277,6 +272,7 @@ func _on_area_copa_body_entered(body: Node2D) -> void:
 	if is_instance_valid(body):
 		if body is agua: # agregar la logica de item pickup
 			body.in_copa = true
+			body.z_index = 4
 			agua_counter += 1
 			if agua_counter > 0 and modo_actual != Modo.COPA:
 				modo_actual = Modo.COPA
@@ -289,6 +285,7 @@ func _on_area_copa_body_exited(body: Node2D) -> void:
 		if body is agua:
 			agua_counter -= 1
 			body.in_copa = false
+			body.z_index = 7
 			body.origin_position_y = body.global_position.y
 			body.piso_threshold = randf_range(1.0, 4.0)
 			if agua_counter <= 0 and modo_actual != Modo.CROUCHING: # se puede tirar el agua yendo a modo crouch
@@ -318,8 +315,8 @@ func _on_area_base_pala_body_entered(body: Node2D) -> void:
 				toss_component.in_toss_area = true
 		
 		if body is bomba:
-			body.set_physics_process(true)
-			body.set_deferred("freeze", false)
+			var bomba_de_agua = get_parent().get_node('bomba_de_agua')
+			connect("toss_triggered", Callable(bomba_de_agua, "on_toss_triggered"))
 
 
 
@@ -329,6 +326,9 @@ func _on_area_base_pala_body_exited(body: Node2D) -> void:
 		if toss_component and toss_component.has_method("on_toss_triggered"):
 			disconnect("toss_triggered", Callable(toss_component, "on_toss_triggered"))
 			toss_component.in_toss_area = false
+		if body is bomba:
+			var bomba_de_agua = get_parent().get_node('bomba_de_agua')
+			disconnect("toss_triggered", Callable(bomba_de_agua, "on_toss_triggered"))
 
 
 func _on_mugre_awakening_body_entered(body: Node2D) -> void:
@@ -338,13 +338,13 @@ func _on_mugre_awakening_body_entered(body: Node2D) -> void:
 
 func _on_mugre_awakening_body_exited(body: Node2D) -> void:
 	if body is mugre and is_instance_valid(body):
-		if body.current_mode == body.MugreMode.RIGID and not body.tossed and not body.reciclada:
+		if body.current_mode == body.MugreMode.RIGID and not body.tossed and not body.reciclada and not body.being_pulled:
 			body.set_passive_mode()
 
 
 func _on_mugre_sleeper_body_exited(body: Node2D) -> void:
 	if body is mugre and is_instance_valid(body):
-		if body.current_mode == body.MugreMode.RIGID and not body.tossed and not body.reciclada:
+		if body.current_mode == body.MugreMode.RIGID and not body.tossed and not body.reciclada and not body.being_pulled:
 			body.set_passive_mode()
 
 
@@ -400,8 +400,8 @@ func apply_modo_settings():
 	wspeedcount = 0 #resetear movimiento
 	match modo_actual:
 		Modo.STANDING:
-			speedmod = 20
-			periodmod = 5
+			speedmod = 25.0
+			periodmod = 5.0
 			set_collision_layer_bit(1, false)
 			set_collision_mask_bit(1, false)
 			set_collision_layer_bit(5, true)
@@ -410,10 +410,9 @@ func apply_modo_settings():
 			$AnimatedSprite2D.z_index = 3
 			update_coll_mode("standing")
 			$area_base_pala.monitoring = false
-			sfx_pasos_crouching.stop()
 		
 		Modo.CROUCHING:
-			speedmod = 15
+			speedmod = 20.0
 			periodmod = 2.1
 			set_collision_layer_bit(1, true)
 			set_collision_mask_bit(1, true)
@@ -425,8 +424,8 @@ func apply_modo_settings():
 			$area_base_pala.monitoring = true
 		
 		Modo.COPA:
-			speedmod = 10
-			periodmod = 5.0
+			speedmod = 15.0
+			periodmod = 7.0
 			set_collision_layer_bit(1, false)
 			set_collision_mask_bit(1, true)
 			set_collision_layer_bit(5, false)
@@ -457,10 +456,12 @@ func update_coll_mode(coll_mode: String) -> void:
 	set_coll_shape_visibility("crouchO", $collpol_crouchO, false)
 	set_coll_shape_visibility("modo_copa", $collpol_modo_copa, false)
 	set_coll_shape_visibility("standing", $collsh_standing, false)
+	$collsh_area_sfx.position = Vector2(0, -5)
 	
 	match coll_mode:
 		"N":
 			set_coll_shape_visibility("crouchN", $collpol_crouchN, true)
+			$collsh_area_sfx.position = Vector2(0, 1)
 		"S":
 			set_coll_shape_visibility("crouchS", $collpol_crouchS, true)
 		"E":
@@ -551,6 +552,7 @@ func movimiento_jugador(delta):
 	# Dirección
 	if is_clicking:
 		mov_target = get_global_mouse_position()
+		cached_mov_target = get_global_mouse_position()
 		pointer.global_position = mov_target
 	
 	mov_direction = position.direction_to(mov_target)
@@ -600,7 +602,7 @@ func _physics_process(delta: float) -> void:
 	if walking:
 		movimiento_jugador(delta)
 		animacion_walking()
-		sfx_walking()
+		step_sfx_trigger()
 
 
 #================================
@@ -610,6 +612,8 @@ func _physics_process(delta: float) -> void:
 #================================
 
 func change_zoom(zoom_direction: int):  # direction is +1 (out) or -1 (in)
+	if intro_block:
+		return
 	var current_zoom = $Camera2D.zoom.x  # assuming uniform scaling (x = y)
 
 	# Compute zoom step: smaller step when close in, bigger when zoomed out
@@ -624,11 +628,26 @@ func change_zoom(zoom_direction: int):  # direction is +1 (out) or -1 (in)
 		 .set_trans(Tween.TRANS_SINE) \
 		 .set_ease(Tween.EASE_OUT)
 
+func change_sfx_bus_vol():
+	await get_tree().create_timer(0.3).timeout
+	var zoom_normalized = roundf(inverse_lerp(0.2, 10.0, $Camera2D.zoom.x) * 100) / 100
+	print(zoom_normalized)
+	AudioServer.set_bus_volume_db(2, linear_to_db(zoom_normalized) + 12)
+
 var time_now = 0.0
 func _process(delta):
+	
+	if intro_block:
+		var timer: float
+		timer += delta
+		if timer > 0.1:
+			change_sfx_bus_vol()
+			print('volch')
+			timer = 0
+	
 	time_now += delta
-	$"../wisdoms_tragedy".volume_linear = abs(sin(time_now/100))
-	$"../ambient".volume_linear = abs(sin(time_now/100)/2) + 0.5
+	$"../music/wisdoms_tragedy".volume_linear = abs(sin(time_now/100))
+	$"../music/ambient".volume_linear = abs(sin(time_now/100)/2) + 0.5
 	$mugre_awakening.rotation = mov_direction.angle()
 
 	if click_der_pressed:
@@ -673,22 +692,26 @@ func _process(delta):
 @onready var sfx_pasos_copa_llena: AudioStreamPlayer2D = $sfx_pasos_copa_llena
 @onready var sfx_toss: AudioStreamPlayer2D = $sfx_toss
 
+var is_above_threshold := false
+func step_sfx_trigger():
+	var threshold := speedmod
+	if modo_actual == Modo.CROUCHING:
+		threshold = 3.0
+	if not is_above_threshold and speed > threshold:
+		sfx_walking()
+		is_above_threshold = true
+	elif speed <= threshold:
+		is_above_threshold = false
 
 func sfx_walking():
-	if modo_actual == Modo.STANDING:
-		if speed > speedmod and not sfx_pasos_standing.playing:
-			#play_sfx_pasos_standing()
+	match modo_actual:
+		Modo.STANDING:
 			sfx_pasos_standing.play()
-	
-	if modo_actual == Modo.CROUCHING:
-		if speed < 3 and not sfx_pasos_crouching.playing:
+		Modo.CROUCHING:
 			sfx_pasos_crouching.play()
-	
-	if modo_actual == Modo.COPA:
-		print(speed)
-		if speed > speedmod and not sfx_pasos_copa_vacia.playing:
+		Modo.COPA:
 			sfx_pasos_copa_vacia.play()
-			if agua_counter >= 10:
+			if agua_counter >= 50:
 				sfx_pasos_copa_llena.play()
 
 

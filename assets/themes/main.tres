@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://d0bl51v5u7vth"]
+
+[ext_resource type="FontFile" uid="uid://c1usnef3huorv" path="res://assets/fonts/CutePixel.ttf" id="1_aiue4"]
+
+[resource]
+default_font = ExtResource("1_aiue4")
+default_font_size = 60

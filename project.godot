@@ -15,6 +15,10 @@ run/main_scene="uid://bt3yiolmr1400"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
+[audio]
+
+buses/default_bus_layout=""
+
 [autoload]
 
 orbit_system="*res://scripts/orbit_system.gd"

@@ -1,4 +1,5 @@
 extends Node2D
+class_name mundo
 
 #================================
 
@@ -11,7 +12,8 @@ extends Node2D
 # 4: agua
 # 5: staticbodies
 # 7: objetos en el aire (tossed, no en orbita)
-# 8: area checker, mugres recicladas y world wall
+# 8: area checker, mugres recicladas, bomba de agua (anim inicial)
+# 9: world wall & world boundary area
 
 # Z INDEX relativo a Y enabled
 # todo cuerpo que esté en z_index = 3 sera relativo al jugador
@@ -34,8 +36,8 @@ var pull_strength: float = 10.0
 
 # contadores y cantidades
 @export var cant_max_plantas := 100
-@export var cant_max_mugres_s := 9000
-@export var cant_max_mugres_m := 1000
+@export var cant_max_mugres_s := 5000
+@export var cant_max_mugres_m := 500
 var planta_counter := 0
 var pasto_counter := 0
 var agua_counter := 0
@@ -44,12 +46,12 @@ var rand_x: float
 var rand_y: float
 
 # donut_spawner.gd
-@export var min_spawn_radius: float = 45.0 # The inner radius of the donut hole
-@export var max_spawn_radius: float = 230.0 # The outer radius of the donut
+@export var min_spawn_radius: float = 35.0 # The inner radius of the donut hole
+@export var max_spawn_radius: float = 205.0 # The outer radius of the donut
 var spawn_center: Vector2 = Vector2.ZERO # The center point of the donut
 
 # timers
-@export var spawn_check := 1.0
+@export var spawn_check := 0.5
 @export var spawn_cooldown := 60.0
 @export var muerte_fadeout := 120.0
 @export var agua_fadeout := 10.0
@@ -61,7 +63,11 @@ func _ready() -> void:
 	randomize()
 	planta_spawn()
 	mugre_spawn()
-	
+	$jugador/Camera2D.zoom = Vector2(0.2, 0.2)
+	await get_tree().create_timer(10.0).timeout
+	$music/ambient.play()
+	get_tree().paused = true
+
 
 
 func get_random_donut_spawn_position() -> Vector2:
@@ -216,28 +222,26 @@ func _on_pasto_muerto(pasto_ref):
 		pasto_counter -= 1
 		planta_spawn()
 
-
+@onready var recicladora := $recicladora
 func _on_reciclar(mugre_ref):
 	if is_instance_valid(mugre_ref):
 		mugre_reciclada_counter += 1
 		mugre_pool.request_despawn(mugre_ref)
-		if mugre_reciclada_counter == 10:
-			var bomba_de_agua = bomba_scene.instantiate()
-			var desde_recicladora = $recicladora.global_position + Vector2(25.0, -14.0)
-			bomba_de_agua.global_position = desde_recicladora
-			add_child.call_deferred(bomba_de_agua)
+		print(mugre_reciclada_counter)
+		if mugre_reciclada_counter >= 10 and recicladora.level != recicladora.final_level:
+			mugre_reciclada_counter = 0
+			recicladora.level_up()
+			if recicladora.level == recicladora.final_level:
+				await get_tree().create_timer(13.0).timeout
+				var bomba_de_agua = bomba_scene.instantiate()
+				var desde_recicladora = $recicladora.global_position + Vector2(25.0, -14.0)
+				bomba_de_agua.global_position = desde_recicladora
+				add_child.call_deferred(bomba_de_agua)
 	
 
 
 
-var modo_cine := false
-func _input(event): # reemplazar por bomba de agua
-	if event.is_action_pressed("letra_a"):
-		#agua_spawn(get_global_mouse_position())
-		$world_boundary.set_deferred("monitoring", false)
-		modo_cine = true
-		#await get_tree().create_timer(2.5).timeout
-		#$palita_boceto_1.play()
+
 
 func _on_palita_boceto_1_finished() -> void:
 	$palita_boceto_1.play()
@@ -250,10 +254,9 @@ func _on_spawn_agua(bomba_ref):
 func agua_spawn(spawn_pos):
 	var agua_child = agua_scene.instantiate()
 	agua_counter += 1
-	agua_child.global_position = spawn_pos
+	agua_child.global_position = spawn_pos + Vector2(randf_range(-2, 2), 0)
 	agua_child.agua_toco_piso_signal.connect(_on_agua_toco_piso)
 	agua_child.reproducir_pasto_signal.connect(_on_reproducir_pasto)
-	agua_child.z_index = 7
 	add_child(agua_child)
 
 
@@ -273,9 +276,6 @@ func _on_world_boundary_body_exited(body: Node2D) -> void:
 	if is_instance_valid(body):
 		if body is mugre and not body.reciclada:
 			body.enter_orbit_system()
-	#if body is CharacterBody2D:
-		#emit_signal('world_boundary_exited')
-		#print('signal emmited')
 
 
 
@@ -284,19 +284,18 @@ func _on_pointer_animation_finished() -> void:
 
 
 func _on_ambient_finished() -> void:
-	$ambient.play()
+	$music/ambient.play()
 
 
 func _on_wisdoms_tragedy_finished() -> void:
-	$wisdoms_tragedy.play()
+	$music/wisdoms_tragedy.play()
 
-#func _physics_process(delta):
-	#var overlapping = $world_boundary_wall/wall_player_push.get_overlapping_areas()
-	#var player_inside = false
-#
-	#for area in overlapping:
-		#if area == $jugador:
-			#player_inside = true
-			#emit_signal('world_boundary_exited')
-			#print('signal emmited')
-			#break
+var time: float
+func _process(delta: float) -> void:
+	if $menu.game_started:
+		time += Time.get_ticks_msec() / 1000
+	if time > 30.0:
+		get_tree().paused = true
+		$menu/encuesta.visible = true
+		$menu/encuesta.set_process(true)
+		

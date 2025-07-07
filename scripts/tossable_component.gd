@@ -103,12 +103,15 @@ func landing():
 	body.gravity_scale = 0
 	body.z_index = initial_zindex
 	body.linear_velocity = Vector2.ZERO
-
+	
+	if body.has_method("play_sfx_toco_piso"):
+		body.play_sfx_toco_piso()
+	
 	var f_potencial_y = randi_range(-1, 1) * -toss_vector.y / 12
 	var f_potencial_x = randi_range(0, 1) * toss_vector.x / 5
 	var landing_hit = Vector2(f_potencial_x, f_potencial_y)
 	body.apply_impulse(landing_hit)
-
+	
 	# Restore all original layers/masks
 	for bit in original_layer_bits:
 		body.collision_layer |= 1 << bit  # Turn ON bit
@@ -124,9 +127,7 @@ func landing():
 	if is_instance_valid(body):
 		if body.has_method('set_passive_mode'):
 			body.set_passive_mode()
-
-
-
+	
 func toss_vector_calculator(dir_cardinal_jugador: String) -> Vector2:
 	var toss_range_x: float
 	var toss_range_y: float
