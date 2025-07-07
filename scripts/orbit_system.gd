@@ -44,6 +44,7 @@ func fell_from_orbit(orbit_mugre: Node2D):
 			rigid_mugre.setup("medium")
 		rigid_mugre.global_position = orbit_mugre.global_position
 		rigid_mugre.visible = true
+		rigid_mugre.set_rigid_mode()
 		rigid_mugre.play_sfx_toco_piso()
 		
 		mugre_pool.return_to_pool(orbit_mugre)

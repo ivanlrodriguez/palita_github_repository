@@ -18,6 +18,7 @@ func _ready():
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), -64.0)
 	set_process(false)
 	$main_menu.visible = false
+	$main_menu/botones.visible = true
 	$encuesta.visible = false
 	btn_continue.visible = false
 	btn_controls.visible = false
@@ -42,7 +43,9 @@ func toggle_pause():
 
 func _on_start_pressed():
 	$menu_click.play()
+	$"../music/musica_extended".play()
 	game_started = true
+	$"../timer_prueba".start()
 	btn_continue.visible = true
 	btn_controls.visible = true
 	btn_options.visible = true
@@ -55,9 +58,10 @@ func _on_start_pressed():
 	var tween_zoom := create_tween()
 	tween_zoom.tween_property(camara, "zoom", Vector2(5.0, 5.0), 15.0) \
 	 .set_trans(Tween.TRANS_SINE) \
-	 .set_ease(Tween.EASE_IN_OUT)
+	 .set_ease(Tween.EASE_IN)
 	await get_tree().create_timer(15.0).timeout
 	player.intro_block = false
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), 0.0)
 
 
 

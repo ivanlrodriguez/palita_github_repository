@@ -634,20 +634,21 @@ func change_sfx_bus_vol():
 	print(zoom_normalized)
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), linear_to_db(zoom_normalized) + 12)
 
-var time_now = 0.0
+var time_now_delta := 0.0
+var timer := 0
 func _process(delta):
 	
 	if intro_block:
-		var timer: float
+		
 		timer += delta
 		if timer > 0.1:
 			change_sfx_bus_vol()
 			print('volch')
 			timer = 0
 	
-	time_now += delta
-	$"../music/wisdoms_tragedy".volume_linear = abs(sin(time_now/100))
-	$"../music/ambient".volume_linear = abs(sin(time_now/100)/2) + 0.5
+	time_now_delta += delta
+	$"../ambient/wisdoms_tragedy".volume_linear = abs(sin(time_now_delta/100))
+	$"../ambient/ruido".volume_linear = abs(sin(time_now_delta/100)/2) + 0.5
 	$mugre_awakening.rotation = mov_direction.angle()
 
 	if click_der_pressed:

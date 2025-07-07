@@ -66,9 +66,11 @@ one_shot = true
 
 [node name="sfx_bombeo" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("4_ooekq")
+bus = &"SFX"
 
 [node name="sfx_manija" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("5_ovrru")
+bus = &"SFX"
 
 [connection signal="input_event" from="brazo/manija" to="." method="_on_manija_input_event"]
 [connection signal="timeout" from="tiempo_plantacion" to="." method="_on_tiempo_plantacion_timeout"]

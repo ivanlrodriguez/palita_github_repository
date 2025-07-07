@@ -53,7 +53,7 @@ func _on_despawner_body_entered(body: Node2D) -> void:
 	if body is mugre and is_instance_valid(body):
 		body.set_invisible_mode()
 		emit_signal("reciclar_signal", body)
-		await get_tree().create_timer(0.5).timeout
+		await get_tree().create_timer(0.4).timeout
 		$sfx_mugre.play()
 
 func _on_cinta_body_entered(body: Node2D) -> void:

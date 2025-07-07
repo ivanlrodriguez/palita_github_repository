@@ -381,7 +381,7 @@ stream = SubResource("AudioStreamRandomizer_8w2pf")
 volume_db = -3.0
 max_distance = 100.0
 max_polyphony = 10
-bus = &"SFX+reverb"
+bus = &"SFX"
 
 [node name="sfx_level" type="AudioStreamPlayer2D" parent="."]
 pitch_scale = 1.3

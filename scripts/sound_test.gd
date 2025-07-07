@@ -4,6 +4,8 @@ extends Control
 func _on_listo_pressed() -> void:
 	visible = false
 	$"../main_menu".visible = true
+	$"../menu_click".play()
+	$sfx_pasos_standing.stop()
 
 
 func _on_prueba_sonido_pressed() -> void:

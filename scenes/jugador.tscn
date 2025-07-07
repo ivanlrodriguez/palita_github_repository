@@ -1,27 +1,11 @@
-[gd_scene load_steps=111 format=3 uid="uid://cyutw7vax147r"]
+[gd_scene load_steps=93 format=3 uid="uid://cyutw7vax147r"]
 
 [ext_resource type="Script" uid="uid://cjm4v7dv7fq5r" path="res://scripts/jugador.gd" id="1_lhlt4"]
 [ext_resource type="Texture2D" uid="uid://bh4txdisgnxoj" path="res://assets/sprites/palita 2.0.png" id="3_28edd"]
-[ext_resource type="AudioStream" uid="uid://dyn7w4vqqlbbo" path="res://assets/sfx/palita_pasos_crouching-001.ogg" id="14_gaalr"]
-[ext_resource type="AudioStream" uid="uid://bv6q14viigw8c" path="res://assets/sfx/palita_pasos_crouching-002.ogg" id="15_gh3ya"]
-[ext_resource type="AudioStream" uid="uid://byhkuw7c1vf61" path="res://assets/sfx/palita_pasos_crouching-003.ogg" id="16_ycgu7"]
-[ext_resource type="AudioStream" uid="uid://pkh4acphpnjw" path="res://assets/sfx/palita_pasos_crouching-004.ogg" id="17_qtsb3"]
-[ext_resource type="AudioStream" uid="uid://d12moysb46kkt" path="res://assets/sfx/palita_pasos_crouching-005.ogg" id="18_q6k6g"]
-[ext_resource type="AudioStream" uid="uid://dalqyop1ct1yu" path="res://assets/sfx/palita_pasos_crouching-006.ogg" id="19_l6nwe"]
-[ext_resource type="AudioStream" uid="uid://5n8acq8bg5fv" path="res://assets/sfx/palita_pasos_copa_vacia-001.ogg" id="20_5jw2i"]
+[ext_resource type="AudioStream" uid="uid://baokeul53c47a" path="res://assets/sfx/tres/sfx_pasos_copa_vacia.tres" id="5_gynwn"]
 [ext_resource type="AudioStream" uid="uid://bjd1631r10btv" path="res://assets/sfx/tres/sfx_pasos_copa_llena.tres" id="21_0wyy4"]
-[ext_resource type="AudioStream" uid="uid://demj7eu6hdf0u" path="res://assets/sfx/palita_pasos_copa_vacia-002.ogg" id="21_4kbeh"]
 [ext_resource type="AudioStream" uid="uid://bmbh8ccmmohru" path="res://assets/sfx/tres/sfx_toss.tres" id="22_ncl1v"]
-[ext_resource type="AudioStream" uid="uid://8l0ap5o0gbhe" path="res://assets/sfx/palita_pasos_copa_vacia-011.ogg" id="22_yqp5c"]
-[ext_resource type="AudioStream" uid="uid://byksf0txoik4u" path="res://assets/sfx/palita_pasos_copa_vacia-003.ogg" id="23_oceqb"]
-[ext_resource type="AudioStream" uid="uid://cyvok0m0nm3e5" path="res://assets/sfx/palita_pasos_copa_vacia-004.ogg" id="24_b1s3u"]
-[ext_resource type="AudioStream" uid="uid://t640mwppbgoq" path="res://assets/sfx/palita_pasos_copa_vacia-005.ogg" id="25_3gmnt"]
 [ext_resource type="AudioStream" uid="uid://nt84j4rfbvpp" path="res://assets/sfx/tres/sfx_pasos_standing.tres" id="25_rqrlq"]
-[ext_resource type="AudioStream" uid="uid://cirtkvcsf0rja" path="res://assets/sfx/palita_pasos_copa_vacia-006.ogg" id="26_2pojb"]
-[ext_resource type="AudioStream" uid="uid://5dkxd7kxdkb0" path="res://assets/sfx/palita_pasos_copa_vacia-007.ogg" id="27_l1boe"]
-[ext_resource type="AudioStream" uid="uid://1u41d7g106kt" path="res://assets/sfx/palita_pasos_copa_vacia-008.ogg" id="28_fwdyv"]
-[ext_resource type="AudioStream" uid="uid://cqc67pe7d2ojv" path="res://assets/sfx/palita_pasos_copa_vacia-009.ogg" id="29_2piok"]
-[ext_resource type="AudioStream" uid="uid://dvcynpu1rbmow" path="res://assets/sfx/palita_pasos_copa_vacia-010.ogg" id="30_b51wv"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xn2h3"]
 atlas = ExtResource("3_28edd")
@@ -708,33 +692,6 @@ points = PackedVector2Array(-6, -7, -6, 7, 25, 30, 25, -30)
 [sub_resource type="CircleShape2D" id="CircleShape2D_lhlt4"]
 radius = 51.4781
 
-[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_s1oe1"]
-random_pitch = 1.2
-random_volume_offset_db = 1.5
-streams_count = 6
-stream_0/stream = ExtResource("14_gaalr")
-stream_1/stream = ExtResource("15_gh3ya")
-stream_2/stream = ExtResource("16_ycgu7")
-stream_3/stream = ExtResource("17_qtsb3")
-stream_4/stream = ExtResource("18_q6k6g")
-stream_5/stream = ExtResource("19_l6nwe")
-
-[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_c3wpv"]
-random_pitch = 1.2
-random_volume_offset_db = 1.5
-streams_count = 11
-stream_0/stream = ExtResource("20_5jw2i")
-stream_1/stream = ExtResource("21_4kbeh")
-stream_2/stream = ExtResource("23_oceqb")
-stream_3/stream = ExtResource("24_b1s3u")
-stream_4/stream = ExtResource("25_3gmnt")
-stream_5/stream = ExtResource("26_2pojb")
-stream_6/stream = ExtResource("27_l1boe")
-stream_7/stream = ExtResource("28_fwdyv")
-stream_8/stream = ExtResource("29_2piok")
-stream_9/stream = ExtResource("30_b51wv")
-stream_10/stream = ExtResource("22_yqp5c")
-
 [node name="jugador" type="CharacterBody2D"]
 z_as_relative = false
 collision_layer = 281
@@ -857,15 +814,16 @@ shape = SubResource("CircleShape2D_lhlt4")
 stream = ExtResource("25_rqrlq")
 volume_db = 1.0
 max_distance = 200.0
+bus = &"SFX"
 
 [node name="sfx_pasos_crouching" type="AudioStreamPlayer2D" parent="."]
-stream = SubResource("AudioStreamRandomizer_s1oe1")
+stream = ExtResource("22_ncl1v")
 max_distance = 200.0
 max_polyphony = 2
 bus = &"SFX"
 
 [node name="sfx_pasos_copa_vacia" type="AudioStreamPlayer2D" parent="."]
-stream = SubResource("AudioStreamRandomizer_c3wpv")
+stream = ExtResource("5_gynwn")
 max_distance = 200.0
 max_polyphony = 2
 bus = &"SFX"

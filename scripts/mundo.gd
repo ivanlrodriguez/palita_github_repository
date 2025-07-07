@@ -5,18 +5,18 @@ class_name mundo
 
 #         DEFINICIONES
 
-# COLLISION LAYERS:
-# 1: jugador, corazon
-# 2: mugres y plantas
-# 3: pastos y plantas
-# 4: agua
-# 5: staticbodies
-# 7: objetos en el aire (tossed, no en orbita)
-# 8: area checker, mugres recicladas, bomba de agua (anim inicial)
-# 9: world wall & world boundary area
-
-# Z INDEX relativo a Y enabled
-# todo cuerpo que esté en z_index = 3 sera relativo al jugador
+ #COLLISION LAYERS:
+ #1: jugador, corazon
+ #2: mugres y plantas
+ #3: pastos y plantas
+ #4: agua
+ #5: staticbodies
+ #7: objetos en el aire (tossed, no en orbita)
+ #8: area checker, mugres recicladas, bomba de agua (anim inicial)
+ #9: world wall & world boundary area
+#
+ #Z INDEX relativo a Y enabled
+ #todo cuerpo que esté en z_index = 3 sera relativo al jugador
 #================================
 
 # preloads
@@ -65,7 +65,8 @@ func _ready() -> void:
 	mugre_spawn()
 	$jugador/Camera2D.zoom = Vector2(0.2, 0.2)
 	await get_tree().create_timer(10.0).timeout
-	$music/ambient.play()
+	$ambient/ruido.play()
+	print('ready paused')
 	get_tree().paused = true
 
 
@@ -283,19 +284,17 @@ func _on_pointer_animation_finished() -> void:
 	$pointer.play("target_hold")
 
 
-func _on_ambient_finished() -> void:
-	$music/ambient.play()
+func _on_ruido_finished() -> void:
+	$ambient/ruido.play()
 
 
 func _on_wisdoms_tragedy_finished() -> void:
-	$music/wisdoms_tragedy.play()
+	$ambient/wisdoms_tragedy.play()
 
-var time: float
-func _process(delta: float) -> void:
-	if $menu.game_started:
-		time += Time.get_ticks_msec() / 1000
-	if time > 30.0:
-		get_tree().paused = true
-		$menu/encuesta.visible = true
-		$menu/encuesta.set_process(true)
-		
+
+func _on_timer_prueba_timeout() -> void:
+	$menu.visible = true
+	$menu/main_menu.visible = false
+	$menu/encuesta.visible = true
+	$menu/encuesta/timer_continuar.start()
+	get_tree().paused = true

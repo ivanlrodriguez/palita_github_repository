@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cyutw7vax147r" path="res://scenes/jugador.tscn" id="3_75jji"]
 [ext_resource type="AudioStream" uid="uid://b78h5leny3hrj" path="res://assets/sfx/mundo_ambient.ogg" id="3_cae5a"]
 [ext_resource type="FontFile" uid="uid://c1usnef3huorv" path="res://assets/fonts/CutePixel.ttf" id="3_kxyy5"]
+[ext_resource type="AudioStream" uid="uid://qbse2y28up1d" path="res://assets/music/musica_extended.ogg" id="3_y4lqn"]
 [ext_resource type="PackedScene" uid="uid://bddxsejrwhq3o" path="res://scenes/corazon_mundo.tscn" id="4_kxyy5"]
 [ext_resource type="AudioStream" uid="uid://h0ff86ehxdbd" path="res://assets/sfx/mundo_wisdoms_tragedy.ogg" id="4_l7i8s"]
 [ext_resource type="PackedScene" uid="uid://bm23vdnravohh" path="res://scenes/recicladora.tscn" id="8_06eai"]
@@ -140,19 +141,15 @@ animations = [{
 
 [sub_resource type="Theme" id="Theme_e6vnd"]
 default_font = ExtResource("3_kxyy5")
-default_font_size = 50
-
-[sub_resource type="Theme" id="Theme_fs0l0"]
-default_font = ExtResource("3_kxyy5")
-default_font_size = 60
+default_font_size = 30
 
 [sub_resource type="Theme" id="Theme_2jrhv"]
 default_font = ExtResource("3_kxyy5")
 default_font_size = 30
 
-[sub_resource type="Theme" id="Theme_3r5yn"]
+[sub_resource type="Theme" id="Theme_fs0l0"]
 default_font = ExtResource("3_kxyy5")
-default_font_size = 40
+default_font_size = 60
 
 [sub_resource type="LabelSettings" id="LabelSettings_g6hv0"]
 paragraph_spacing = 124.79
@@ -214,7 +211,6 @@ y_sort_enabled = true
 script = ExtResource("1_vwj67")
 
 [node name="music" type="Node2D" parent="."]
-process_mode = 3
 
 [node name="palita_boceto_1" type="AudioStreamPlayer2D" parent="music"]
 stream = ExtResource("2_wd5o3")
@@ -223,19 +219,30 @@ attenuation = 0.00571908
 panning_strength = 0.0
 bus = &"music"
 
-[node name="ambient" type="AudioStreamPlayer2D" parent="music"]
-stream = ExtResource("3_cae5a")
-max_distance = 10000.0
-attenuation = 0.0126914
-panning_strength = 0.0
-bus = &"music"
-
-[node name="wisdoms_tragedy" type="AudioStreamPlayer2D" parent="music"]
-stream = ExtResource("4_l7i8s")
+[node name="musica_extended" type="AudioStreamPlayer2D" parent="music"]
+stream = ExtResource("3_y4lqn")
+volume_db = -3.0
 max_distance = 10000.0
 attenuation = 0.0136024
 panning_strength = 0.0
 bus = &"music"
+
+[node name="ambient" type="Node2D" parent="."]
+process_mode = 3
+
+[node name="ruido" type="AudioStreamPlayer2D" parent="ambient"]
+stream = ExtResource("3_cae5a")
+max_distance = 10000.0
+attenuation = 0.0126914
+panning_strength = 0.0
+bus = &"ambient"
+
+[node name="wisdoms_tragedy" type="AudioStreamPlayer2D" parent="ambient"]
+stream = ExtResource("4_l7i8s")
+max_distance = 10000.0
+attenuation = 0.0136024
+panning_strength = 0.0
+bus = &"ambient"
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 process_mode = 3
@@ -356,9 +363,11 @@ panning_strength = 0.0
 [node name="intro_whoosh" type="AudioStreamPlayer2D" parent="menu"]
 position = Vector2(483.5, 240)
 stream = ExtResource("19_vnytd")
+volume_db = 12.0
 pitch_scale = 0.8
+max_distance = 100000.0
 
-[node name="ColorRect" type="ColorRect" parent="menu"]
+[node name="menu_fondo" type="ColorRect" parent="menu"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -395,6 +404,7 @@ layout_mode = 2
 text = "controles"
 
 [node name="Options" type="Button" parent="menu/main_menu/botones"]
+visible = false
 layout_mode = 2
 text = "opciones"
 
@@ -429,7 +439,64 @@ ruedita arriba/abajo: zoom in/out
 F: press F to flip (modo pala)
 A: MODO CINE"
 
+[node name="encuesta" type="Control" parent="menu"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("34_skmsv")
+
+[node name="MarginContainer" type="MarginContainer" parent="menu/encuesta"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 450
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 450
+
+[node name="VBoxContainer" type="VBoxContainer" parent="menu/encuesta/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Label" type="Label" parent="menu/encuesta/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = SubResource("Theme_e6vnd")
+text = "gracias por jugar!!!
+si tenés un minuto, porfa
+completá la encuesta <3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="menu/encuesta/MarginContainer/VBoxContainer"]
+modulate = Color(0.74558, 0.74558, 0.74558, 1)
+layout_mode = 2
+theme = SubResource("Theme_2jrhv")
+text = "luego podés seguir jugando!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Continue" type="Button" parent="menu/encuesta/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("17_vnytd")
+disabled = true
+text = "seguir jugando!"
+
+[node name="link_encuesta" type="Button" parent="menu/encuesta/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("17_vnytd")
+text = "ir a la encuesta"
+
+[node name="timer_continuar" type="Timer" parent="menu/encuesta"]
+wait_time = 10.0
+
 [node name="sound_test" type="Control" parent="menu"]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -497,7 +564,7 @@ vertical_alignment = 1
 
 [node name="listo" type="Button" parent="menu/sound_test/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = SubResource("Theme_3r5yn")
+theme = ExtResource("17_vnytd")
 disabled = true
 text = "listo!"
 
@@ -509,65 +576,8 @@ texture = ExtResource("33_08etq")
 region_enabled = true
 region_rect = Rect2(320.044, 418.784, 639.004, 448.01)
 
-[node name="encuesta" type="Control" parent="menu"]
-visible = false
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("34_skmsv")
-
-[node name="negro" type="ColorRect" parent="menu/encuesta"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.698039)
-
-[node name="MarginContainer" type="MarginContainer" parent="menu/encuesta"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 450
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 450
-
-[node name="VBoxContainer" type="VBoxContainer" parent="menu/encuesta/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-alignment = 1
-
-[node name="Label" type="Label" parent="menu/encuesta/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme = SubResource("Theme_e6vnd")
-text = "gracias por jugar!!!
-si tenés un minuto, porfa
-completá la encuesta <3"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Label2" type="Label" parent="menu/encuesta/MarginContainer/VBoxContainer"]
-modulate = Color(0.775063, 0.775063, 0.775063, 1)
-layout_mode = 2
-theme = SubResource("Theme_2jrhv")
-text = "si querés luego seguis jugando!"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Continue" type="Button" parent="menu/encuesta/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("17_vnytd")
-disabled = true
-text = "seguir jugando"
-
 [node name="pantalla_de_carga" type="Control" parent="menu"]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -617,9 +627,18 @@ sprite_frames = SubResource("SpriteFrames_igy0i")
 autoplay = "default"
 frame_progress = 0.0754165
 
+[node name="MarginContainer" type="MarginContainer" parent="menu/pantalla_de_carga"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="timer_prueba" type="Timer" parent="."]
+wait_time = 20.0
+one_shot = true
+
 [connection signal="finished" from="music/palita_boceto_1" to="." method="_on_palita_boceto_1_finished"]
-[connection signal="finished" from="music/ambient" to="." method="_on_ambient_finished"]
-[connection signal="finished" from="music/wisdoms_tragedy" to="." method="_on_wisdoms_tragedy_finished"]
+[connection signal="finished" from="ambient/ruido" to="." method="_on_ruido_finished"]
+[connection signal="finished" from="ambient/wisdoms_tragedy" to="." method="_on_wisdoms_tragedy_finished"]
 [connection signal="body_exited" from="world_boundary_area" to="." method="_on_world_boundary_body_exited"]
 [connection signal="area_shape_entered" from="spawn_boundary" to="." method="_on_spawn_boundary_area_shape_entered"]
 [connection signal="animation_finished" from="pointer" to="." method="_on_pointer_animation_finished"]
@@ -627,9 +646,12 @@ frame_progress = 0.0754165
 [connection signal="pressed" from="menu/main_menu/botones/Continue" to="menu" method="_on_continue_pressed"]
 [connection signal="pressed" from="menu/main_menu/botones/Controls" to="menu" method="_on_controls_pressed"]
 [connection signal="pressed" from="menu/main_menu/botones/Options" to="menu" method="_on_options_pressed"]
+[connection signal="pressed" from="menu/encuesta/MarginContainer/VBoxContainer/Continue" to="menu" method="_on_continue_pressed"]
+[connection signal="pressed" from="menu/encuesta/MarginContainer/VBoxContainer/Continue" to="menu/encuesta" method="_on_continue_pressed"]
+[connection signal="pressed" from="menu/encuesta/MarginContainer/VBoxContainer/link_encuesta" to="menu/encuesta" method="_on_link_encuesta_pressed"]
+[connection signal="timeout" from="menu/encuesta/timer_continuar" to="menu/encuesta" method="_on_timer_continuar_timeout"]
 [connection signal="finished" from="menu/sound_test/sfx_pasos_standing" to="menu/sound_test" method="_on_sfx_pasos_standing_finished"]
 [connection signal="pressed" from="menu/sound_test/MarginContainer/VBoxContainer/prueba_sonido" to="menu/sound_test" method="_on_prueba_sonido_pressed"]
 [connection signal="toggled" from="menu/sound_test/MarginContainer/VBoxContainer/prueba_sonido" to="menu/sound_test" method="_on_prueba_sonido_toggled"]
 [connection signal="pressed" from="menu/sound_test/MarginContainer/VBoxContainer/listo" to="menu/sound_test" method="_on_listo_pressed"]
-[connection signal="pressed" from="menu/encuesta/MarginContainer/VBoxContainer/Continue" to="menu" method="_on_continue_pressed"]
-[connection signal="pressed" from="menu/encuesta/MarginContainer/VBoxContainer/Continue" to="menu/encuesta" method="_on_continue_pressed"]
+[connection signal="timeout" from="timer_prueba" to="." method="_on_timer_prueba_timeout"]
