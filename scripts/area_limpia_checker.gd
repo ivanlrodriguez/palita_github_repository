@@ -33,7 +33,7 @@ func _on_body_entered(body: Node2D) -> void:
 	
 	elif body is mugre:
 		mugre_counter += 1
-		if mugre_counter > 25:
+		if mugre_counter > 40:
 			area_limpia = false
 	
 	elif body is pasto:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=3 uid="uid://bt3yiolmr1400"]
+[gd_scene load_steps=53 format=3 uid="uid://bt3yiolmr1400"]
 
 [ext_resource type="Script" uid="uid://ik3swfhe15xk" path="res://scripts/mundo.gd" id="1_vwj67"]
 [ext_resource type="Texture2D" uid="uid://tx70aws0hmqm" path="res://assets/sprites/mundo.png" id="2_jaeu2"]
@@ -12,16 +12,25 @@
 [ext_resource type="AudioStream" uid="uid://h0ff86ehxdbd" path="res://assets/sfx/mundo_wisdoms_tragedy.ogg" id="4_l7i8s"]
 [ext_resource type="PackedScene" uid="uid://bm23vdnravohh" path="res://scenes/recicladora.tscn" id="8_06eai"]
 [ext_resource type="PackedScene" uid="uid://dlo4bsn4iesif" path="res://scenes/orbit_system.tscn" id="10_06eai"]
+[ext_resource type="Script" uid="uid://cmiwkxnx2ljcf" path="res://scripts/mugre_toss_helper.gd" id="11_y4lqn"]
 [ext_resource type="PackedScene" uid="uid://ci104613jlym6" path="res://scenes/galpon.tscn" id="12_m7g0u"]
 [ext_resource type="Texture2D" uid="uid://bh4txdisgnxoj" path="res://assets/sprites/palita 2.0.png" id="13_35q48"]
 [ext_resource type="Theme" uid="uid://d0bl51v5u7vth" path="res://assets/themes/main.tres" id="17_vnytd"]
-[ext_resource type="Script" path="res://scripts/mugre_passive_despawner.gd" id="17_w7nu4"]
-[ext_resource type="PackedScene" uid="uid://biva5a2pmxany" path="res://scenes/planta.tscn" id="18_541k4"]
+[ext_resource type="Script" uid="uid://4f0cbe7d1rup" path="res://scripts/mugre_passive_despawner.gd" id="17_w7nu4"]
 [ext_resource type="AudioStream" uid="uid://b402qm3appje" path="res://assets/sfx/menu_click.ogg" id="18_c1ejn"]
 [ext_resource type="PackedScene" uid="uid://b1fp6b5nsr4br" path="res://scenes/bomba_de_agua.tscn" id="19_c1ejn"]
+[ext_resource type="Texture2D" uid="uid://cokfvqbh1k7sa" path="res://assets/sprites/tecla_esc.png" id="19_c58b4"]
 [ext_resource type="AudioStream" uid="uid://1i145c0w6ow" path="res://assets/sfx/intro_whoosh.ogg" id="19_vnytd"]
 [ext_resource type="AudioStream" uid="uid://nt84j4rfbvpp" path="res://assets/sfx/tres/sfx_pasos_standing.tres" id="20_g6hv0"]
+[ext_resource type="Texture2D" uid="uid://p6huqvfkwrxp" path="res://assets/sprites/tecla_s.png" id="20_igy0i"]
+[ext_resource type="Texture2D" uid="uid://dgyqf21qk2xu5" path="res://assets/sprites/tecla_d.png" id="21_rcwxx"]
 [ext_resource type="Script" uid="uid://cwwwgryxj8f1e" path="res://scripts/sound_test.gd" id="21_ws26n"]
+[ext_resource type="Texture2D" uid="uid://bs4j6ikokxgoc" path="res://assets/sprites/tecla_f.png" id="22_3y8jo"]
+[ext_resource type="Texture2D" uid="uid://d4mvjvope1iym" path="res://assets/sprites/tecla_espacio.png" id="23_gdkw2"]
+[ext_resource type="Texture2D" uid="uid://f4lxrk2lk63y" path="res://assets/sprites/palita_crouching_1.png" id="28_gdkw2"]
+[ext_resource type="Texture2D" uid="uid://nf4ckpbmejtv" path="res://assets/sprites/palita_crouching_2.png" id="29_ws26n"]
+[ext_resource type="Texture2D" uid="uid://cydl7kj121l0r" path="res://assets/sprites/palita_crouching_3.png" id="30_1e7fx"]
+[ext_resource type="Texture2D" uid="uid://cro1npa1gnmiv" path="res://assets/sprites/palita_crouching_4.png" id="31_vwmo8"]
 [ext_resource type="Texture2D" uid="uid://6lmc8ecxmm2o" path="res://assets/sprites/audio_test.png" id="33_08etq"]
 [ext_resource type="Script" uid="uid://dgdcv4ndtfxkv" path="res://scripts/encuesta.gd" id="34_skmsv"]
 
@@ -147,64 +156,25 @@ default_font_size = 30
 default_font = ExtResource("3_kxyy5")
 default_font_size = 30
 
-[sub_resource type="Theme" id="Theme_fs0l0"]
-default_font = ExtResource("3_kxyy5")
-default_font_size = 60
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_ypjrv"]
+frames = 6
+frame_0/texture = ExtResource("28_gdkw2")
+frame_0/duration = 0.2
+frame_1/texture = ExtResource("29_ws26n")
+frame_1/duration = 0.2
+frame_2/texture = ExtResource("30_1e7fx")
+frame_2/duration = 0.2
+frame_3/texture = ExtResource("31_vwmo8")
+frame_3/duration = 0.2
+frame_4/texture = ExtResource("29_ws26n")
+frame_4/duration = 0.2
+frame_5/texture = ExtResource("28_gdkw2")
+frame_5/duration = 0.2
 
 [sub_resource type="LabelSettings" id="LabelSettings_g6hv0"]
 paragraph_spacing = 124.79
 font_size = 25
 font_color = Color(0.779291, 0.779291, 0.779291, 1)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_y4lqn"]
-atlas = ExtResource("13_35q48")
-region = Rect2(0, 224, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_wf7jv"]
-atlas = ExtResource("13_35q48")
-region = Rect2(32, 224, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_lbjxv"]
-atlas = ExtResource("13_35q48")
-region = Rect2(64, 224, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_np3xf"]
-atlas = ExtResource("13_35q48")
-region = Rect2(96, 224, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0iwyf"]
-atlas = ExtResource("13_35q48")
-region = Rect2(128, 224, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_c58b4"]
-atlas = ExtResource("13_35q48")
-region = Rect2(160, 224, 32, 32)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_igy0i"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_y4lqn")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_wf7jv")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_lbjxv")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_np3xf")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_0iwyf")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_c58b4")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
 
 [node name="mundo" type="Node2D"]
 y_sort_enabled = true
@@ -221,7 +191,7 @@ bus = &"music"
 
 [node name="musica_extended" type="AudioStreamPlayer2D" parent="music"]
 stream = ExtResource("3_y4lqn")
-volume_db = -3.0
+volume_db = -6.0
 max_distance = 10000.0
 attenuation = 0.0136024
 panning_strength = 0.0
@@ -248,18 +218,20 @@ bus = &"ambient"
 process_mode = 3
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+position = Vector2(-2000, -1500)
 motion_scale = Vector2(0.1, 0.1)
 
 [node name="ColorRect" type="ColorRect" parent="ParallaxBackground/ParallaxLayer"]
-offset_left = -5000.0
-offset_top = -3000.0
-offset_right = 6000.0
-offset_bottom = 3500.0
+z_index = -1
+offset_top = -13.0
+offset_right = 11000.0
+offset_bottom = 6487.0
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
 metadata/_edit_use_anchors_ = true
 
 [node name="estrellas" type="GPUParticles2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(5000, 2987)
 amount = 10000
 texture = SubResource("MeshTexture_vnytd")
 lifetime = 5.0
@@ -271,32 +243,7 @@ process_material = SubResource("ParticleProcessMaterial_g6hv0")
 position = Vector2(-8, 1)
 texture = ExtResource("2_jaeu2")
 
-[node name="jugador" parent="." instance=ExtResource("3_75jji")]
-position = Vector2(-78, -104)
-
-[node name="Camera2D" type="Camera2D" parent="jugador"]
-zoom = Vector2(4, 4)
-position_smoothing_enabled = true
-
 [node name="orbit_system" parent="." instance=ExtResource("10_06eai")]
-
-[node name="mugre_passive_despawner" type="StaticBody2D" parent="."]
-collision_layer = 2
-collision_mask = 0
-script = ExtResource("17_w7nu4")
-
-[node name="collpol_inner_left" type="CollisionPolygon2D" parent="mugre_passive_despawner"]
-polygon = PackedVector2Array(-442, -5, -414, -90, -384, -127, -337, -159, -316, -161, -289, -178, -235, -193, -212, -206, -155, -218, -68, -217, -43, -222, 2, -220, 2, -288, -173, -264, -346, -206, -470, -130, -481, 84, -330, 239, -182, 270, 2, 260, -1, 220, -179, 206, -248, 182, -306, 155, -385, 116, -432, 54)
-
-[node name="collpol_inner_right" type="CollisionPolygon2D" parent="mugre_passive_despawner"]
-polygon = PackedVector2Array(2, -220, 41, -228, 97, -220, 136, -219, 148, -213, 161, -214, 179, -203, 194, -207, 233, -193, 245, -201, 339, -146, 404, -112, 442, -34, 446, 2, 429, 58, 398, 106, 325, 149, 240, 186, 176, 204, -1, 220, -1, 262, 164, 270, 405, 203, 481, 113, 522, -1, 474, -134, 253, -263, 2, -290)
-
-[node name="collpol_piso_galpon" type="CollisionPolygon2D" parent="mugre_passive_despawner"]
-polygon = PackedVector2Array(-309, -144, -234, -115, -213, -131, -197, -136, -186, -140, -187, -146, -265, -167)
-
-[node name="collpol_piso_recicladora" type="CollisionPolygon2D" parent="mugre_passive_despawner"]
-position = Vector2(-23, -190)
-polygon = PackedVector2Array(-20, -6, 22, 15, 38, 7, 43, 10, 47, 8, 61, 14, 74.7303, 6.73103, 75, 2, 35.5112, -19.207, 21, -27)
 
 [node name="world_boundary_wall" type="StaticBody2D" parent="."]
 collision_layer = 256
@@ -310,7 +257,6 @@ position = Vector2(4, 0)
 polygon = PackedVector2Array(-4, -231, 15, -232, 34, -237, 100, -229, 134, -228, 146, -222, 160, -222, 175, -213, 192, -217, 225, -205, 239, -213, 343, -153, 405, -119, 439, -55, 450, -37, 454, 6, 436, 62, 402, 115, 327, 158, 242, 196, 174, 216, -4, 233, -4, 262, 176, 267, 270, 248, 407, 206, 472, 127, 495, 63, 523, 2, 508, -54, 482, -108, 446, -163, 362, -209, 256, -250, 189, -271, 145, -284, 86, -282, -4, -284)
 
 [node name="world_boundary_area" type="Area2D" parent="."]
-visible = false
 collision_layer = 256
 collision_mask = 255
 
@@ -335,6 +281,46 @@ position = Vector2(-246, -145)
 [node name="recicladora" parent="." instance=ExtResource("8_06eai")]
 position = Vector2(-22, -196)
 
+[node name="mugre_toss_helper" type="Area2D" parent="."]
+visible = false
+position = Vector2(-22, -196)
+collision_layer = 0
+collision_mask = 2
+monitoring = false
+script = ExtResource("11_y4lqn")
+
+[node name="collpol_inner_left2" type="CollisionPolygon2D" parent="mugre_toss_helper"]
+position = Vector2(22, 196)
+polygon = PackedVector2Array(-442, -5, -414, -90, -384, -127, -337, -159, -316, -161, -289, -178, -235, -193, -212, -206, -155, -218, -68, -217, -43, -222, 2, -220, 2, -288, -173, -264, -346, -206, -470, -130, -481, 84, -330, 239, -182, 270, 2, 260, -1, 220, -179, 206, -248, 182, -306, 155, -385, 116, -432, 54)
+
+[node name="collpol_inner_right2" type="CollisionPolygon2D" parent="mugre_toss_helper"]
+position = Vector2(22, 196)
+polygon = PackedVector2Array(2, -220, 41, -228, 97, -220, 136, -219, 148, -213, 161, -214, 179, -203, 194, -207, 233, -193, 245, -201, 339, -146, 404, -112, 442, -34, 446, 2, 429, 58, 398, 106, 325, 149, 240, 186, 176, 204, -1, 220, -1, 262, 164, 270, 405, 203, 481, 113, 522, -1, 474, -134, 253, -263, 2, -290)
+
+[node name="mugre_active_despawner" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("17_w7nu4")
+
+[node name="collpol_inner_left" type="CollisionPolygon2D" parent="mugre_active_despawner"]
+polygon = PackedVector2Array(-442, -5, -414, -90, -384, -127, -337, -159, -316, -161, -289, -178, -235, -193, -212, -206, -155, -218, -68, -217, -43, -222, 2, -220, 2, -288, -173, -264, -346, -206, -470, -130, -481, 84, -330, 239, -182, 270, 2, 260, -1, 220, -179, 206, -248, 182, -306, 155, -385, 116, -432, 54)
+
+[node name="collpol_inner_right" type="CollisionPolygon2D" parent="mugre_active_despawner"]
+polygon = PackedVector2Array(2, -220, 41, -228, 97, -220, 136, -219, 148, -213, 161, -214, 179, -203, 194, -207, 233, -193, 245, -201, 339, -146, 404, -112, 442, -34, 446, 2, 429, 58, 398, 106, 325, 149, 240, 186, 176, 204, -1, 220, -1, 262, 164, 270, 405, 203, 481, 113, 522, -1, 474, -134, 253, -263, 2, -290)
+
+[node name="collpol_piso_galpon" type="CollisionPolygon2D" parent="mugre_active_despawner"]
+polygon = PackedVector2Array(-265, -139, -292, -149, -265, -163, -215, -151, -225, -145, -210, -136, -193, -149, -265, -167, -307, -147, -280, -137, -271, -134)
+
+[node name="collpol_piso_recicladora" type="CollisionPolygon2D" parent="mugre_active_despawner"]
+position = Vector2(-22.1, -190.4)
+polygon = PackedVector2Array(-20, -6, 22, 15, 38, 7, 43, 10, 47, 8, 61, 14, 74.7303, 6.73103, 75, 2, 21, -27)
+disabled = true
+
+[node name="collpol_area_hueco" type="CollisionPolygon2D" parent="mugre_active_despawner"]
+position = Vector2(-22.1, -190.4)
+polygon = PackedVector2Array(-44, 15, -28, 23, -11, 15, -28, 6)
+disabled = true
+
 [node name="pointer" type="AnimatedSprite2D" parent="."]
 z_index = 1
 z_as_relative = false
@@ -342,30 +328,26 @@ scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_cae5a")
 animation = &"target_hold"
 
-[node name="planta" parent="." instance=ExtResource("18_541k4")]
-position = Vector2(-111, -97)
-
 [node name="bomba_de_agua" parent="." instance=ExtResource("19_c1ejn")]
-position = Vector2(-125, -97)
+position = Vector2(-110, -101)
+
+[node name="jugador" parent="." instance=ExtResource("3_75jji")]
+position = Vector2(-78, -104)
+
+[node name="Camera2D" type="Camera2D" parent="jugador"]
+position = Vector2(78, 104)
+zoom = Vector2(4, 4)
+position_smoothing_enabled = true
+
+[node name="timer_prueba" type="Timer" parent="."]
+wait_time = 600.0
+one_shot = true
 
 [node name="menu" type="CanvasLayer" parent="."]
 process_mode = 3
+visible = false
 script = ExtResource("2_kxyy5")
-prueba_sonido = true
-
-[node name="menu_click" type="AudioStreamPlayer2D" parent="menu"]
-position = Vector2(483.5, 240)
-stream = ExtResource("18_c1ejn")
-pitch_scale = 0.8
-attenuation = 0.0384733
-panning_strength = 0.0
-
-[node name="intro_whoosh" type="AudioStreamPlayer2D" parent="menu"]
-position = Vector2(483.5, 240)
-stream = ExtResource("19_vnytd")
-volume_db = 12.0
-pitch_scale = 0.8
-max_distance = 100000.0
+modo_sonido = 1
 
 [node name="menu_fondo" type="ColorRect" parent="menu"]
 anchors_preset = 15
@@ -383,13 +365,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 500
-theme_override_constants/margin_right = 500
+theme_override_constants/margin_left = 750
+theme_override_constants/margin_right = 750
 
 [node name="botones" type="VBoxContainer" parent="menu/main_menu"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 4
 theme = ExtResource("17_vnytd")
+alignment = 1
 
 [node name="Start" type="Button" parent="menu/main_menu/botones"]
 layout_mode = 2
@@ -403,43 +387,138 @@ text = "continuar"
 layout_mode = 2
 text = "controles"
 
-[node name="Options" type="Button" parent="menu/main_menu/botones"]
+[node name="Mixer" type="Button" parent="menu/main_menu/botones"]
 visible = false
 layout_mode = 2
-text = "opciones"
+text = "volumen"
 
-[node name="opciones" type="Control" parent="menu/main_menu"]
+[node name="mixer" type="VBoxContainer" parent="menu/main_menu"]
 visible = false
 layout_mode = 2
+alignment = 1
 
-[node name="Label" type="Label" parent="menu/main_menu/opciones"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-
-[node name="HSlider" type="HSlider" parent="menu/main_menu/opciones"]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 16.0
-
-[node name="controles" type="Control" parent="menu/main_menu"]
-visible = false
+[node name="master_label" type="Label" parent="menu/main_menu/mixer"]
 layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("17_vnytd")
+text = "master"
 
-[node name="Label" type="Label" parent="menu/main_menu/controles"]
-layout_mode = 0
-offset_left = 40.0
-offset_top = 40.0
-offset_right = 451.0
-offset_bottom = 167.0
-text = "click izquierdo: caminar
-click derecho: modo pala 
-| mantener presionado 2 segundos: mover la cámara
-ruedita arriba/abajo: zoom in/out
-F: press F to flip (modo pala)
-A: MODO CINE"
+[node name="master_slider" type="HSlider" parent="menu/main_menu/mixer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="music_label" type="Label" parent="menu/main_menu/mixer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("17_vnytd")
+text = "music"
+
+[node name="music_slider" type="HSlider" parent="menu/main_menu/mixer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="sfx_label" type="Label" parent="menu/main_menu/mixer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("17_vnytd")
+text = "sfx"
+
+[node name="sfx_slider" type="HSlider" parent="menu/main_menu/mixer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="cerrar_opciones" type="Button" parent="menu/main_menu/mixer"]
+layout_mode = 2
+theme = ExtResource("17_vnytd")
+text = "listo"
+
+[node name="controles" type="VBoxContainer" parent="menu/main_menu"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="GridContainer" type="GridContainer" parent="menu/main_menu/controles"]
+layout_mode = 2
+columns = 2
+
+[node name="esc_label" type="Label" parent="menu/main_menu/controles/GridContainer"]
+layout_mode = 2
+theme = SubResource("Theme_e6vnd")
+text = "menu"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="esc" type="TextureRect" parent="menu/main_menu/controles/GridContainer"]
+layout_mode = 2
+texture = ExtResource("19_c58b4")
+stretch_mode = 4
+
+[node name="s_label" type="Label" parent="menu/main_menu/controles/GridContainer"]
+layout_mode = 2
+theme = SubResource("Theme_e6vnd")
+text = "detener movimiento"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="s" type="TextureRect" parent="menu/main_menu/controles/GridContainer"]
+layout_mode = 2
+texture = ExtResource("20_igy0i")
+stretch_mode = 4
+
+[node name="d_label" type="Label" parent="menu/main_menu/controles/GridContainer"]
+layout_mode = 2
+theme = SubResource("Theme_e6vnd")
+text = "modo riego"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="d" type="TextureRect" parent="menu/main_menu/controles/GridContainer"]
+layout_mode = 2
+texture = ExtResource("21_rcwxx")
+stretch_mode = 4
+
+[node name="f_label" type="Label" parent="menu/main_menu/controles/GridContainer"]
+layout_mode = 2
+theme = SubResource("Theme_e6vnd")
+text = "modo riego"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="f" type="TextureRect" parent="menu/main_menu/controles/GridContainer"]
+layout_mode = 2
+texture = ExtResource("22_3y8jo")
+stretch_mode = 4
+
+[node name="espacio_label" type="Label" parent="menu/main_menu/controles/GridContainer"]
+layout_mode = 2
+theme = SubResource("Theme_e6vnd")
+text = "mover camara"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="espacio" type="TextureRect" parent="menu/main_menu/controles/GridContainer"]
+layout_mode = 2
+texture = ExtResource("23_gdkw2")
+stretch_mode = 3
+
+[node name="cerrar_controles" type="Button" parent="menu/main_menu/controles"]
+layout_mode = 2
+theme = ExtResource("17_vnytd")
+text = "entendido"
 
 [node name="encuesta" type="Control" parent="menu"]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -455,9 +534,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 450
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 450
+theme_override_constants/margin_left = 750
+theme_override_constants/margin_right = 750
 
 [node name="VBoxContainer" type="VBoxContainer" parent="menu/encuesta/MarginContainer"]
 layout_mode = 2
@@ -525,9 +603,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 450
+theme_override_constants/margin_left = 750
 theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 450
+theme_override_constants/margin_right = 750
 
 [node name="VBoxContainer" type="VBoxContainer" parent="menu/sound_test/MarginContainer"]
 layout_mode = 2
@@ -546,7 +624,7 @@ vertical_alignment = 1
 [node name="prueba_sonido" type="Button" parent="menu/sound_test/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 4
-theme = SubResource("Theme_fs0l0")
+theme = ExtResource("17_vnytd")
 toggle_mode = true
 text = "prueba"
 icon = ExtResource("33_08etq")
@@ -568,16 +646,7 @@ theme = ExtResource("17_vnytd")
 disabled = true
 text = "listo!"
 
-[node name="Sprite2D" type="Sprite2D" parent="menu/sound_test/MarginContainer"]
-visible = false
-position = Vector2(512, 376)
-scale = Vector2(0.1, 0.094)
-texture = ExtResource("33_08etq")
-region_enabled = true
-region_rect = Rect2(320.044, 418.784, 639.004, 448.01)
-
 [node name="pantalla_de_carga" type="Control" parent="menu"]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -594,58 +663,83 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="Label" type="Label" parent="menu/pantalla_de_carga"]
+[node name="MarginContainer" type="MarginContainer" parent="menu/pantalla_de_carga"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = -1
+anchor_left = -0.195313
+anchor_top = -0.332562
+anchor_right = 1.19531
+anchor_bottom = 1.33256
+offset_left = 225.0
+offset_top = 215.5
+offset_right = -225.0
+offset_bottom = -215.5
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 1500
+theme_override_constants/margin_top = 1500
+theme_override_constants/margin_right = 1500
+theme_override_constants/margin_bottom = 1500
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="menu/pantalla_de_carga/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = -30
+alignment = 1
+
+[node name="Label" type="Label" parent="menu/pantalla_de_carga/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
 theme = SubResource("Theme_e6vnd")
 text = "palita"
 horizontal_alignment = 1
-vertical_alignment = 1
+vertical_alignment = 2
 
-[node name="Label2" type="Label" parent="menu/pantalla_de_carga"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="TextureRect" type="TextureRect" parent="menu/pantalla_de_carga/MarginContainer/VBoxContainer"]
+layout_mode = 2
+texture = SubResource("AnimatedTexture_ypjrv")
+expand_mode = 4
+
+[node name="Label2" type="Label" parent="menu/pantalla_de_carga/MarginContainer/VBoxContainer"]
+layout_mode = 2
 theme = SubResource("Theme_2jrhv")
-text = "
-cargando..."
+text = "cargando..."
 label_settings = SubResource("LabelSettings_g6hv0")
 horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="palita" type="AnimatedSprite2D" parent="menu/pantalla_de_carga"]
-position = Vector2(590, 364)
-scale = Vector2(4.825, 4.825)
-sprite_frames = SubResource("SpriteFrames_igy0i")
-autoplay = "default"
-frame_progress = 0.0754165
+[node name="menu_click" type="AudioStreamPlayer2D" parent="menu"]
+position = Vector2(483.5, 240)
+stream = ExtResource("18_c1ejn")
+pitch_scale = 0.8
+attenuation = 0.0384733
+panning_strength = 0.0
 
-[node name="MarginContainer" type="MarginContainer" parent="menu/pantalla_de_carga"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="timer_prueba" type="Timer" parent="."]
-wait_time = 20.0
-one_shot = true
+[node name="intro_whoosh" type="AudioStreamPlayer2D" parent="menu"]
+position = Vector2(483.5, 240)
+stream = ExtResource("19_vnytd")
+volume_db = 12.0
+pitch_scale = 0.8
+max_distance = 100000.0
 
 [connection signal="finished" from="music/palita_boceto_1" to="." method="_on_palita_boceto_1_finished"]
 [connection signal="finished" from="ambient/ruido" to="." method="_on_ruido_finished"]
 [connection signal="finished" from="ambient/wisdoms_tragedy" to="." method="_on_wisdoms_tragedy_finished"]
 [connection signal="body_exited" from="world_boundary_area" to="." method="_on_world_boundary_body_exited"]
 [connection signal="area_shape_entered" from="spawn_boundary" to="." method="_on_spawn_boundary_area_shape_entered"]
+[connection signal="body_entered" from="mugre_toss_helper" to="mugre_toss_helper" method="_on_body_entered"]
+[connection signal="body_entered" from="mugre_active_despawner" to="mugre_active_despawner" method="_on_body_entered"]
 [connection signal="animation_finished" from="pointer" to="." method="_on_pointer_animation_finished"]
+[connection signal="timeout" from="timer_prueba" to="." method="_on_timer_prueba_timeout"]
 [connection signal="pressed" from="menu/main_menu/botones/Start" to="menu" method="_on_start_pressed"]
 [connection signal="pressed" from="menu/main_menu/botones/Continue" to="menu" method="_on_continue_pressed"]
 [connection signal="pressed" from="menu/main_menu/botones/Controls" to="menu" method="_on_controls_pressed"]
-[connection signal="pressed" from="menu/main_menu/botones/Options" to="menu" method="_on_options_pressed"]
+[connection signal="pressed" from="menu/main_menu/botones/Mixer" to="menu" method="_on_options_pressed"]
+[connection signal="value_changed" from="menu/main_menu/mixer/master_slider" to="menu" method="_on_master_slider_value_changed"]
+[connection signal="value_changed" from="menu/main_menu/mixer/music_slider" to="menu" method="_on_music_slider_value_changed"]
+[connection signal="value_changed" from="menu/main_menu/mixer/sfx_slider" to="menu" method="_on_sfx_slider_value_changed"]
+[connection signal="pressed" from="menu/main_menu/mixer/cerrar_opciones" to="menu" method="_on_cerrar_opciones_pressed"]
+[connection signal="pressed" from="menu/main_menu/controles/cerrar_controles" to="menu" method="_on_cerrar_controles_pressed"]
 [connection signal="pressed" from="menu/encuesta/MarginContainer/VBoxContainer/Continue" to="menu" method="_on_continue_pressed"]
 [connection signal="pressed" from="menu/encuesta/MarginContainer/VBoxContainer/Continue" to="menu/encuesta" method="_on_continue_pressed"]
 [connection signal="pressed" from="menu/encuesta/MarginContainer/VBoxContainer/link_encuesta" to="menu/encuesta" method="_on_link_encuesta_pressed"]
@@ -654,4 +748,3 @@ one_shot = true
 [connection signal="pressed" from="menu/sound_test/MarginContainer/VBoxContainer/prueba_sonido" to="menu/sound_test" method="_on_prueba_sonido_pressed"]
 [connection signal="toggled" from="menu/sound_test/MarginContainer/VBoxContainer/prueba_sonido" to="menu/sound_test" method="_on_prueba_sonido_toggled"]
 [connection signal="pressed" from="menu/sound_test/MarginContainer/VBoxContainer/listo" to="menu/sound_test" method="_on_listo_pressed"]
-[connection signal="timeout" from="timer_prueba" to="." method="_on_timer_prueba_timeout"]

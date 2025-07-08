@@ -36,6 +36,7 @@ var mouse_en_jugador = false
 var walking := false
 var watering := false
 var handling := false
+var cancel_toss := false
 
 # agua
 var agua_counter := 0
@@ -44,6 +45,7 @@ var agua_counter := 0
 var collshape_original_positions := {}
 
 # camara
+var espacio_pressed := false
 @onready var main_camera: Camera2D = $Camera2D
 var click_der_pressed := false
 var camera_look_active := false
@@ -96,37 +98,50 @@ func _unhandled_input(event: InputEvent) -> void:
 	
 	if event.is_action_pressed("click_der"):
 		click_der_pressed = true
-		click_start_time = Time.get_ticks_msec() / 1000.0
+		#click_start_time = Time.get_ticks_msec() / 1000.0
+		#initial_click_world_pos = get_global_mouse_position()
+		#initial_click_viewport_pos = main_camera.get_viewport().get_mouse_position()
+		#initial_player_world_pos = global_position
+	
+	if event.is_action_released("click_der"):
+		click_der_pressed = false
+		#time_since_click_der = 0.0
+		if not camera_look_active and not watering:
+			toggle_crouch()
+	
+	if event.is_action_pressed("espacio"):
+		espacio_pressed = true
 		initial_click_world_pos = get_global_mouse_position()
 		initial_click_viewport_pos = main_camera.get_viewport().get_mouse_position()
 		initial_player_world_pos = global_position
 	
-	if event.is_action_released("click_der"):
-		click_der_pressed = false
-		time_since_click_der = 0.0
-		if not camera_look_active and not watering:
-			toggle_crouch()
+	if event.is_action_released("espacio"):
+		espacio_pressed = false
 	
 	if event.is_action_pressed("press_F_to_FLIP"):
-		if modo_actual != Modo.CROUCHING:
+		if modo_actual != Modo.CROUCHING or cancel_toss:
 			return
-		tossing = true
-		if walking:
-			walk_stop()
-		var animacion_toss = "toss" + dir_cardinal
-		$AnimatedSprite2D.play(animacion_toss)
-		update_coll_mode("tossing")
-		perform_toss()
+		else:
+			tossing = true
+			if walking:
+				walk_stop()
+			var animacion_toss = "toss" + dir_cardinal
+			$AnimatedSprite2D.play(animacion_toss)
+			update_coll_mode("tossing")
+			perform_toss()
 	
 	if event.is_action_released("press_F_to_FLIP"):
-		if modo_actual != Modo.CROUCHING:
+		if modo_actual != Modo.CROUCHING or cancel_toss:
 			return
-		tossing = false
-		var crouch_dir_cardinal = "crouch_idle_" + dir_cardinal
-		$AnimatedSprite2D.play(crouch_dir_cardinal)
-		# crouching coll mode
-		update_coll_mode(dir_cardinal)
-		walk_start()
+		else:
+			tossing = false
+			cancel_toss = true
+			$toss_cooldown.start()
+			var crouch_dir_cardinal = "crouch_idle_" + dir_cardinal
+			$AnimatedSprite2D.play(crouch_dir_cardinal)
+			# crouching coll mode
+			update_coll_mode(dir_cardinal)
+			walk_start()
 	
 	if event.is_action_pressed("modo_riego"):
 		if modo_actual != Modo.COPA:
@@ -248,9 +263,9 @@ func _on_standing_push_area_body_entered(body: Node2D) -> void:
 		if modo_actual != Modo.STANDING:
 			return
 		if is_instance_valid(body):
-			if body is mugre:
-				push_dir = (body.global_position - global_position).normalized()
-				body.apply_impulse(push_dir * 5.0)
+			#if body is mugre and not body.freeze:
+				#push_dir = (body.global_position - global_position).normalized()
+				#body.apply_impulse(push_dir * 5.0)
 			
 			if body is planta and not body.planta_arrancada:
 				push_dir = (body.global_position - global_position).normalized()
@@ -294,41 +309,50 @@ func _on_area_copa_body_exited(body: Node2D) -> void:
 
 
 func _on_area_base_pala_body_entered(body: Node2D) -> void:
-	if is_instance_valid(body):
-		if body is planta and not body.planta_arrancada:
-			push_dir = (body.global_position - global_position).normalized()
-			body.apply_impulse(push_dir * 10.0)
-			# Optional: If you want recoil, push the player too
-			if body.planta_crecida:
-				push(-push_dir * 35.0)
-			else:
-				push(-push_dir * 30.0)
-		
-		if body is corazon_mundo:
-			push_dir = (body.global_position - global_position).normalized()
-			push(-push_dir * 100)
-		# toss
-		if body is RigidBody2D:
-			var toss_component = body.get_node_or_null("tossable_component")  # Match name or path
-			if toss_component and toss_component.has_method("on_toss_triggered"):
-				connect("toss_triggered", Callable(toss_component, "on_toss_triggered"))
-				toss_component.in_toss_area = true
-		
-		if body is bomba:
-			var bomba_de_agua = get_parent().get_node('bomba_de_agua')
-			connect("toss_triggered", Callable(bomba_de_agua, "on_toss_triggered"))
+	# arrancar bomba/toss cancel
+	if body is bomba:
+		cancel_toss = true
+		body.arrancable = true
+		if body.untouched:
+			body.untouched = false
+	
+	
+	# talar
+	if body is planta and not body.planta_arrancada:
+		push_dir = (body.global_position - global_position).normalized()
+		body.apply_impulse(push_dir * 10.0)
+		# Optional: If you want recoil, push the player too
+		if body.planta_crecida:
+			push(-push_dir * 35.0)
+		else:
+			push(-push_dir * 30.0)
+	
+	# repelir
+	if body is corazon_mundo:
+		push_dir = (body.global_position - global_position).normalized()
+		push(-push_dir * 100)
+	
+	#toss
+	if body is RigidBody2D:
+		var toss_component = body.get_node_or_null("tossable_component")  # Match name or path
+		if toss_component and toss_component.has_method("on_toss_triggered"):
+			connect("toss_triggered", Callable(toss_component, "on_toss_triggered"))
+			toss_component.in_toss_area = true
+
 
 
 
 func _on_area_base_pala_body_exited(body: Node2D) -> void:
-	if is_instance_valid(body):
+	if body is bomba:
+		body.arrancable = false
+		cancel_toss = false
+	
+	if body is RigidBody2D:
 		var toss_component = body.get_node_or_null("tossable_component")
 		if toss_component and toss_component.has_method("on_toss_triggered"):
 			disconnect("toss_triggered", Callable(toss_component, "on_toss_triggered"))
 			toss_component.in_toss_area = false
-		if body is bomba:
-			var bomba_de_agua = get_parent().get_node('bomba_de_agua')
-			disconnect("toss_triggered", Callable(bomba_de_agua, "on_toss_triggered"))
+
 
 
 func _on_mugre_awakening_body_entered(body: Node2D) -> void:
@@ -586,15 +610,13 @@ func movimiento_jugador(delta):
 			sfx_pasos_crouching.stop()
 
 
-#func _on_world_boundary_exited():
-	#push(global_position.direction_to(Vector2.ZERO) * 10)
 
 
 func _physics_process(delta: float) -> void:
 	
 	empuje_externo(delta)
 	
-	if handling:
+	if handling or intro_block:
 		return
 	
 	modo_riego_tilt(delta)
@@ -631,44 +653,36 @@ func change_zoom(zoom_direction: int):  # direction is +1 (out) or -1 (in)
 func change_sfx_bus_vol():
 	await get_tree().create_timer(0.3).timeout
 	var zoom_normalized = roundf(inverse_lerp(0.2, 10.0, $Camera2D.zoom.x) * 100) / 100
-	print(zoom_normalized)
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), linear_to_db(zoom_normalized) + 12)
 
 var time_now_delta := 0.0
-var timer := 0
 func _process(delta):
-	
 	if intro_block:
-		
-		timer += delta
-		if timer > 0.1:
-			change_sfx_bus_vol()
-			print('volch')
-			timer = 0
-	
+		change_sfx_bus_vol()
+
 	time_now_delta += delta
 	$"../ambient/wisdoms_tragedy".volume_linear = abs(sin(time_now_delta/100))
 	$"../ambient/ruido".volume_linear = abs(sin(time_now_delta/100)/2) + 0.5
 	$mugre_awakening.rotation = mov_direction.angle()
 
-	if click_der_pressed:
-		time_since_click_der = Time.get_ticks_msec() / 1000.0 - click_start_time
-		if time_since_click_der >= required_hold_time:
-			camera_look_active = true
-			
-			var first_target_offset = initial_click_world_pos - initial_player_world_pos
-			var smooth_speed = 10.0 # Adjust for desired camera follow speed
-			# calculo segundo target (activo)
-			var active_mouse_viewport_pos = main_camera.get_viewport().get_mouse_position()
-			var distance_from_first_target = active_mouse_viewport_pos.distance_to(initial_click_viewport_pos) / 10
-			if distance_from_first_target > 1:
-				var vector_distance_from_initial_click = active_mouse_viewport_pos - initial_click_viewport_pos
-				var active_target_offset = first_target_offset + vector_distance_from_initial_click * 0.2 # sensibilidad
-				smooth_speed = 10.0 # Adjust for desired camera follow speed
-				main_camera.offset = main_camera.offset.lerp(active_target_offset, smooth_speed * delta)
-			else:
-				# ir al primer target de la camara
-				main_camera.offset = main_camera.offset.lerp(first_target_offset, smooth_speed * delta)
+	if espacio_pressed:
+		#time_since_click_der = Time.get_ticks_msec() / 1000.0 - click_start_time
+		#if time_since_click_der >= required_hold_time:
+		camera_look_active = true
+		
+		var first_target_offset = initial_click_world_pos - initial_player_world_pos
+		var smooth_speed = 10.0 # Adjust for desired camera follow speed
+		# calculo segundo target (activo)
+		var active_mouse_viewport_pos = main_camera.get_viewport().get_mouse_position()
+		var distance_from_first_target = active_mouse_viewport_pos.distance_to(initial_click_viewport_pos) / 10
+		if distance_from_first_target > 1:
+			var vector_distance_from_initial_click = active_mouse_viewport_pos - initial_click_viewport_pos
+			var active_target_offset = first_target_offset + vector_distance_from_initial_click * 0.2 # sensibilidad
+			smooth_speed = 10.0 # Adjust for desired camera follow speed
+			main_camera.offset = main_camera.offset.lerp(active_target_offset, smooth_speed * delta)
+		else:
+			# ir al primer target de la camara
+			main_camera.offset = main_camera.offset.lerp(first_target_offset, smooth_speed * delta)
 
 
 	elif main_camera.offset.length() > 0.1: # Only smooth back if not already at zero
@@ -717,3 +731,7 @@ func sfx_walking():
 
 
 #================================
+
+
+func _on_toss_cooldown_timeout() -> void:
+	cancel_toss = false

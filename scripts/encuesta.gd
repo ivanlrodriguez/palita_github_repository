@@ -8,8 +8,7 @@ func _ready() -> void:
 	$MarginContainer/VBoxContainer/Continue.visible = false
 
 
-func _on_continue_pressed() -> void:
-	visible = false
+
 
 func _process(_delta: float) -> void:
 	# Show remaining time (in seconds, rounded to 1 decimal place)
@@ -26,6 +25,10 @@ func _on_link_encuesta_pressed() -> void:
 	$MarginContainer/VBoxContainer/Label2.text = "si el boton no anduvo, el link está en los comentarios"
 	$MarginContainer/VBoxContainer/link_encuesta.visible = false
 	$MarginContainer/VBoxContainer/Continue.visible = true
+	$timer_continuar.start()
+
+func _on_continue_pressed() -> void:
+	visible = false
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), 0.0)
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), 0.0)
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("music"), 0.0)

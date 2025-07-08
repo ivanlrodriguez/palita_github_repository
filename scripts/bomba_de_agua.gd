@@ -7,8 +7,11 @@ signal spawn_agua_signal(bomba_ref)
 
 # Movement
 var tossed := false
+var arrancable := false
 var arrancada := true
 var planting := false
+var untouched := true
+var working := false
 var origin_position: Vector2
 const SPRING_STIFFNESS := 2000.0
 
@@ -44,6 +47,19 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_released('click_izq'):
 		dragging = false
 		emit_signal("restore_player_movement_signal")
+	
+	if event.is_action_pressed("press_F_to_FLIP"):
+		if not arrancable:
+			return
+		elif not arrancada:
+			arrancada = true
+			$sfx_arrancada.play()
+			set_deferred("freeze", false)
+			set_physics_process(true)
+			set_collision_mask_bit(5, false)
+			set_collision_layer_bit(5, false)
+			#set_collision_mask_bit(1, false)
+			set_collision_layer_bit(1, false)
 
 
 func _ready():
@@ -81,16 +97,6 @@ func _on_manija_input_event(_viewport: Viewport, event: InputEvent, _shape_idx: 
 		$sfx_manija.play()
 
 
-func on_toss_triggered(_player_ref: Node):
-	if not $tossable_component.in_toss_area or arrancada:
-		return
-	arrancada = true
-	set_deferred("freeze", false)
-	set_physics_process(true)
-	set_collision_mask_bit(5, false)
-	set_collision_layer_bit(5, false)
-	set_collision_mask_bit(1, false)
-	set_collision_layer_bit(1, false)
 
 var clamped_lerp_brazo_rotation: float
 func _process(delta):
@@ -111,7 +117,7 @@ func _process(delta):
 		var diferencial_manija = abs(rotation_target) - abs(lerp_brazo_rotation)
 		# Update timer
 		agua_spawn_timer -= delta
-		if diferencial_manija < -0.2 and agua_spawn_timer <= 0 and not arrancada:
+		if diferencial_manija < -0.2 and agua_spawn_timer <= 0 and working:
 			agua_spawn_timer = agua_spawn_cooldown
 			emit_signal("spawn_agua_signal", self)
 	else:
@@ -135,15 +141,14 @@ func _process(delta):
 
 func _physics_process(_delta: float) -> void:
 	rotation = clamp(rotation, -PI/2, PI/2)
-	if arrancada:
-		if linear_velocity.length() < 0.1:
-			linear_velocity = Vector2.ZERO
-		if linear_velocity == Vector2.ZERO and not planting:
-			planting = true
-			$tiempo_plantacion.start()
-		elif linear_velocity != Vector2.ZERO:
-			planting = false
-			$tiempo_plantacion.stop()
+	if linear_velocity.length() < 0.1:
+		linear_velocity = Vector2.ZERO
+	if linear_velocity == Vector2.ZERO and not planting:
+		planting = true
+		$tiempo_plantacion.start()
+	elif linear_velocity != Vector2.ZERO:
+		planting = false
+		$tiempo_plantacion.stop()
 	#else:
 		#var to_origin = origin_position - global_position
 		#var distance_to_origin = to_origin.length()
@@ -160,13 +165,15 @@ func _physics_process(_delta: float) -> void:
 		#apply_torque(torque)
 
 func _on_tiempo_plantacion_timeout() -> void:
+	if untouched:
+		return
 	print('plantada')
 	origin_position = global_position
 	planting = false
 	arrancada = false
 	set_collision_mask_bit(5, true)
 	set_collision_layer_bit(5, true)
-	set_collision_mask_bit(1, true)
+	#set_collision_mask_bit(1, true)
 	set_collision_layer_bit(1, true)
 	set_physics_process(false)
 	set_deferred('freeze_mode', 0)
@@ -177,6 +184,8 @@ func _on_tiempo_plantacion_timeout() -> void:
 		 .set_ease(Tween.EASE_OUT)
 	await get_tree().create_timer(1.0).timeout
 	spawn_area = $spawn_area/spawn_area_collsh.global_position
+	working = true
+	
 
 
 func bombeo_sfx_trigger():

@@ -14,7 +14,7 @@ func _ready() -> void:
 	for i in range(1, 8):
 		var index := str(i).pad_zeros(3)
 		level_variants.append(load("res://assets/sfx/recic_level-%s.ogg" % [index]))
-	await get_tree().create_timer(1.5).timeout
+	await get_tree().create_timer(5.0).timeout
 	$collpol.set_deferred('disabled', false)
 	$collpol_area_hueco.set_deferred('disabled', false)
 

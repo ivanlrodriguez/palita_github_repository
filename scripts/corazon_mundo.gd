@@ -2,7 +2,7 @@ extends StaticBody2D
 class_name corazon_mundo
 
 func _ready() -> void:
-	await get_tree().create_timer(1.5).timeout
+	await get_tree().create_timer(5.0).timeout
 	$capsula_collsh.set_deferred('disabled', false)
 
 func _on_area_teleport_body_entered(body: Node2D) -> void:

@@ -1,0 +1,42 @@
+[gd_resource type="AnimatedTexture" load_steps=8 format=3 uid="uid://bay56yrbigw03"]
+
+[ext_resource type="Texture2D" uid="uid://bh4txdisgnxoj" path="res://assets/sprites/palita 2.0.png" id="2_hcodv"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hvhrd"]
+atlas = ExtResource("2_hcodv")
+region = Rect2(0, 224, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jjyug"]
+atlas = ExtResource("2_hcodv")
+region = Rect2(32, 224, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3gc7y"]
+atlas = ExtResource("2_hcodv")
+region = Rect2(64, 224, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fmrrn"]
+atlas = ExtResource("2_hcodv")
+region = Rect2(96, 224, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n2aix"]
+atlas = ExtResource("2_hcodv")
+region = Rect2(128, 224, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m0stj"]
+atlas = ExtResource("2_hcodv")
+region = Rect2(160, 224, 32, 32)
+
+[resource]
+frames = 6
+frame_0/texture = SubResource("AtlasTexture_hvhrd")
+frame_0/duration = 0.2
+frame_1/texture = SubResource("AtlasTexture_jjyug")
+frame_1/duration = 0.2
+frame_2/texture = SubResource("AtlasTexture_3gc7y")
+frame_2/duration = 0.2
+frame_3/texture = SubResource("AtlasTexture_fmrrn")
+frame_3/duration = 0.2
+frame_4/texture = SubResource("AtlasTexture_n2aix")
+frame_4/duration = 0.2
+frame_5/texture = SubResource("AtlasTexture_m0stj")
+frame_5/duration = 0.2

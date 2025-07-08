@@ -36,7 +36,7 @@ var pull_strength: float = 10.0
 
 # contadores y cantidades
 @export var cant_max_plantas := 100
-@export var cant_max_mugres_s := 5000
+@export var cant_max_mugres_s := 4000
 @export var cant_max_mugres_m := 500
 var planta_counter := 0
 var pasto_counter := 0
@@ -229,7 +229,7 @@ func _on_reciclar(mugre_ref):
 		mugre_reciclada_counter += 1
 		mugre_pool.request_despawn(mugre_ref)
 		print(mugre_reciclada_counter)
-		if mugre_reciclada_counter >= 10 and recicladora.level != recicladora.final_level:
+		if mugre_reciclada_counter >= 50 and recicladora.level != recicladora.final_level:
 			mugre_reciclada_counter = 0
 			recicladora.level_up()
 			if recicladora.level == recicladora.final_level:
@@ -273,9 +273,8 @@ func _on_agua_toco_piso(agua_ref):
 
 
 func _on_world_boundary_body_exited(body: Node2D) -> void:
-	await get_tree().physics_frame
 	if is_instance_valid(body):
-		if body is mugre and not body.reciclada:
+		if body is mugre and not body.reciclada and not body.tossed:
 			body.enter_orbit_system()
 
 
@@ -296,5 +295,4 @@ func _on_timer_prueba_timeout() -> void:
 	$menu.visible = true
 	$menu/main_menu.visible = false
 	$menu/encuesta.visible = true
-	$menu/encuesta/timer_continuar.start()
 	get_tree().paused = true
