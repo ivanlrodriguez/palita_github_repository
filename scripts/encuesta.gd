@@ -37,5 +37,6 @@ func _on_continue_pressed() -> void:
 		$"../../music/musica_extended".play()
 	else:
 		$"../../ambient/wisdoms_tragedy".play()
+		$"../../Timer_musica".start()
 	if menu.modo_sonido == menu.Modo.SILENT:
 		$"../main_menu/mixer".visible = true

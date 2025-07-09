@@ -102,8 +102,9 @@ func match_modo_sonido():
 			music_label.visible = true
 			music_slider.visible = true
 			AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), 0.0)
-			AudioServer.set_bus_mute(AudioServer.get_bus_index("SFX"), true)
 			AudioServer.set_bus_volume_db(AudioServer.get_bus_index("music"), 0.0)
+			AudioServer.set_bus_mute(AudioServer.get_bus_index("SFX"), true)
+			AudioServer.set_bus_mute(AudioServer.get_bus_index("ambient"), true)
 		Modo.SFX:
 			AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), 0.0)
 			AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), 0.0)
@@ -123,9 +124,11 @@ func restore_mixer():
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), 0.0)
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), 0.0)
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("music"), 0.0)
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("ambient"), 0.0)
 	AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), false)
 	AudioServer.set_bus_mute(AudioServer.get_bus_index("SFX"), false)
 	AudioServer.set_bus_mute(AudioServer.get_bus_index("music"), false)
+	AudioServer.set_bus_mute(AudioServer.get_bus_index("ambient"), false)
 	btn_mixer.visible = true
 	master_label.visible = true
 	master_slider.visible = true

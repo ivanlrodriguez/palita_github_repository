@@ -952,7 +952,7 @@ wait_time = 120.0
 one_shot = true
 
 [node name="timer_intoxicacion" type="Timer" parent="."]
-wait_time = 10.0
+wait_time = 30.0
 one_shot = true
 
 [node name="decay_intoxicacion" type="Timer" parent="."]

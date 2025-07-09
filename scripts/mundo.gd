@@ -122,9 +122,6 @@ func mugre_spawn():
 func planta_spawn():
 	if planta_counter >= cant_max_plantas:
 		return
-	elif planta_counter - 1 > pasto_counter:
-		await get_tree().create_timer(spawn_cooldown).timeout
-		planta_spawn()
 	else:
 		var area_limpia_checker := area_limpia_checker_scene.instantiate()
 		area_limpia_checker.global_position = get_random_donut_spawn_position()
@@ -133,22 +130,27 @@ func planta_spawn():
 		await get_tree().create_timer(spawn_check).timeout
 		
 		if area_limpia_checker.inside_spawn_boundary == false:
-			remove_child(area_limpia_checker)
+			area_limpia_checker.queue_free()
 			planta_spawn()
 		# spawnear planta
 		elif area_limpia_checker.spawn_planta == true and area_limpia_checker.area_limpia == true:
-			remove_child(area_limpia_checker)
-			var planta_child := planta_scene.instantiate()
-			planta_child.global_position = saved_checker_pos
-			# Connect the signal
-			planta_child.planta_muerta_signal.connect(_on_planta_muerta)
-			add_child(planta_child)
-			planta_counter += 1
-			await get_tree().create_timer(spawn_cooldown).timeout
-			planta_spawn()
+			if planta_counter + 2 > pasto_counter:
+				await get_tree().create_timer(spawn_cooldown).timeout
+				area_limpia_checker.queue_free()
+				planta_spawn()
+			else:
+				area_limpia_checker.queue_free()
+				var planta_child := planta_scene.instantiate()
+				planta_child.global_position = saved_checker_pos
+				# Connect the signal
+				planta_child.planta_muerta_signal.connect(_on_planta_muerta)
+				add_child(planta_child)
+				planta_counter += 1
+				await get_tree().create_timer(spawn_cooldown).timeout
+				planta_spawn()
 		
 		elif area_limpia_checker.spawn_pasto == true and area_limpia_checker.area_limpia == true:
-			remove_child(area_limpia_checker)
+			area_limpia_checker.queue_free()
 			var pasto_child := pasto_scene.instantiate()
 			pasto_child.global_position = saved_checker_pos
 			# Connect the signal
@@ -160,7 +162,7 @@ func planta_spawn():
 			planta_spawn()
 		
 		else:
-			remove_child(area_limpia_checker)
+			area_limpia_checker.queue_free()
 			planta_spawn()
 
 
@@ -187,9 +189,9 @@ func _on_reproducir_pasto(ref):
 	add_child(area_limpia_checker)
 	await get_tree().create_timer(spawn_check).timeout
 	if area_limpia_checker.inside_spawn_boundary == false:
-		remove_child(area_limpia_checker)
+		area_limpia_checker.queue_free()
 	elif area_limpia_checker.spawn_pasto == true and area_limpia_checker.area_limpia == true:
-		remove_child(area_limpia_checker)
+		area_limpia_checker.queue_free()
 		var pasto_child = pasto_scene.instantiate()
 		pasto_child.global_position = nuevo_pasto_pos
 		pasto_child.pasto_muerto_signal.connect(_on_pasto_muerto)
@@ -197,11 +199,12 @@ func _on_reproducir_pasto(ref):
 		add_child(pasto_child)
 		pasto_counter += 1
 	else:
-		remove_child(area_limpia_checker)
+		area_limpia_checker.queue_free()
 
 
 func _on_planta_muerta(planta_ref):
 	print('recieved signal from ', planta_ref)
+	planta_counter -= 1
 	# Start a fade-out animation
 	var tween = create_tween()
 	tween.tween_property(planta_ref, "modulate:a", 0.0, muerte_fadeout)  # Fade out alpha over 2 seconds
@@ -209,11 +212,11 @@ func _on_planta_muerta(planta_ref):
 	# After 100 seconds, queue free
 	if planta_ref and planta_ref.is_inside_tree():
 		planta_ref.queue_free()
-		planta_counter -= 1
 		planta_spawn()
 
 
 func _on_pasto_muerto(pasto_ref):
+	pasto_counter -= 1
 	# Start a fade-out animation
 	var tween = create_tween()
 	tween.tween_property(pasto_ref, "modulate:a", 0.0, muerte_fadeout)  # Fade out alpha over 2 seconds
@@ -221,7 +224,6 @@ func _on_pasto_muerto(pasto_ref):
 	# After 100 seconds, queue free
 	if pasto_ref and pasto_ref.is_inside_tree():
 		pasto_ref.queue_free()
-		pasto_counter -= 1
 		planta_spawn()
 
 @onready var recicladora := $recicladora

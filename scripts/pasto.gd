@@ -29,8 +29,8 @@ var decay_counter := 0
 @export var tiempo_crecimiento := 60.0
 @export var tiempo_reproduccion := 120.0
 @export var tiempo_curacion := 10.0
-@export var tiempo_intoxicacion := 10.0
-@export var tiempo_decay_intox := 10.0
+@export var tiempo_intoxicacion := 30.0
+@export var tiempo_decay_intox := 30.0
 
 # Particles
 var last_intoxicacion_particle_mode: Array

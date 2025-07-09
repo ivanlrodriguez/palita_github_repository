@@ -185,6 +185,7 @@ font_color = Color(0.779291, 0.779291, 0.779291, 1)
 [node name="mundo" type="Node2D"]
 y_sort_enabled = true
 script = ExtResource("1_vwj67")
+spawn_check = 0.2
 
 [node name="music" type="Node2D" parent="."]
 
@@ -358,11 +359,11 @@ zoom = Vector2(4, 4)
 position_smoothing_enabled = true
 
 [node name="timer_prueba" type="Timer" parent="."]
-wait_time = 6000.0
+wait_time = 600.0
 one_shot = true
 
 [node name="Timer_musica" type="Timer" parent="."]
-wait_time = 3000.0
+wait_time = 300.0
 one_shot = true
 
 [node name="tutorial" type="CanvasLayer" parent="."]
@@ -484,7 +485,6 @@ vertical_alignment = 1
 [node name="menu" type="CanvasLayer" parent="."]
 process_mode = 3
 script = ExtResource("2_kxyy5")
-modo_sonido = 1
 
 [node name="menu_fondo" type="ColorRect" parent="menu"]
 anchors_preset = 15
@@ -770,7 +770,7 @@ theme = ExtResource("17_vnytd")
 text = "ir a la encuesta"
 
 [node name="timer_continuar" type="Timer" parent="menu/encuesta"]
-wait_time = 60.0
+wait_time = 10.0
 
 [node name="sound_test" type="Control" parent="menu"]
 visible = false

@@ -35,8 +35,9 @@ func _on_body_entered(body: Node2D) -> void:
 			area_limpia = false
 	
 	elif body is pasto:
-		pasto_detected = true
-		spawn_check()
+		if body.estado_pasto != body.Estado.MUERTO:
+			pasto_detected = true
+			spawn_check()
 	
 	elif body is StaticBody2D: # ojo, el pasto es un static body
 		area_limpia = false
