@@ -66,7 +66,6 @@ func _ready() -> void:
 	$jugador/Camera2D.zoom = Vector2(0.2, 0.2)
 	await get_tree().create_timer(10.0).timeout
 	$ambient/ruido.play()
-	print('ready paused')
 	get_tree().paused = true
 
 
@@ -228,7 +227,6 @@ func _on_reciclar(mugre_ref):
 	if is_instance_valid(mugre_ref):
 		mugre_reciclada_counter += 1
 		mugre_pool.request_despawn(mugre_ref)
-		print(mugre_reciclada_counter)
 		if mugre_reciclada_counter >= 50 and recicladora.level != recicladora.final_level:
 			mugre_reciclada_counter = 0
 			recicladora.level_up()
@@ -274,7 +272,7 @@ func _on_agua_toco_piso(agua_ref):
 
 func _on_world_boundary_body_exited(body: Node2D) -> void:
 	if is_instance_valid(body):
-		if body is mugre and not body.reciclada and not body.tossed:
+		if body is mugre and not body.reciclada:
 			body.enter_orbit_system()
 
 
@@ -293,6 +291,15 @@ func _on_wisdoms_tragedy_finished() -> void:
 
 func _on_timer_prueba_timeout() -> void:
 	$menu.visible = true
+	$menu.esc_block = true
 	$menu/main_menu.visible = false
 	$menu/encuesta.visible = true
 	get_tree().paused = true
+
+
+func _on_timer_musica_timeout() -> void:
+	$music/musica_extended.play()
+
+
+func _on_musica_extended_finished() -> void:
+	$Timer_musica.start()

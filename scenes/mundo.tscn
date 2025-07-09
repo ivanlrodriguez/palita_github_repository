@@ -1,8 +1,9 @@
-[gd_scene load_steps=53 format=3 uid="uid://bt3yiolmr1400"]
+[gd_scene load_steps=57 format=3 uid="uid://bt3yiolmr1400"]
 
 [ext_resource type="Script" uid="uid://ik3swfhe15xk" path="res://scripts/mundo.gd" id="1_vwj67"]
 [ext_resource type="Texture2D" uid="uid://tx70aws0hmqm" path="res://assets/sprites/mundo.png" id="2_jaeu2"]
 [ext_resource type="Script" uid="uid://b2ix5gg2pesyi" path="res://scripts/menu.gd" id="2_kxyy5"]
+[ext_resource type="PackedScene" uid="uid://biva5a2pmxany" path="res://scenes/planta.tscn" id="2_vwmo8"]
 [ext_resource type="AudioStream" uid="uid://b7on56m2pq6d8" path="res://assets/music/Palita_boceto_01.ogg" id="2_wd5o3"]
 [ext_resource type="PackedScene" uid="uid://cyutw7vax147r" path="res://scenes/jugador.tscn" id="3_75jji"]
 [ext_resource type="AudioStream" uid="uid://b78h5leny3hrj" path="res://assets/sfx/mundo_ambient.ogg" id="3_cae5a"]
@@ -16,9 +17,9 @@
 [ext_resource type="PackedScene" uid="uid://ci104613jlym6" path="res://scenes/galpon.tscn" id="12_m7g0u"]
 [ext_resource type="Texture2D" uid="uid://bh4txdisgnxoj" path="res://assets/sprites/palita 2.0.png" id="13_35q48"]
 [ext_resource type="Theme" uid="uid://d0bl51v5u7vth" path="res://assets/themes/main.tres" id="17_vnytd"]
+[ext_resource type="Script" uid="uid://bwcaankypppcx" path="res://scripts/tutorial.gd" id="17_vwmo8"]
 [ext_resource type="Script" uid="uid://4f0cbe7d1rup" path="res://scripts/mugre_passive_despawner.gd" id="17_w7nu4"]
 [ext_resource type="AudioStream" uid="uid://b402qm3appje" path="res://assets/sfx/menu_click.ogg" id="18_c1ejn"]
-[ext_resource type="PackedScene" uid="uid://b1fp6b5nsr4br" path="res://scenes/bomba_de_agua.tscn" id="19_c1ejn"]
 [ext_resource type="Texture2D" uid="uid://cokfvqbh1k7sa" path="res://assets/sprites/tecla_esc.png" id="19_c58b4"]
 [ext_resource type="AudioStream" uid="uid://1i145c0w6ow" path="res://assets/sfx/intro_whoosh.ogg" id="19_vnytd"]
 [ext_resource type="AudioStream" uid="uid://nt84j4rfbvpp" path="res://assets/sfx/tres/sfx_pasos_standing.tres" id="20_g6hv0"]
@@ -27,6 +28,8 @@
 [ext_resource type="Script" uid="uid://cwwwgryxj8f1e" path="res://scripts/sound_test.gd" id="21_ws26n"]
 [ext_resource type="Texture2D" uid="uid://bs4j6ikokxgoc" path="res://assets/sprites/tecla_f.png" id="22_3y8jo"]
 [ext_resource type="Texture2D" uid="uid://d4mvjvope1iym" path="res://assets/sprites/tecla_espacio.png" id="23_gdkw2"]
+[ext_resource type="Texture2D" uid="uid://da6ryruy2g178" path="res://assets/sprites/click_izq.png" id="23_ws26n"]
+[ext_resource type="Texture2D" uid="uid://dn5qr0l003uj8" path="res://assets/sprites/click_der.png" id="23_ypjrv"]
 [ext_resource type="Texture2D" uid="uid://f4lxrk2lk63y" path="res://assets/sprites/palita_crouching_1.png" id="28_gdkw2"]
 [ext_resource type="Texture2D" uid="uid://nf4ckpbmejtv" path="res://assets/sprites/palita_crouching_2.png" id="29_ws26n"]
 [ext_resource type="Texture2D" uid="uid://cydl7kj121l0r" path="res://assets/sprites/palita_crouching_3.png" id="30_1e7fx"]
@@ -54,6 +57,10 @@ emission_box_extents = Vector3(6000, 3100, 1)
 gravity = Vector3(0, 0, 0)
 scale_min = 0.5
 color_ramp = SubResource("GradientTexture1D_2jrhv")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gdkw2"]
+atlas = ExtResource("21_rcwxx")
+region = Rect2(15, 11, 4, 3)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_35q48"]
 atlas = ExtResource("13_35q48")
@@ -166,9 +173,9 @@ frame_2/texture = ExtResource("30_1e7fx")
 frame_2/duration = 0.2
 frame_3/texture = ExtResource("31_vwmo8")
 frame_3/duration = 0.2
-frame_4/texture = ExtResource("29_ws26n")
+frame_4/texture = ExtResource("30_1e7fx")
 frame_4/duration = 0.2
-frame_5/texture = ExtResource("28_gdkw2")
+frame_5/texture = ExtResource("29_ws26n")
 frame_5/duration = 0.2
 
 [sub_resource type="LabelSettings" id="LabelSettings_g6hv0"]
@@ -179,6 +186,9 @@ font_color = Color(0.779291, 0.779291, 0.779291, 1)
 [node name="mundo" type="Node2D"]
 y_sort_enabled = true
 script = ExtResource("1_vwj67")
+
+[node name="planta" parent="." instance=ExtResource("2_vwmo8")]
+position = Vector2(114, -6)
 
 [node name="music" type="Node2D" parent="."]
 
@@ -218,34 +228,42 @@ bus = &"ambient"
 process_mode = 3
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+show_behind_parent = true
 position = Vector2(-2000, -1500)
-motion_scale = Vector2(0.1, 0.1)
-
-[node name="ColorRect" type="ColorRect" parent="ParallaxBackground/ParallaxLayer"]
-z_index = -1
-offset_top = -13.0
-offset_right = 11000.0
-offset_bottom = 6487.0
-mouse_filter = 2
-color = Color(0, 0, 0, 1)
-metadata/_edit_use_anchors_ = true
+motion_scale = Vector2(0.2, 0.2)
 
 [node name="estrellas" type="GPUParticles2D" parent="ParallaxBackground/ParallaxLayer"]
+show_behind_parent = true
 position = Vector2(5000, 2987)
 amount = 10000
 texture = SubResource("MeshTexture_vnytd")
 lifetime = 5.0
-preprocess = 5.0
+preprocess = 10.0
 randomness = 1.0
+visibility_rect = Rect2(-5000, -2500, 10000, 5000)
 process_material = SubResource("ParticleProcessMaterial_g6hv0")
 
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="ParallaxBackground"]
+modulate = Color(0, 0, 0, 1)
+z_index = -1
+position = Vector2(-2000, -1500)
+motion_scale = Vector2(0, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer2"]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(6015, 4481)
+scale = Vector2(3000, 2000)
+texture = SubResource("AtlasTexture_gdkw2")
+
 [node name="sprite_mundo" type="Sprite2D" parent="."]
+z_index = -1
 position = Vector2(-8, 1)
 texture = ExtResource("2_jaeu2")
 
 [node name="orbit_system" parent="." instance=ExtResource("10_06eai")]
 
 [node name="world_boundary_wall" type="StaticBody2D" parent="."]
+visible = false
 collision_layer = 256
 collision_mask = 0
 
@@ -257,6 +275,7 @@ position = Vector2(4, 0)
 polygon = PackedVector2Array(-4, -231, 15, -232, 34, -237, 100, -229, 134, -228, 146, -222, 160, -222, 175, -213, 192, -217, 225, -205, 239, -213, 343, -153, 405, -119, 439, -55, 450, -37, 454, 6, 436, 62, 402, 115, 327, 158, 242, 196, 174, 216, -4, 233, -4, 262, 176, 267, 270, 248, 407, 206, 472, 127, 495, 63, 523, 2, 508, -54, 482, -108, 446, -163, 362, -209, 256, -250, 189, -271, 145, -284, 86, -282, -4, -284)
 
 [node name="world_boundary_area" type="Area2D" parent="."]
+visible = false
 collision_layer = 256
 collision_mask = 255
 
@@ -267,19 +286,12 @@ polygon = PackedVector2Array(-442, -5, -414, -90, -384, -127, -337, -159, -316, 
 polygon = PackedVector2Array(2, -220, 41, -228, 97, -220, 136, -219, 148, -213, 161, -214, 179, -203, 194, -207, 233, -193, 245, -201, 339, -146, 404, -112, 442, -34, 446, 2, 429, 58, 398, 106, 325, 149, 240, 186, 176, 204, -1, 220, 1, 26, 24, 24, 39, 12, 41, -2, 35, -17, 24, -24, 0, -25)
 
 [node name="spawn_boundary" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 128
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="spawn_boundary"]
 polygon = PackedVector2Array(-363, 0, -326, -90, -180, -154, -1, -171, 172, -150, 270, -125, 341, -73, 368, 2, 329, 82, 190, 147, 1, 175, -200, 144, -323, 86)
-
-[node name="galpon" parent="." instance=ExtResource("12_m7g0u")]
-position = Vector2(-246, -145)
-
-[node name="corazon_mundo" parent="." instance=ExtResource("4_kxyy5")]
-
-[node name="recicladora" parent="." instance=ExtResource("8_06eai")]
-position = Vector2(-22, -196)
 
 [node name="mugre_toss_helper" type="Area2D" parent="."]
 visible = false
@@ -298,6 +310,7 @@ position = Vector2(22, 196)
 polygon = PackedVector2Array(2, -220, 41, -228, 97, -220, 136, -219, 148, -213, 161, -214, 179, -203, 194, -207, 233, -193, 245, -201, 339, -146, 404, -112, 442, -34, 446, 2, 429, 58, 398, 106, 325, 149, 240, 186, 176, 204, -1, 220, -1, 262, 164, 270, 405, 203, 481, 113, 522, -1, 474, -134, 253, -263, 2, -290)
 
 [node name="mugre_active_despawner" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("17_w7nu4")
@@ -311,15 +324,28 @@ polygon = PackedVector2Array(2, -220, 41, -228, 97, -220, 136, -219, 148, -213, 
 [node name="collpol_piso_galpon" type="CollisionPolygon2D" parent="mugre_active_despawner"]
 polygon = PackedVector2Array(-265, -139, -292, -149, -265, -163, -215, -151, -225, -145, -210, -136, -193, -149, -265, -167, -307, -147, -280, -137, -271, -134)
 
+[node name="collpol_piso_galpon2" type="CollisionPolygon2D" parent="mugre_active_despawner"]
+polygon = PackedVector2Array(-238, -115, -193, -149, -265, -167, -307, -147)
+
 [node name="collpol_piso_recicladora" type="CollisionPolygon2D" parent="mugre_active_despawner"]
-position = Vector2(-22.1, -190.4)
+position = Vector2(225.9, -27.4)
 polygon = PackedVector2Array(-20, -6, 22, 15, 38, 7, 43, 10, 47, 8, 61, 14, 74.7303, 6.73103, 75, 2, 21, -27)
-disabled = true
+
+[node name="collpol_piso_recicladora2" type="CollisionPolygon2D" parent="mugre_active_despawner"]
+position = Vector2(225.9, -27.4)
+polygon = PackedVector2Array(-26.9, -6.6, 22.1, 18.4, 38.1, 10.4, 43.1, 14.4, 47.1, 11.4, 61.1, 18.4, 81.1, 7.4, 76.1, -3.6, 21.1, -30.6)
 
 [node name="collpol_area_hueco" type="CollisionPolygon2D" parent="mugre_active_despawner"]
-position = Vector2(-22.1, -190.4)
-polygon = PackedVector2Array(-44, 15, -28, 23, -11, 15, -28, 6)
-disabled = true
+position = Vector2(225.9, -27.4)
+polygon = PackedVector2Array(-46.9, 15.4, -27.9, 25.4, -6.89999, 14.4, -27.9, 3.4)
+
+[node name="galpon" parent="." instance=ExtResource("12_m7g0u")]
+position = Vector2(-246, -145)
+
+[node name="corazon_mundo" parent="." instance=ExtResource("4_kxyy5")]
+
+[node name="recicladora" parent="." instance=ExtResource("8_06eai")]
+position = Vector2(226, -33)
 
 [node name="pointer" type="AnimatedSprite2D" parent="."]
 z_index = 1
@@ -328,26 +354,140 @@ scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_cae5a")
 animation = &"target_hold"
 
-[node name="bomba_de_agua" parent="." instance=ExtResource("19_c1ejn")]
-position = Vector2(-110, -101)
-
 [node name="jugador" parent="." instance=ExtResource("3_75jji")]
-position = Vector2(-78, -104)
+position = Vector2(-248, -148)
 
 [node name="Camera2D" type="Camera2D" parent="jugador"]
-position = Vector2(78, 104)
 zoom = Vector2(4, 4)
 position_smoothing_enabled = true
 
 [node name="timer_prueba" type="Timer" parent="."]
-wait_time = 600.0
+wait_time = 6000.0
 one_shot = true
+
+[node name="Timer_musica" type="Timer" parent="."]
+wait_time = 3000.0
+one_shot = true
+
+[node name="tutorial" type="CanvasLayer" parent="."]
+layer = 0
+script = ExtResource("17_vwmo8")
+
+[node name="controles_in_game" type="VBoxContainer" parent="tutorial"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -488.0
+offset_top = -201.0
+offset_right = 521.0
+offset_bottom = 201.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_constants/separation = 180
+
+[node name="HSplitContainer" type="HSplitContainer" parent="tutorial/controles_in_game"]
+layout_mode = 2
+drag_area_highlight_in_editor = true
+
+[node name="teclado" type="GridContainer" parent="tutorial/controles_in_game/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 2
+
+[node name="esc" type="TextureRect" parent="tutorial/controles_in_game/HSplitContainer/teclado"]
+layout_mode = 2
+texture = ExtResource("19_c58b4")
+stretch_mode = 4
+
+[node name="esc_label" type="Label" parent="tutorial/controles_in_game/HSplitContainer/teclado"]
+layout_mode = 2
+theme = SubResource("Theme_e6vnd")
+text = "menu"
+vertical_alignment = 1
+
+[node name="s" type="TextureRect" parent="tutorial/controles_in_game/HSplitContainer/teclado"]
+layout_mode = 2
+texture = ExtResource("20_igy0i")
+stretch_mode = 4
+
+[node name="s_label" type="Label" parent="tutorial/controles_in_game/HSplitContainer/teclado"]
+layout_mode = 2
+theme = SubResource("Theme_e6vnd")
+text = "detener movimiento"
+vertical_alignment = 1
+
+[node name="d" type="TextureRect" parent="tutorial/controles_in_game/HSplitContainer/teclado"]
+layout_mode = 2
+texture = ExtResource("21_rcwxx")
+stretch_mode = 4
+
+[node name="d_label" type="Label" parent="tutorial/controles_in_game/HSplitContainer/teclado"]
+layout_mode = 2
+theme = SubResource("Theme_e6vnd")
+text = "modo riego"
+vertical_alignment = 1
+
+[node name="f" type="TextureRect" parent="tutorial/controles_in_game/HSplitContainer/teclado"]
+layout_mode = 2
+texture = ExtResource("22_3y8jo")
+stretch_mode = 4
+
+[node name="f_label" type="Label" parent="tutorial/controles_in_game/HSplitContainer/teclado"]
+layout_mode = 2
+theme = SubResource("Theme_e6vnd")
+text = "press F to FLIP"
+vertical_alignment = 1
+
+[node name="mouse" type="GridContainer" parent="tutorial/controles_in_game/HSplitContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="izq_label" type="Label" parent="tutorial/controles_in_game/HSplitContainer/mouse"]
+layout_mode = 2
+theme = SubResource("Theme_e6vnd")
+text = "moverse"
+vertical_alignment = 1
+
+[node name="click_izq" type="TextureRect" parent="tutorial/controles_in_game/HSplitContainer/mouse"]
+layout_mode = 2
+texture = ExtResource("23_ws26n")
+stretch_mode = 3
+
+[node name="der_label" type="Label" parent="tutorial/controles_in_game/HSplitContainer/mouse"]
+layout_mode = 2
+theme = SubResource("Theme_e6vnd")
+text = "modo pala"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="click_der" type="TextureRect" parent="tutorial/controles_in_game/HSplitContainer/mouse"]
+layout_mode = 2
+texture = ExtResource("23_ypjrv")
+stretch_mode = 3
+
+[node name="HSplitContainer2" type="HSplitContainer" parent="tutorial/controles_in_game"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="espacio" type="TextureRect" parent="tutorial/controles_in_game/HSplitContainer2"]
+layout_mode = 2
+texture = ExtResource("23_gdkw2")
+stretch_mode = 3
+
+[node name="espacio_label" type="Label" parent="tutorial/controles_in_game/HSplitContainer2"]
+layout_mode = 2
+theme = SubResource("Theme_e6vnd")
+text = "mover camara"
+vertical_alignment = 1
 
 [node name="menu" type="CanvasLayer" parent="."]
 process_mode = 3
-visible = false
 script = ExtResource("2_kxyy5")
-modo_sonido = 1
 
 [node name="menu_fondo" type="ColorRect" parent="menu"]
 anchors_preset = 15
@@ -393,7 +533,6 @@ layout_mode = 2
 text = "volumen"
 
 [node name="mixer" type="VBoxContainer" parent="menu/main_menu"]
-visible = false
 layout_mode = 2
 alignment = 1
 
@@ -425,6 +564,20 @@ max_value = 1.0
 step = 0.05
 value = 1.0
 
+[node name="ambient_label" type="Label" parent="menu/main_menu/mixer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("17_vnytd")
+text = "ambient"
+
+[node name="ambient_slider" type="HSlider" parent="menu/main_menu/mixer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 1.0
+
 [node name="sfx_label" type="Label" parent="menu/main_menu/mixer"]
 layout_mode = 2
 size_flags_horizontal = 4
@@ -439,78 +592,127 @@ max_value = 1.0
 step = 0.05
 value = 1.0
 
+[node name="gui_label" type="Label" parent="menu/main_menu/mixer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("17_vnytd")
+text = "gui"
+
+[node name="gui_slider" type="HSlider" parent="menu/main_menu/mixer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 1.0
+
 [node name="cerrar_opciones" type="Button" parent="menu/main_menu/mixer"]
 layout_mode = 2
 theme = ExtResource("17_vnytd")
 text = "listo"
 
 [node name="controles" type="VBoxContainer" parent="menu/main_menu"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="GridContainer" type="GridContainer" parent="menu/main_menu/controles"]
+[node name="HSplitContainer" type="HSplitContainer" parent="menu/main_menu/controles"]
+layout_mode = 2
+drag_area_highlight_in_editor = true
+
+[node name="teclado" type="GridContainer" parent="menu/main_menu/controles/HSplitContainer"]
 layout_mode = 2
 columns = 2
 
-[node name="esc_label" type="Label" parent="menu/main_menu/controles/GridContainer"]
-layout_mode = 2
-theme = SubResource("Theme_e6vnd")
-text = "menu"
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="esc" type="TextureRect" parent="menu/main_menu/controles/GridContainer"]
+[node name="esc" type="TextureRect" parent="menu/main_menu/controles/HSplitContainer/teclado"]
 layout_mode = 2
 texture = ExtResource("19_c58b4")
 stretch_mode = 4
 
-[node name="s_label" type="Label" parent="menu/main_menu/controles/GridContainer"]
+[node name="esc_label" type="Label" parent="menu/main_menu/controles/HSplitContainer/teclado"]
 layout_mode = 2
 theme = SubResource("Theme_e6vnd")
-text = "detener movimiento"
-horizontal_alignment = 2
+text = "menu"
 vertical_alignment = 1
 
-[node name="s" type="TextureRect" parent="menu/main_menu/controles/GridContainer"]
+[node name="s" type="TextureRect" parent="menu/main_menu/controles/HSplitContainer/teclado"]
 layout_mode = 2
 texture = ExtResource("20_igy0i")
 stretch_mode = 4
 
-[node name="d_label" type="Label" parent="menu/main_menu/controles/GridContainer"]
+[node name="s_label" type="Label" parent="menu/main_menu/controles/HSplitContainer/teclado"]
 layout_mode = 2
 theme = SubResource("Theme_e6vnd")
-text = "modo riego"
-horizontal_alignment = 2
+text = "detener movimiento"
 vertical_alignment = 1
 
-[node name="d" type="TextureRect" parent="menu/main_menu/controles/GridContainer"]
+[node name="d" type="TextureRect" parent="menu/main_menu/controles/HSplitContainer/teclado"]
 layout_mode = 2
 texture = ExtResource("21_rcwxx")
 stretch_mode = 4
 
-[node name="f_label" type="Label" parent="menu/main_menu/controles/GridContainer"]
+[node name="d_label" type="Label" parent="menu/main_menu/controles/HSplitContainer/teclado"]
 layout_mode = 2
 theme = SubResource("Theme_e6vnd")
 text = "modo riego"
-horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="f" type="TextureRect" parent="menu/main_menu/controles/GridContainer"]
+[node name="f" type="TextureRect" parent="menu/main_menu/controles/HSplitContainer/teclado"]
 layout_mode = 2
 texture = ExtResource("22_3y8jo")
 stretch_mode = 4
 
-[node name="espacio_label" type="Label" parent="menu/main_menu/controles/GridContainer"]
+[node name="f_label" type="Label" parent="menu/main_menu/controles/HSplitContainer/teclado"]
 layout_mode = 2
 theme = SubResource("Theme_e6vnd")
-text = "mover camara"
+text = "press F to FLIP"
+vertical_alignment = 1
+
+[node name="mouse" type="GridContainer" parent="menu/main_menu/controles/HSplitContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="click_izq" type="TextureRect" parent="menu/main_menu/controles/HSplitContainer/mouse"]
+layout_mode = 2
+texture = ExtResource("23_ws26n")
+stretch_mode = 3
+
+[node name="izq_label" type="Label" parent="menu/main_menu/controles/HSplitContainer/mouse"]
+layout_mode = 2
+theme = SubResource("Theme_e6vnd")
+text = "moverse"
+vertical_alignment = 1
+
+[node name="click_der" type="TextureRect" parent="menu/main_menu/controles/HSplitContainer/mouse"]
+layout_mode = 2
+texture = ExtResource("23_ws26n")
+stretch_mode = 3
+
+[node name="der_label" type="Label" parent="menu/main_menu/controles/HSplitContainer/mouse"]
+layout_mode = 2
+theme = SubResource("Theme_e6vnd")
+text = "modo pala"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="espacio" type="TextureRect" parent="menu/main_menu/controles/GridContainer"]
+[node name="HSplitContainer2" type="HSplitContainer" parent="menu/main_menu/controles"]
+layout_mode = 2
+
+[node name="espacio" type="TextureRect" parent="menu/main_menu/controles/HSplitContainer2"]
 layout_mode = 2
 texture = ExtResource("23_gdkw2")
 stretch_mode = 3
+
+[node name="espacio_label" type="Label" parent="menu/main_menu/controles/HSplitContainer2"]
+layout_mode = 2
+theme = SubResource("Theme_e6vnd")
+text = "mover camara"
+vertical_alignment = 1
+
+[node name="toggle_click_stop" type="CheckButton" parent="menu/main_menu/controles"]
+layout_mode = 2
+theme = ExtResource("17_vnytd")
+text = "mantener click para moverse"
 
 [node name="cerrar_controles" type="Button" parent="menu/main_menu/controles"]
 layout_mode = 2
@@ -571,7 +773,7 @@ theme = ExtResource("17_vnytd")
 text = "ir a la encuesta"
 
 [node name="timer_continuar" type="Timer" parent="menu/encuesta"]
-wait_time = 10.0
+wait_time = 60.0
 
 [node name="sound_test" type="Control" parent="menu"]
 visible = false
@@ -647,6 +849,7 @@ disabled = true
 text = "listo!"
 
 [node name="pantalla_de_carga" type="Control" parent="menu"]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -714,6 +917,7 @@ stream = ExtResource("18_c1ejn")
 pitch_scale = 0.8
 attenuation = 0.0384733
 panning_strength = 0.0
+bus = &"GUI"
 
 [node name="intro_whoosh" type="AudioStreamPlayer2D" parent="menu"]
 position = Vector2(483.5, 240)
@@ -723,6 +927,7 @@ pitch_scale = 0.8
 max_distance = 100000.0
 
 [connection signal="finished" from="music/palita_boceto_1" to="." method="_on_palita_boceto_1_finished"]
+[connection signal="finished" from="music/musica_extended" to="." method="_on_musica_extended_finished"]
 [connection signal="finished" from="ambient/ruido" to="." method="_on_ruido_finished"]
 [connection signal="finished" from="ambient/wisdoms_tragedy" to="." method="_on_wisdoms_tragedy_finished"]
 [connection signal="body_exited" from="world_boundary_area" to="." method="_on_world_boundary_body_exited"]
@@ -731,14 +936,18 @@ max_distance = 100000.0
 [connection signal="body_entered" from="mugre_active_despawner" to="mugre_active_despawner" method="_on_body_entered"]
 [connection signal="animation_finished" from="pointer" to="." method="_on_pointer_animation_finished"]
 [connection signal="timeout" from="timer_prueba" to="." method="_on_timer_prueba_timeout"]
+[connection signal="timeout" from="Timer_musica" to="." method="_on_timer_musica_timeout"]
 [connection signal="pressed" from="menu/main_menu/botones/Start" to="menu" method="_on_start_pressed"]
 [connection signal="pressed" from="menu/main_menu/botones/Continue" to="menu" method="_on_continue_pressed"]
 [connection signal="pressed" from="menu/main_menu/botones/Controls" to="menu" method="_on_controls_pressed"]
 [connection signal="pressed" from="menu/main_menu/botones/Mixer" to="menu" method="_on_options_pressed"]
 [connection signal="value_changed" from="menu/main_menu/mixer/master_slider" to="menu" method="_on_master_slider_value_changed"]
 [connection signal="value_changed" from="menu/main_menu/mixer/music_slider" to="menu" method="_on_music_slider_value_changed"]
+[connection signal="value_changed" from="menu/main_menu/mixer/ambient_slider" to="menu" method="_on_ambient_slider_value_changed"]
 [connection signal="value_changed" from="menu/main_menu/mixer/sfx_slider" to="menu" method="_on_sfx_slider_value_changed"]
+[connection signal="value_changed" from="menu/main_menu/mixer/gui_slider" to="menu" method="_on_gui_slider_value_changed"]
 [connection signal="pressed" from="menu/main_menu/mixer/cerrar_opciones" to="menu" method="_on_cerrar_opciones_pressed"]
+[connection signal="toggled" from="menu/main_menu/controles/toggle_click_stop" to="jugador" method="_on_toggle_click_stop_toggled"]
 [connection signal="pressed" from="menu/main_menu/controles/cerrar_controles" to="menu" method="_on_cerrar_controles_pressed"]
 [connection signal="pressed" from="menu/encuesta/MarginContainer/VBoxContainer/Continue" to="menu" method="_on_continue_pressed"]
 [connection signal="pressed" from="menu/encuesta/MarginContainer/VBoxContainer/Continue" to="menu/encuesta" method="_on_continue_pressed"]

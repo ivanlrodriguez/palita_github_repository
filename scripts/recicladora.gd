@@ -16,7 +16,7 @@ func _ready() -> void:
 		level_variants.append(load("res://assets/sfx/recic_level-%s.ogg" % [index]))
 	await get_tree().create_timer(5.0).timeout
 	$collpol.set_deferred('disabled', false)
-	$collpol_area_hueco.set_deferred('disabled', false)
+	$estrella_area_hueco.set_deferred('disabled', false)
 
 
 func level_up():

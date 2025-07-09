@@ -37,7 +37,6 @@ func return_to_pool(node: Node2D) -> void:
 		node.set_passive_mode()
 		node.global_position = Vector2(-9999, -9999)
 		rigid.append(node)
-		print(rigid.size())
 	elif node is mugre_orbiting:
 		node.global_position = Vector2(-9999, -9999)
 		orbit.append(node)

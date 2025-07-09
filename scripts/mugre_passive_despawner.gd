@@ -6,7 +6,9 @@ func _ready() -> void:
 	await get_tree().create_timer(3.0).timeout
 	$collpol_inner_left.disabled = true
 	$collpol_inner_right.disabled = true
-	$collpol_piso_recicladora.disabled = true
+	$collpol_area_hueco.disabled = true
+	$collpol_piso_recicladora2.disabled = true
+	$collpol_piso_galpon2.disabled = true
 
 func _on_body_entered(body: Node2D) -> void:
 	if is_instance_valid(body):

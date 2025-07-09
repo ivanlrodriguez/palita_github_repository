@@ -60,6 +60,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			set_collision_layer_bit(5, false)
 			#set_collision_mask_bit(1, false)
 			set_collision_layer_bit(1, false)
+			set_collision_mask_bit(2, false)
+			apply_torque(sign(randf() - 0.5)* 2500)
 
 
 func _ready():

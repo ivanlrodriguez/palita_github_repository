@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+
+
 # Modos principales
 enum Modo { STANDING, CROUCHING, COPA }
 var modo_actual: Modo = Modo.STANDING
@@ -37,6 +39,7 @@ var walking := false
 var watering := false
 var handling := false
 var cancel_toss := false
+var click_stop := false
 
 # agua
 var agua_counter := 0
@@ -92,6 +95,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	
 	elif event.is_action_released("click_izq"):
 		is_clicking = false
+		if click_stop:
+			walk_stop()
 	
 	if event.is_action_pressed("walk_stop"):
 		walk_stop()
@@ -135,8 +140,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		else:
 			tossing = false
-			cancel_toss = true
-			$toss_cooldown.start()
+			#cancel_toss = true
+			#$toss_cooldown.start()
 			var crouch_dir_cardinal = "crouch_idle_" + dir_cardinal
 			$AnimatedSprite2D.play(crouch_dir_cardinal)
 			# crouching coll mode
@@ -175,7 +180,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func walk_start():
 	walking = true
-	mov_target = cached_mov_target #esto es para cuando uno efectua un toss mientras camina
+	if not click_stop:
+		mov_target = cached_mov_target #esto es para cuando uno efectua un toss mientras camina
 	mov_direction = global_position.direction_to(mov_target)
 	pointer.global_position = mov_target
 	pointer.play("target_define")
@@ -263,9 +269,9 @@ func _on_standing_push_area_body_entered(body: Node2D) -> void:
 		if modo_actual != Modo.STANDING:
 			return
 		if is_instance_valid(body):
-			#if body is mugre and not body.freeze:
-				#push_dir = (body.global_position - global_position).normalized()
-				#body.apply_impulse(push_dir * 5.0)
+			if body is mugre and not body.freeze:
+				push_dir = (body.global_position - global_position).normalized()
+				body.apply_impulse(push_dir * 5.0)
 			
 			if body is planta and not body.planta_arrancada:
 				push_dir = (body.global_position - global_position).normalized()
@@ -356,20 +362,23 @@ func _on_area_base_pala_body_exited(body: Node2D) -> void:
 
 
 func _on_mugre_awakening_body_entered(body: Node2D) -> void:
-	if body is mugre and is_instance_valid(body):
-		if body.current_mode != body.MugreMode.RIGID:
-			body.set_rigid_mode()
+	if is_instance_valid(body):
+		if body is mugre:
+			if body.current_mode != body.MugreMode.RIGID:
+				body.set_rigid_mode()
 
 func _on_mugre_awakening_body_exited(body: Node2D) -> void:
-	if body is mugre and is_instance_valid(body):
-		if body.current_mode == body.MugreMode.RIGID and not body.tossed and not body.reciclada and not body.being_pulled:
-			body.set_passive_mode()
+	if is_instance_valid(body):
+		if body is mugre:
+			if body.current_mode == body.MugreMode.RIGID and not body.tossed and not body.reciclada and not body.being_pulled:
+				body.set_passive_mode()
 
 
 func _on_mugre_sleeper_body_exited(body: Node2D) -> void:
-	if body is mugre and is_instance_valid(body):
-		if body.current_mode == body.MugreMode.RIGID and not body.tossed and not body.reciclada and not body.being_pulled:
-			body.set_passive_mode()
+	if is_instance_valid(body):
+		if body is mugre:
+			if body.current_mode == body.MugreMode.RIGID and not body.tossed and not body.reciclada and not body.being_pulled:
+				body.set_passive_mode()
 
 
 
@@ -732,6 +741,11 @@ func sfx_walking():
 
 #================================
 
+#
+#func _on_toss_cooldown_timeout() -> void:
+	#cancel_toss = false
 
-func _on_toss_cooldown_timeout() -> void:
-	cancel_toss = false
+
+func _on_toggle_click_stop_toggled(toggled_on: bool) -> void:
+	click_stop = toggled_on
+	pointer.visible = toggled_on

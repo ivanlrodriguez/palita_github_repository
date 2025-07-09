@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://ci104613jlym6"]
+[gd_scene load_steps=4 format=3 uid="uid://ci104613jlym6"]
 
 [ext_resource type="Script" uid="uid://dmdo227tva3de" path="res://scripts/galpon.gd" id="1_c4yty"]
-[ext_resource type="Texture2D" uid="uid://c11127v135j0l" path="res://assets/sprites/galpon.png" id="1_rb1ck"]
+[ext_resource type="Texture2D" uid="uid://bc7knulpdxb7" path="res://assets/sprites/galpon_techo.png" id="2_e1mmm"]
+[ext_resource type="Texture2D" uid="uid://b8a45vhtceg5n" path="res://assets/sprites/galpon_piso.png" id="4_2b1hq"]
 
 [node name="galpon" type="StaticBody2D"]
 z_index = 3
@@ -9,10 +10,14 @@ collision_layer = 17
 collision_mask = 0
 script = ExtResource("1_c4yty")
 
-[node name="sprite" type="Sprite2D" parent="."]
-visible = false
+[node name="techo" type="Sprite2D" parent="."]
 position = Vector2(-2, -17)
-texture = ExtResource("1_rb1ck")
+texture = ExtResource("2_e1mmm")
+
+[node name="piso" type="Sprite2D" parent="."]
+z_as_relative = false
+position = Vector2(-2, -17)
+texture = ExtResource("4_2b1hq")
 
 [node name="collpol" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(-59, -2, -25, 10, -20, 6, -49, -4, -19, -19, 33, -6, 22, 0, 36, 8, 51, -4, -19, -22)

@@ -1,6 +1,7 @@
 extends Control
 
 @onready var world = get_node("/root")
+@onready var menu = get_parent()
 
 func _ready() -> void:
 	visible = false
@@ -12,11 +13,11 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	# Show remaining time (in seconds, rounded to 1 decimal place)
-	$MarginContainer/VBoxContainer/Continue.text = "seguir jugando! (" + str("%.1f" % $timer_continuar.time_left) + ')'
+	$MarginContainer/VBoxContainer/Continue.text = "quiero la experiencia sonora completa! (" + str("%.1f" % $timer_continuar.time_left) + ')'
 
 func _on_timer_continuar_timeout() -> void:
 	set_process(false)
-	$MarginContainer/VBoxContainer/Continue.text = "seguir jugando!"
+	$MarginContainer/VBoxContainer/Continue.text = "quiero la experiencia sonora completa!"
 	$MarginContainer/VBoxContainer/Continue.disabled = false
 
 
@@ -29,8 +30,12 @@ func _on_link_encuesta_pressed() -> void:
 
 func _on_continue_pressed() -> void:
 	visible = false
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), 0.0)
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), 0.0)
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("music"), 0.0)
+	menu.esc_block = false
+	menu.restore_mixer()
 	await get_tree().create_timer(5.0).timeout
-	$"../../music/musica_extended".play()
+	if menu.modo_sonido != menu.Modo.MUSIC:
+		$"../../music/musica_extended".play()
+	else:
+		$"../../ambient/wisdoms_tragedy".play()
+	if menu.modo_sonido == menu.Modo.SILENT:
+		$"../main_menu/mixer".visible = true

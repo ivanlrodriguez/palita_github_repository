@@ -45,35 +45,35 @@ func _ready():
 func on_toss_triggered(player_ref: Node):
 	if not in_toss_area:
 		return
-	body.tossed = true
 	body.z_index = 7
 	jugador_ref = player_ref
 	initial_y_pos = body.global_position.y
 	player_initial_y_pos = jugador_ref.global_position.y
 	max_height = 0.0
-	
+
 	# Enable toss layer
 	body.collision_layer |= 1 << toss_layer  # Turn ON bit
 	body.collision_mask |= 1 << toss_layer  # Turn ON bit
-	body.gravity_scale = 1
-	
+
 	# Disable all original layers/masks
 	for bit in original_layer_bits:
 		body.collision_layer &= ~(1 << bit)  # Turn OFF bit
-	
+
 	for bit in original_mask_bits:
 		body.collision_mask &= ~(1 << bit)  # Turn OFF bit
-	
+
+
+	body.gravity_scale = 1
+
 	var dir_cardinal_jugador = jugador_ref.dir_cardinal
 	toss_vector = toss_vector_calculator(dir_cardinal_jugador)
-	
+
 	var offset = Vector2(randf_range(-0.5, 0.5), randf_range(0.1, 0.5))
-	if body is mugre:
-		if body.current_mode == body.MugreMode.PASSIVE:
-			body.set_rigid_mode()
-		
 	body.apply_impulse(toss_vector, offset)
-	
+
+	body.tossed = true
+	if body is mugre:
+		body.set_rigid_mode()
 	await monitor_airtime()
 
 func monitor_airtime() -> void:
@@ -106,11 +106,10 @@ func landing():
 	body.z_index = initial_zindex
 	body.linear_velocity = Vector2.ZERO
 
-	#var f_potencial_y = randi_range(-1, 1) * -toss_vector.y / 12
-	#var f_potencial_x = randi_range(0, 1) * toss_vector.x / 5
-	#var landing_hit = Vector2(f_potencial_x, f_potencial_y)
-	#if is_instance_valid(body):
-		#body.apply_impulse(landing_hit)
+	var f_potencial_y = randi_range(-1, 1) * -toss_vector.y / 12
+	var f_potencial_x = randi_range(0, 1) * toss_vector.x / 5
+	var landing_hit = Vector2(f_potencial_x, f_potencial_y)
+	body.apply_impulse(landing_hit)
 
 	# Restore all original layers/masks
 	for bit in original_layer_bits:

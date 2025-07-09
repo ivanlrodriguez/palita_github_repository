@@ -326,7 +326,6 @@ frame = 7
 frame_progress = 1.0
 
 [node name="hueco_anim" type="AnimatedSprite2D" parent="."]
-z_index = 1
 z_as_relative = false
 position = Vector2(9, 3)
 sprite_frames = SubResource("SpriteFrames_7h40n")
@@ -340,14 +339,13 @@ autoplay = "default"
 frame_progress = 0.830478
 
 [node name="collpol" type="CollisionPolygon2D" parent="."]
-visible = false
 position = Vector2(0, 5)
 polygon = PackedVector2Array(-20, -6, 22, 15, 38, 7, 43, 10, 47, 8, 61, 14, 74.7303, 6.73103, 75, 2, 21, -27)
 disabled = true
 
-[node name="collpol_area_hueco" type="CollisionPolygon2D" parent="."]
-position = Vector2(0, 5)
-polygon = PackedVector2Array(-44, 15, -28, 23, -11, 15, -28, 6)
+[node name="estrella_area_hueco" type="CollisionPolygon2D" parent="."]
+position = Vector2(-1, 5)
+polygon = PackedVector2Array(-42, 15, -27, 23, -12, 15, -27, 7)
 disabled = true
 
 [node name="cinta" type="Area2D" parent="."]
@@ -357,7 +355,6 @@ collision_layer = 0
 collision_mask = 130
 
 [node name="collpol_area_cinta" type="CollisionPolygon2D" parent="cinta"]
-visible = false
 polygon = PackedVector2Array(66, 12, 80, 5, 28, -21, 14, -15)
 
 [node name="hueco" type="Area2D" parent="."]
@@ -366,7 +363,8 @@ collision_layer = 0
 collision_mask = 66
 
 [node name="collpol_area_hueco" type="CollisionPolygon2D" parent="hueco"]
-polygon = PackedVector2Array(-50, 14, -28, 25, -6, 14, -28, 2)
+visible = false
+polygon = PackedVector2Array(-50, 14, -28, 26, -6, 14, -28, 2)
 
 [node name="despawner" type="Area2D" parent="."]
 collision_layer = 0
@@ -381,7 +379,7 @@ stream = SubResource("AudioStreamRandomizer_8w2pf")
 volume_db = -3.0
 max_distance = 100.0
 max_polyphony = 10
-bus = &"SFX"
+bus = &"SFX + reverb"
 
 [node name="sfx_level" type="AudioStreamPlayer2D" parent="."]
 pitch_scale = 1.3
@@ -412,6 +410,7 @@ panning_strength = 2.0
 bus = &"SFX"
 
 [node name="area_sfx" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 256
 

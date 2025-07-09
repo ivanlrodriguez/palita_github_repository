@@ -13,6 +13,8 @@ var orbit_data = {
 }
 
 @onready var sprite := $sprite
+@onready var despawn_check: Area2D = $despawn_check
+
 var collsh: CollisionShape2D
 var ntype: String
 var nmugre: int
@@ -63,28 +65,26 @@ func _ready():
 	mugre_id = [ntype, nmugre]
 	rotation = randf_range(0, TAU)
 	sprite.play(ntype+ "_" + str(nmugre))
-	$despawn_check.set_deferred("monitoring", true)
+	despawn_check.set_deferred("monitoring", true)
 	await get_tree().create_timer(0.2).timeout
-	if is_instance_valid(self):
-		$despawn_check.set_deferred("monitoring", false)
-		if current_mode != MugreMode.PASSIVE and not reciclada:
-			set_passive_mode()
+	despawn_check.set_deferred("monitoring", false)
+	if current_mode != MugreMode.PASSIVE and not reciclada:
+		set_passive_mode()
 
 func _on_despawn_check_body_entered(body: Node2D) -> void:
-	if is_instance_valid(self):
-		if body is mugre:
-			set_rigid_mode()
-			await get_tree().create_timer(0.1).timeout
-			if is_instance_valid(self):
-				if current_mode != MugreMode.PASSIVE and not reciclada:
-					set_passive_mode()
-					$despawn_check.set_deferred("monitoring", false)
-		elif body is corazon_mundo:
-			entered_through_corazon_mundo = true
-			enter_orbit_system()
-		else:
-			reciclada = true
-			mugre_pool.return_to_pool(self)
+	if body is mugre:
+		set_rigid_mode()
+		await get_tree().create_timer(0.1).timeout
+		if is_instance_valid(self):
+			if current_mode != MugreMode.PASSIVE and not reciclada:
+				set_passive_mode()
+				despawn_check.set_deferred("monitoring", false)
+	elif body is corazon_mundo:
+		entered_through_corazon_mundo = true
+		enter_orbit_system()
+	else:
+		reciclada = true
+		mugre_pool.return_to_pool(self)
 
 
 # --- Mode switching ---
