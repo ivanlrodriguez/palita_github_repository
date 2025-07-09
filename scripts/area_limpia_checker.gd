@@ -11,7 +11,7 @@ var inside_spawn_boundary := false #reproduccion pasto
 
 func _ready() -> void:
 	mugre_counter = 0
-	await get_tree().create_timer(0.5).timeout
+	await get_tree().create_timer(0.2).timeout
 	spawn_check()
 
 func _on_body_entered(body: Node2D) -> void:
@@ -21,8 +21,6 @@ func _on_body_entered(body: Node2D) -> void:
 	var distance_y_iso = abs(global_position.y - body.global_position.y) *2
 	var distance_to_body = Vector2(distance_x, distance_y_iso).length()
 	
-	if body is StaticBody2D:
-		area_limpia = false
 	
 	if body is planta:
 		if distance_to_body < 7.0:
@@ -39,6 +37,9 @@ func _on_body_entered(body: Node2D) -> void:
 	elif body is pasto:
 		pasto_detected = true
 		spawn_check()
+	
+	elif body is StaticBody2D: # ojo, el pasto es un static body
+		area_limpia = false
 	
 	else:
 		none_detected = true

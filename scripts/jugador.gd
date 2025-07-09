@@ -748,4 +748,4 @@ func sfx_walking():
 
 func _on_toggle_click_stop_toggled(toggled_on: bool) -> void:
 	click_stop = toggled_on
-	pointer.visible = toggled_on
+	pointer.visible = !toggled_on

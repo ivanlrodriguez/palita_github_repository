@@ -1,9 +1,8 @@
-[gd_scene load_steps=57 format=3 uid="uid://bt3yiolmr1400"]
+[gd_scene load_steps=56 format=3 uid="uid://bt3yiolmr1400"]
 
 [ext_resource type="Script" uid="uid://ik3swfhe15xk" path="res://scripts/mundo.gd" id="1_vwj67"]
 [ext_resource type="Texture2D" uid="uid://tx70aws0hmqm" path="res://assets/sprites/mundo.png" id="2_jaeu2"]
 [ext_resource type="Script" uid="uid://b2ix5gg2pesyi" path="res://scripts/menu.gd" id="2_kxyy5"]
-[ext_resource type="PackedScene" uid="uid://biva5a2pmxany" path="res://scenes/planta.tscn" id="2_vwmo8"]
 [ext_resource type="AudioStream" uid="uid://b7on56m2pq6d8" path="res://assets/music/Palita_boceto_01.ogg" id="2_wd5o3"]
 [ext_resource type="PackedScene" uid="uid://cyutw7vax147r" path="res://scenes/jugador.tscn" id="3_75jji"]
 [ext_resource type="AudioStream" uid="uid://b78h5leny3hrj" path="res://assets/sfx/mundo_ambient.ogg" id="3_cae5a"]
@@ -187,9 +186,6 @@ font_color = Color(0.779291, 0.779291, 0.779291, 1)
 y_sort_enabled = true
 script = ExtResource("1_vwj67")
 
-[node name="planta" parent="." instance=ExtResource("2_vwmo8")]
-position = Vector2(114, -6)
-
 [node name="music" type="Node2D" parent="."]
 
 [node name="palita_boceto_1" type="AudioStreamPlayer2D" parent="music"]
@@ -234,7 +230,7 @@ motion_scale = Vector2(0.2, 0.2)
 
 [node name="estrellas" type="GPUParticles2D" parent="ParallaxBackground/ParallaxLayer"]
 show_behind_parent = true
-position = Vector2(5000, 2987)
+position = Vector2(4942, 3102)
 amount = 10000
 texture = SubResource("MeshTexture_vnytd")
 lifetime = 5.0
@@ -488,6 +484,7 @@ vertical_alignment = 1
 [node name="menu" type="CanvasLayer" parent="."]
 process_mode = 3
 script = ExtResource("2_kxyy5")
+modo_sonido = 1
 
 [node name="menu_fondo" type="ColorRect" parent="menu"]
 anchors_preset = 15

@@ -290,7 +290,6 @@ func _on_timer_reproduccion_timeout():
 
 func _on_decay_intoxicacion_timeout():
 	decay_counter = min(decay_counter + 1, 5)
-	print('pasto decay counter ', decay_counter)
 	check_death()
 	if estado_pasto == Estado.INTOXICADO:
 		$decay_intoxicacion.start()
@@ -298,7 +297,6 @@ func _on_decay_intoxicacion_timeout():
 
 func check_death():
 	if decay_counter >= 5:
-		print('pasto muerto')
 		estado_pasto = Estado.MUERTO
 		actualizar_sprite()
 		var timers := [

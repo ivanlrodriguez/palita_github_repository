@@ -1774,23 +1774,23 @@ rotation = 1.5708
 shape = SubResource("CapsuleShape2D_bgmxx")
 
 [node name="timer_crecimiento" type="Timer" parent="."]
-wait_time = 60.0
+wait_time = 30.0
 one_shot = true
 
 [node name="timer_regada" type="Timer" parent="."]
-wait_time = 60.0
+wait_time = 30.0
 one_shot = true
 
 [node name="decay_intoxicacion" type="Timer" parent="."]
-wait_time = 30.0
+wait_time = 10.0
 one_shot = true
 
 [node name="decay_arrancada" type="Timer" parent="."]
-wait_time = 30.0
+wait_time = 15.0
 one_shot = true
 
 [node name="decay_vejez" type="Timer" parent="."]
-wait_time = 60.0
+wait_time = 30.0
 one_shot = true
 
 [node name="timer_intoxicacion" type="Timer" parent="."]

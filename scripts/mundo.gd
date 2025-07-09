@@ -52,13 +52,14 @@ var spawn_center: Vector2 = Vector2.ZERO # The center point of the donut
 
 # timers
 @export var spawn_check := 0.5
-@export var spawn_cooldown := 60.0
+@export var spawn_cooldown := 15.0
 @export var muerte_fadeout := 120.0
 @export var agua_fadeout := 10.0
 @export var suelo_regado := 30.0
 
 
 func _ready() -> void:
+	$jugador/Camera2D.global_position = Vector2.ZERO
 	y_sort_enabled = true
 	randomize()
 	planta_spawn()
@@ -200,6 +201,7 @@ func _on_reproducir_pasto(ref):
 
 
 func _on_planta_muerta(planta_ref):
+	print('recieved signal from ', planta_ref)
 	# Start a fade-out animation
 	var tween = create_tween()
 	tween.tween_property(planta_ref, "modulate:a", 0.0, muerte_fadeout)  # Fade out alpha over 2 seconds

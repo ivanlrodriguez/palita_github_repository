@@ -68,10 +68,10 @@ func _ready():
 	pantalla_de_carga.visible = true
 	await get_tree().create_timer(10.0).timeout
 	pantalla_de_carga.visible = false
-	AudioServer.set_bus_mute(AudioServer.get_bus_index("SFX"), false)
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), -64.0)
+	if modo_sonido == Modo.SFX:
+		AudioServer.set_bus_mute(AudioServer.get_bus_index("SFX"), false)
+		AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), -64.0)
 	
-	camara.global_position = Vector2.ZERO
 	
 	if prueba_sonido:
 		main_menu.visible = false

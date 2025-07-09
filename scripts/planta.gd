@@ -299,8 +299,10 @@ func _on_decay_vejez_timeout() -> void:
 		$decay_vejez.start()
 
 func check_death():
+	print('decay', decay_counter)
 	if decay_counter >= 5:
 		estado_planta = Estado.MUERTA
+		toggle_intox_anim()
 		actualizar_sprite()
 		set_particles('intoxicacion', 'off')
 		set_particles('curacion', 'off')
