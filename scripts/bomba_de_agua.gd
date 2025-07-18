@@ -132,8 +132,8 @@ func _process(delta):
 		if $brazo.rotation <= 0.01:
 			set_process(false)
 	
-	var start_point = Vector2(0, -11.0) # Fixed anchor point in ChainLine's local space
-	var brazo_tip_local = Vector2(4.0, -11.0) # Right edge
+	var start_point = Vector2(0, -13.0) # Fixed anchor point in ChainLine's local space
+	var brazo_tip_local = Vector2(2.0, -13.0) # Right edge
 	var brazo_tip_global = $brazo.to_global(brazo_tip_local)
 	var tip_in_chain_space = $cadena.to_local(brazo_tip_global)
 	

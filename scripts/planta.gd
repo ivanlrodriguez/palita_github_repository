@@ -58,12 +58,14 @@ func _on_area_a_limpiar_body_entered(body: Node2D):
 			mugres_particles.emitting = true
 		if mugre_counter >= 5:
 			if estado_planta != Estado.INTOXICADA and $timer_intoxicacion.is_stopped():
-				$timer_intoxicacion.start()
-				$sfx_timer_intoxicacion.play()
+				if is_instance_valid($timer_intoxicacion):
+					$timer_intoxicacion.start()
+					$sfx_timer_intoxicacion.play()
 				set_particles('intoxicacion', 'buildup')
 			if estado_planta == Estado.INTOXICADA:
-				$timer_curacion.stop()  # Cancel cure if it was running
-				$sfx_curacion.stop()
+				if is_instance_valid($timer_curacion):
+					$timer_curacion.stop()  # Cancel cure if it was running
+					$sfx_curacion.stop()
 				set_particles('curacion', 'off')
 
 
@@ -76,12 +78,14 @@ func _on_area_a_limpiar_body_exited(body: Node2D):
 			mugres_particles.emitting = false
 		body.remove_from_group("mugre_in_area_planta")
 		if mugre_counter < 5:
-			$timer_intoxicacion.stop()  # Cancel intox if not enough mugres
-			$sfx_timer_intoxicacion.stop()
+			if is_instance_valid($timer_intoxicacion):
+				$timer_intoxicacion.stop()  # Cancel intox if not enough mugres
+				$sfx_timer_intoxicacion.stop()
 			set_particles('intoxicacion', 'off')
 			if estado_planta == Estado.INTOXICADA and not planta_arrancada and $timer_curacion.is_stopped():
-				$timer_curacion.start()
-				$sfx_timer_curacion.play()
+				if is_instance_valid($timer_curacion):
+					$timer_curacion.start()
+					$sfx_timer_curacion.play()
 				set_particles('curacion', 'buildup')
 
 func particulas_intoxicacion_mugres():

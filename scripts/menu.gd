@@ -1,7 +1,7 @@
 extends CanvasLayer
 
 enum Menu { MAIN, MIXER, CONTROLES }
-enum Modo { MUSIC, SFX, SILENT }
+enum Modo { MUSIC, SFX, SILENT, FESTI }
 
 @export var modo_sonido := Modo.SILENT
 var prueba_sonido: bool = false
@@ -10,10 +10,12 @@ var esc_block: bool = true
 @onready var camara = get_node("/root/mundo/jugador/Camera2D")
 @onready var player = get_node("/root/mundo/jugador")
 
+
 @onready var main_menu = $main_menu
 @onready var main_menu_botones = $main_menu/botones
 @onready var btn_start = $main_menu/botones/Start
 @onready var btn_continue = $main_menu/botones/Continue
+@onready var btn_reset = $main_menu/botones/Reset
 @onready var btn_controls = $main_menu/botones/Controls
 @onready var btn_mixer = $main_menu/botones/Mixer
 @onready var controls_screen = $main_menu/controles
@@ -41,6 +43,7 @@ var esc_block: bool = true
 
 @onready var musica_extended: AudioStreamPlayer2D = $"../music/musica_extended"
 @onready var timer_prueba: Timer = $"../timer_prueba"
+@onready var timer_restart: Timer = $"../timer_restart"
 
 
 var game_started = false
@@ -48,12 +51,11 @@ var game_started = false
 func _ready():
 	AudioServer.set_bus_mute(AudioServer.get_bus_index("SFX"), true)
 	
-	match_modo_sonido()
-	
 	set_process(false)
 	
 	esc_block = true
 	
+	visible = true
 	main_menu.visible = false
 	main_menu_botones.visible = true
 	encuesta.visible = false
@@ -62,11 +64,13 @@ func _ready():
 	controls_screen.hide()
 	mixer.hide()
 	btn_continue.visible = false
+	btn_reset.visible = false
 	btn_controls.visible = false
 	btn_mixer.visible = false
 	
 	pantalla_de_carga.visible = true
 	await get_tree().create_timer(10.0).timeout
+	match_modo_sonido()
 	pantalla_de_carga.visible = false
 	if modo_sonido == Modo.SFX:
 		AudioServer.set_bus_mute(AudioServer.get_bus_index("SFX"), false)
@@ -114,11 +118,13 @@ func match_modo_sonido():
 			ambient_slider.visible = true
 			sfx_label.visible = true
 			sfx_slider.visible = true
-			
 		Modo.SILENT:
 			AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), true)
 			btn_mixer.visible = false
 			prueba_sonido = false
+		Modo.FESTI:
+			restore_mixer()
+			btn_mixer.visible = false
 
 func restore_mixer():
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), 0.0)
@@ -162,8 +168,12 @@ func _on_start_pressed():
 	if modo_sonido != Modo.SILENT:
 		musica_extended.play()
 	game_started = true
-	timer_prueba.start()
+	if modo_sonido != Modo.FESTI:
+		timer_prueba.start()
+	else:
+		timer_restart.start()
 	btn_continue.visible = true
+	btn_reset.visible = true
 	btn_controls.visible = true
 	if modo_sonido != Modo.SILENT:
 		btn_mixer.visible = true
@@ -194,6 +204,9 @@ func _on_continue_pressed():
 	visible = false
 	toggle_pause()
 
+
+func _on_reset_pressed() -> void:
+	restart_game()
 
 func _on_controls_pressed():
 	menu_click.play()
@@ -240,3 +253,9 @@ func _on_ambient_slider_value_changed(value: float) -> void:
 func _on_gui_slider_value_changed(value: float) -> void:
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("GUI"), value)
 	AudioServer.set_bus_mute(AudioServer.get_bus_index("GUI"), value < 0.05)
+
+func restart_game():
+	get_tree().reload_current_scene()
+
+func _on_timer_restart_timeout() -> void:
+	restart_game()

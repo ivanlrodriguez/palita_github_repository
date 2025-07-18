@@ -33,6 +33,8 @@ var dir_cardinal: String = get_direction_cardinal()
 var distance = position.distance_to(mov_target)
 
 # estados/flags
+var is_playing := false
+@onready var timer_restart: Timer = $"../timer_restart"
 var is_clicking := false
 var mouse_en_jugador = false
 var walking := false
@@ -88,6 +90,12 @@ func _ready():
 # Eventos del input (project/project settings/input map)
 # _unhandled_input: recomendado para gameplay (son acciones pisadas por UI)
 func _unhandled_input(event: InputEvent) -> void:
+	if event:
+		time_since_input = 0.0
+		timer_started = false
+		if not timer_restart.is_stopped():
+			timer_restart.stop()
+	
 	if event.is_action_pressed("click_izq"):
 		is_clicking = true
 		if not watering or tossing:
@@ -293,7 +301,9 @@ func _on_area_copa_body_entered(body: Node2D) -> void:
 	if is_instance_valid(body):
 		if body is agua: # agregar la logica de item pickup
 			body.in_copa = true
-			body.z_index = 4
+			body.z_index = 3
+			#body.z_as_relative = true
+			#body.y_sort_enabled = true
 			agua_counter += 1
 			if agua_counter > 0 and modo_actual != Modo.COPA:
 				modo_actual = Modo.COPA
@@ -306,7 +316,7 @@ func _on_area_copa_body_exited(body: Node2D) -> void:
 		if body is agua:
 			agua_counter -= 1
 			body.in_copa = false
-			body.z_index = 7
+			body.z_index = 4
 			body.origin_position_y = body.global_position.y
 			body.piso_threshold = randf_range(1.0, 4.0)
 			if agua_counter <= 0 and modo_actual != Modo.CROUCHING: # se puede tirar el agua yendo a modo crouch
@@ -433,7 +443,7 @@ func apply_modo_settings():
 	wspeedcount = 0 #resetear movimiento
 	match modo_actual:
 		Modo.STANDING:
-			speedmod = 25.0
+			speedmod = 35.0
 			periodmod = 5.0
 			set_collision_layer_bit(1, false)
 			set_collision_mask_bit(1, false)
@@ -445,7 +455,7 @@ func apply_modo_settings():
 			$area_base_pala.monitoring = false
 		
 		Modo.CROUCHING:
-			speedmod = 20.0
+			speedmod = 25.0
 			periodmod = 2.1
 			set_collision_layer_bit(1, true)
 			set_collision_mask_bit(1, true)
@@ -457,14 +467,14 @@ func apply_modo_settings():
 			$area_base_pala.monitoring = true
 		
 		Modo.COPA:
-			speedmod = 15.0
+			speedmod = 20.0
 			periodmod = 7.0
 			set_collision_layer_bit(1, false)
 			set_collision_mask_bit(1, true)
 			set_collision_layer_bit(5, false)
 			set_collision_mask_bit(5, false)
 			set_collision_layer_bit(4, true)
-			$AnimatedSprite2D.z_index = 3
+			$AnimatedSprite2D.z_index = 2
 			update_coll_mode("modo_copa")
 
 
@@ -665,10 +675,21 @@ func change_sfx_bus_vol():
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), linear_to_db(zoom_normalized) + 12)
 
 var time_now_delta := 0.0
+var time_since_input := 0.0
+var input_idle_threshold := 3.0 # seconds
+var timer_started := false
+
 func _process(delta):
 	if intro_block:
 		change_sfx_bus_vol()
-
+	
+	time_since_input += delta
+	
+	if time_since_input >= input_idle_threshold and not timer_started:
+		timer_started = true
+		if timer_restart.is_stopped():
+			timer_restart.start()
+	
 	time_now_delta += delta
 	$"../ambient/wisdoms_tragedy".volume_linear = abs(sin(time_now_delta/100))
 	$"../ambient/ruido".volume_linear = abs(sin(time_now_delta/100)/2) + 0.5

@@ -309,7 +309,7 @@ stream_2/stream = ExtResource("5_jvwtx")
 stream_3/stream = ExtResource("6_snasx")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wnris"]
-radius = 86.0
+radius = 105.0
 
 [node name="recicladora" type="StaticBody2D"]
 z_index = 3
@@ -319,6 +319,7 @@ script = ExtResource("1_662u3")
 
 [node name="cuerpo_anim" type="AnimatedSprite2D" parent="."]
 position = Vector2(9, 3)
+scale = Vector2(1.25, 1.25)
 sprite_frames = SubResource("SpriteFrames_uuec8")
 animation = &"bomba_lista"
 autoplay = "lvl_0"
@@ -328,34 +329,35 @@ frame_progress = 1.0
 [node name="hueco_anim" type="AnimatedSprite2D" parent="."]
 z_as_relative = false
 position = Vector2(9, 3)
+scale = Vector2(1.25, 1.25)
 sprite_frames = SubResource("SpriteFrames_7h40n")
 
 [node name="cinta_anim" type="AnimatedSprite2D" parent="."]
 z_index = 2
 z_as_relative = false
 position = Vector2(9, 3)
+scale = Vector2(1.25, 1.25)
 sprite_frames = SubResource("SpriteFrames_leh6v")
 autoplay = "default"
 frame_progress = 0.830478
 
 [node name="collpol" type="CollisionPolygon2D" parent="."]
 position = Vector2(0, 5)
-polygon = PackedVector2Array(-20, -6, 22, 15, 38, 7, 43, 10, 47, 8, 61, 14, 74.7303, 6.73103, 75, 2, 21, -27)
+polygon = PackedVector2Array(-30, -6, 27, 19, 44, 10, 52, 15, 55, 12, 72, 20, 92, 9, 92, 4, 18, -30)
 disabled = true
 
 [node name="estrella_area_hueco" type="CollisionPolygon2D" parent="."]
-position = Vector2(-1, 5)
-polygon = PackedVector2Array(-42, 15, -27, 23, -12, 15, -27, 7)
+position = Vector2(-11, 10)
+polygon = PackedVector2Array(-44, 15, -26, 24, -9, 15, -26, 6)
 disabled = true
 
 [node name="cinta" type="Area2D" parent="."]
-visible = false
 position = Vector2(0, 5)
 collision_layer = 0
 collision_mask = 130
 
 [node name="collpol_area_cinta" type="CollisionPolygon2D" parent="cinta"]
-polygon = PackedVector2Array(66, 12, 80, 5, 28, -21, 14, -15)
+polygon = PackedVector2Array(73, 14, 92, 4, 33, -24, 14, -15)
 
 [node name="hueco" type="Area2D" parent="."]
 position = Vector2(0, 5)
@@ -363,16 +365,16 @@ collision_layer = 0
 collision_mask = 66
 
 [node name="collpol_area_hueco" type="CollisionPolygon2D" parent="hueco"]
-visible = false
-polygon = PackedVector2Array(-50, 14, -28, 26, -6, 14, -28, 2)
+position = Vector2(-10, 7)
+polygon = PackedVector2Array(-55, 13, -27, 27, -1, 13, -27, -1)
 
 [node name="despawner" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 128
 
 [node name="collpol_despawner" type="CollisionPolygon2D" parent="despawner"]
-position = Vector2(0, 5)
-polygon = PackedVector2Array(-86, 0, -28, 30, 38, -5, 40, -2, -28, 36, -91, 3)
+position = Vector2(-8, 26)
+polygon = PackedVector2Array(-101, -8, -28, 30, 47, -10, 52, -7, -28, 36, -105, -6)
 
 [node name="sfx_mugre" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamRandomizer_8w2pf")
@@ -410,11 +412,11 @@ panning_strength = 2.0
 bus = &"SFX"
 
 [node name="area_sfx" type="Area2D" parent="."]
-visible = false
 collision_layer = 0
 collision_mask = 256
 
 [node name="circulo_collsh" type="CollisionShape2D" parent="area_sfx"]
+visible = false
 position = Vector2(9, -3)
 shape = SubResource("CircleShape2D_wnris")
 

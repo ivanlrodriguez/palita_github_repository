@@ -2199,15 +2199,15 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rjrdm"]
-radius = 25.0
-height = 82.0
+radius = 30.0
+height = 102.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_g0idr"]
-radius = 28.0
-height = 86.0
+radius = 40.0
+height = 132.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nl524"]
-radius = 86.0
+radius = 98.0459
 
 [node name="corazon_mundo" type="StaticBody2D"]
 z_index = 3
@@ -2216,7 +2216,7 @@ collision_mask = 0
 script = ExtResource("547_rjrdm")
 
 [node name="anim" type="AnimatedSprite2D" parent="."]
-scale = Vector2(1, 0.8)
+scale = Vector2(1.25, 1)
 sprite_frames = SubResource("SpriteFrames_irbsk")
 autoplay = "default"
 frame_progress = 0.852649
@@ -2232,11 +2232,13 @@ collision_layer = 0
 collision_mask = 67
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="area_atraccion"]
-polygon = PackedVector2Array(-73, 0, -71, -11, -65, -20, -58, -28, -43, -36, -26, -41, 0, -41, 0, -28, -16, -28, -23, -27, -30, -24, -35, -20, -39, -14, -42, -7, -43, 0, -42, 8, -39, 15, -34, 21, -30, 24, -23, 27, -17, 28, 0, 28, 0, 42, -20, 42, -37, 39, -55, 30, -65, 20, -71, 10)
+position = Vector2(-10.8, -1.3)
+polygon = PackedVector2Array(-76.2, 1.3, -73.2, -11.7, -67.2, -22.7, -58.2, -31.7, -43.2, -39.7, -25.2, -44.7, 10.8, -48.7, 11, -33, -16, -31, -24, -28, -30, -24, -35, -20, -39, -14, -42, -7, -43, 0, -42, 8, -39, 15, -34, 21, -30, 24, -23, 30, -15, 32, 11, 34, 10.8, 50.3, -22.2, 47.3, -42.2, 42.3, -58.2, 32.3, -67.2, 22.3, -73.2, 11.3)
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="area_atraccion"]
+position = Vector2(11, 0)
 rotation = 3.14159
-polygon = PackedVector2Array(-74, -0.000187603, -72, -13.0002, -65.9999, -22.0002, -57.9999, -29.0001, -45.9999, -37.0001, -28.9999, -42.0001, 0.000106478, -42, -2.44784e-06, -28, -18, -28, -25, -26, -31, -23, -35, -20.0001, -40, -14.0001, -43, -6, -43, -0.000109013, -42, 6.99989, -39, 13.9999, -36, 18.9999, -29.0001, 23.9999, -23.0001, 26.9999, -16.0001, 28, -7.09851e-05, 28, -0.000103942, 41, -24.0001, 40.9999, -37.0001, 38.9999, -48.0001, 34.9999, -60.0001, 26.9998, -72, 13.9998)
+polygon = PackedVector2Array(-76.2, 1.3, -73.2, -11.7, -67.2, -22.7, -58.2, -31.7, -43.2, -39.7, -25.2, -44.7, 11, -49, 11, -33, -16, -31, -24, -28, -30, -24, -35, -20, -39, -14, -42, -7, -43, 0, -42, 8, -39, 15, -34, 21, -30, 24, -23, 30, -15, 32, 11, 34, 10.8, 50.3, -22.2, 47.3, -42.2, 42.3, -58.2, 32.3, -67.2, 22.3, -73.2, 11.3)
 
 [node name="area_teleport" type="Area2D" parent="."]
 collision_layer = 0
@@ -2277,6 +2279,7 @@ bus = &"SFX"
 area_mask = 32769
 
 [node name="area_sfx" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 256
 

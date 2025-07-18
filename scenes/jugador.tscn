@@ -668,24 +668,24 @@ radius = 1.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lhlt4"]
 radius = 3.0
-height = 10.0
+height = 12.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_28edd"]
 radius = 6.0
 height = 20.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_k64kw"]
-radius = 1.41
-height = 6.0
+radius = 2.41
+height = 10.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qimn5"]
-size = Vector2(20, 21)
+size = Vector2(22, 27)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k64kw"]
-size = Vector2(16, 9)
+size = Vector2(18, 13)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_28edd"]
-size = Vector2(14, 7)
+size = Vector2(18, 9)
 
 [sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_lhlt4"]
 points = PackedVector2Array(-6, -7, -6, 7, 25, 30, 25, -30)
@@ -700,54 +700,59 @@ collision_mask = 273
 script = ExtResource("1_lhlt4")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+z_index = 3
+z_as_relative = false
+scale = Vector2(1.3, 1.3)
 sprite_frames = SubResource("SpriteFrames_smehm")
-animation = &"crouch_idle_S"
+animation = &"idle"
 autoplay = "idle"
 offset = Vector2(0, -3)
 
 [node name="collsh_area_sfx" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2(0, 1)
 shape = SubResource("CircleShape2D_dwuqk")
 
 [node name="collsh_standing" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2(0, -2)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_lhlt4")
 
 [node name="soft_coll" type="Area2D" parent="."]
+visible = false
 position = Vector2(0, -0.445)
 collision_layer = 0
 collision_mask = 16
 
 [node name="collsh_soft" type="CollisionShape2D" parent="soft_coll"]
 visible = false
-position = Vector2(0, -3.555)
+position = Vector2(0, -1.555)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_28edd")
 
 [node name="standing_push_area" type="Area2D" parent="."]
+visible = false
 position = Vector2(0, -0.445)
 collision_layer = 0
 collision_mask = 2
 
 [node name="collsh_standing_pies" type="CollisionShape2D" parent="standing_push_area"]
-visible = false
 position = Vector2(0, 0.035)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_k64kw")
 
 [node name="area_click_jugador" type="Area2D" parent="."]
+visible = false
 
 [node name="collsh_click_jugador" type="CollisionShape2D" parent="area_click_jugador"]
-visible = false
-position = Vector2(0, -6.5)
+position = Vector2(0, -9.5)
 shape = SubResource("RectangleShape2D_qimn5")
 
 [node name="collpol_modo_copa" type="CollisionPolygon2D" parent="."]
-visible = false
-position = Vector2(-2, -17)
+position = Vector2(-2, -20)
 rotation = 3.14159
-polygon = PackedVector2Array(-10, -2.00003, -8.99999, -3.00002, -6.99997, -11, 3.00003, -11, 5.00001, -2.99999, 6, -1.99999, 4.00003, -12, 3.00003, -12, 3.00005, -19, -6.99995, -19, -6.99997, -12, -7.99997, -12)
+polygon = PackedVector2Array(-12, -3.05176e-05, -11, -2.00003, -11, -10, -8.99997, -12, 5.00003, -12, 7.00002, -9.99998, 7, -1.99998, 8, 1.90735e-05, 8.00003, -11, 6.00003, -13, 3.00005, -19, -6.99995, -19, -9.99997, -13, -12, -11)
 
 [node name="area_copa" type="Area2D" parent="."]
 visible = false
@@ -756,38 +761,37 @@ collision_mask = 8
 
 [node name="collsh_area_copa" type="CollisionShape2D" parent="area_copa"]
 visible = false
-position = Vector2(0, -9.5)
+position = Vector2(0, -13.5)
 shape = SubResource("RectangleShape2D_k64kw")
 
 [node name="collpol_crouchN" type="CollisionPolygon2D" parent="."]
 visible = false
 position = Vector2(-2, -11)
 rotation = 3.14159
-polygon = PackedVector2Array(-8.99999, -4.00002, -8, -7, -7.99995, -11, 4.00005, -11, 4, -7, 5.00001, -3.99999, 5.00004, -14, -8.99996, -14)
+polygon = PackedVector2Array(-11, -2.00003, -9.99999, -5.00003, -9.99997, -11, 6.00003, -11, 6.00001, -4.99998, 7, -1.99998, 7.00003, -13, -11, -13)
 
 [node name="collpol_crouchS" type="CollisionPolygon2D" parent="."]
 visible = false
 position = Vector2(2, 5)
-polygon = PackedVector2Array(-9, -4, -8, -7, -8, -11, 4, -11, 4, -7, 5, -4, 5, -14, -9, -14)
+polygon = PackedVector2Array(-11, -3, -10, -5, -10, -12, 6, -12, 6, -5, 7, -3, 7, -14, -11, -14)
 
 [node name="collpol_crouchE" type="CollisionPolygon2D" parent="."]
 visible = false
 position = Vector2(-1, 5)
-polygon = PackedVector2Array(7, -4, 5, -5, -3, -5, 1, -11, 6, -11, 8, -12, -1, -12, -7, -4)
+polygon = PackedVector2Array(8, -3, 5, -5, -5, -5, -1, -12, 7, -12, 10, -14, -2, -14, -8, -3)
 
 [node name="collpol_crouchO" type="CollisionPolygon2D" parent="."]
 visible = false
 position = Vector2(1, -10)
 rotation = -3.14159
-polygon = PackedVector2Array(7.99999, -3.00002, 5.99999, -4.00002, 0.999982, -4, -3.00004, -9.99999, 3.99997, -10, 5.99997, -11, -7.00003, -11, -1.00001, -3)
+polygon = PackedVector2Array(10, -1.00003, 6.99999, -3.00002, -7.56979e-06, -3, -5.00003, -9.99999, 4.99997, -10, 7.99997, -12, -8.00003, -12, -1, -0.999998)
 
 [node name="area_base_pala" type="Area2D" parent="."]
 visible = false
 collision_mask = 2
 
 [node name="collsh_area_base_pala" type="CollisionShape2D" parent="area_base_pala"]
-visible = false
-position = Vector2(0, -2.5)
+position = Vector2(0, -3.5)
 shape = SubResource("RectangleShape2D_28edd")
 
 [node name="mugre_awakening" type="Area2D" parent="."]

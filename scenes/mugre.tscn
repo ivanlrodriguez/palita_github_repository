@@ -338,8 +338,9 @@ shape = SubResource("CircleShape2D_jd2qh")
 shape = SubResource("CircleShape2D_4k81h")
 
 [node name="sprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(1.25, 1.25)
 sprite_frames = SubResource("SpriteFrames_nx42m")
-animation = &"m_10"
+animation = &"s_11"
 
 [node name="despawn_check" type="Area2D" parent="."]
 collision_layer = 0

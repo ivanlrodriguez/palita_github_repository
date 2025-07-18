@@ -10,8 +10,8 @@
 [ext_resource type="AudioStream" uid="uid://bhxe2ds70dqb7" path="res://assets/sfx/agua_splash-005.ogg" id="14_psaqw"]
 [ext_resource type="AudioStream" uid="uid://e4edxf812qlh" path="res://assets/sfx/agua_splash-006.ogg" id="15_gk863"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_wrhic"]
-size = Vector2(1, 1)
+[sub_resource type="CircleShape2D" id="CircleShape2D_gx42f"]
+radius = 0.7
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hbyad"]
 atlas = ExtResource("2_astc6")
@@ -123,12 +123,11 @@ stream_4/stream = ExtResource("14_psaqw")
 stream_5/stream = ExtResource("15_gk863")
 
 [node name="agua" type="RigidBody2D"]
-top_level = true
 z_index = 4
 z_as_relative = false
 collision_layer = 8
 collision_mask = 8
-mass = 0.1
+mass = 0.07
 gravity_scale = 0.8
 linear_damp = 5.0
 angular_damp = 5.0
@@ -136,11 +135,11 @@ script = ExtResource("1_wrhic")
 
 [node name="collsh_agua" type="CollisionShape2D" parent="."]
 z_index = 10
-shape = SubResource("RectangleShape2D_wrhic")
+shape = SubResource("CircleShape2D_gx42f")
 
 [node name="agua_anim" type="AnimatedSprite2D" parent="."]
 modulate = Color(1, 1, 1, 0.643137)
-scale = Vector2(1.08, 1.08)
+scale = Vector2(1.5, 1.5)
 sprite_frames = SubResource("SpriteFrames_3i8gb")
 animation = &"agua_1"
 offset = Vector2(0.5, 0.5)

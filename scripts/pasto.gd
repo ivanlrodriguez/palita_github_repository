@@ -66,10 +66,12 @@ func _on_area_a_limpiar_body_entered(body: Node2D):
 			mugres_particles.emitting = true
 		if mugre_counter >= 25:
 			if estado_pasto != Estado.INTOXICADO:
-				$timer_intoxicacion.start()
+				if is_instance_valid($timer_intoxicacion):
+					$timer_intoxicacion.start()
 				set_particles('intoxicacion', 'buildup')
 			if estado_pasto == Estado.INTOXICADO:
-				$timer_curacion.stop()  # Cancel cure if it was running
+				if is_instance_valid($timer_curacion):
+					$timer_curacion.stop()  # Cancel cure if it was running
 				set_particles('curacion', 'off')
 
 
@@ -82,10 +84,12 @@ func _on_area_a_limpiar_body_exited(body: Node2D):
 		if mugre_counter <= 0:
 			mugres_particles.emitting = false
 		if mugre_counter < 15:
-			$timer_intoxicacion.stop()  # Cancel intox if not enough mugres
+			if is_instance_valid($timer_intoxicacion):
+				$timer_intoxicacion.stop()  # Cancel intox if not enough mugres
 			set_particles('intoxicacion', 'off')
 			if estado_pasto == Estado.INTOXICADO:
-				$timer_curacion.start()
+				if is_instance_valid($timer_curacion):
+					$timer_curacion.start()
 				set_particles('curacion', 'buildup')
 
 

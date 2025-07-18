@@ -40,6 +40,7 @@ var pull_strength: float = 10.0
 @export var cant_max_mugres_m := 500
 var planta_counter := 0
 var pasto_counter := 0
+var agua_pool := []
 var agua_counter := 0
 var mugre_reciclada_counter := 0
 var rand_x: float
@@ -64,6 +65,7 @@ func _ready() -> void:
 	randomize()
 	planta_spawn()
 	mugre_spawn()
+	fill_agua_pool()
 	$jugador/Camera2D.zoom = Vector2(0.2, 0.2)
 	await get_tree().create_timer(10.0).timeout
 	$ambient/ruido.play()
@@ -166,6 +168,7 @@ func planta_spawn():
 			planta_spawn()
 
 
+
 func _on_reproducir_pasto(ref):
 	# calculo del area de spawn
 	randomize()
@@ -229,7 +232,10 @@ func _on_pasto_muerto(pasto_ref):
 @onready var recicladora := $recicladora
 func _on_reciclar(mugre_ref):
 	if is_instance_valid(mugre_ref):
-		mugre_reciclada_counter += 1
+		if mugre_ref.mugre_id(0) == 'm':
+			mugre_reciclada_counter += 2
+		else:
+			mugre_reciclada_counter += 1
 		mugre_pool.request_despawn(mugre_ref)
 		if mugre_reciclada_counter >= 50 and recicladora.level != recicladora.final_level:
 			mugre_reciclada_counter = 0
@@ -240,14 +246,21 @@ func _on_reciclar(mugre_ref):
 				var desde_recicladora = $recicladora.global_position + Vector2(25.0, -14.0)
 				bomba_de_agua.global_position = desde_recicladora
 				add_child.call_deferred(bomba_de_agua)
-	
-
-
 
 
 
 func _on_palita_boceto_1_finished() -> void:
 	$palita_boceto_1.play()
+
+func fill_agua_pool():
+	for i in range(2000):
+		var agua_child = agua_scene.instantiate()
+		agua_child.visible = false
+		agua_child.global_position = Vector2(-5555, -5555)
+		agua_child.agua_toco_piso_signal.connect(_on_agua_toco_piso)
+		agua_child.reproducir_pasto_signal.connect(_on_reproducir_pasto)
+		add_child(agua_child)
+		agua_pool.append(agua_child)
 
 
 func _on_spawn_agua(bomba_ref):
@@ -255,12 +268,13 @@ func _on_spawn_agua(bomba_ref):
 
 
 func agua_spawn(spawn_pos):
-	var agua_child = agua_scene.instantiate()
-	agua_counter += 1
-	agua_child.global_position = spawn_pos + Vector2(randf_range(-2, 2), 0)
-	agua_child.agua_toco_piso_signal.connect(_on_agua_toco_piso)
-	agua_child.reproducir_pasto_signal.connect(_on_reproducir_pasto)
-	add_child(agua_child)
+	if agua_pool.is_empty():
+		push_error("⚠️ Agua pool empty! Increase pool size.")
+		return
+	else:
+		var agua_child = agua_pool.pop_back()
+		agua_child.global_position = spawn_pos + Vector2(randf_range(-2, 2), 0)
+		agua_child.reset()
 
 
 func _on_agua_toco_piso(agua_ref):
@@ -270,8 +284,7 @@ func _on_agua_toco_piso(agua_ref):
 	await get_tree().create_timer(agua_fadeout).timeout
 	# After 100 seconds, queue free
 	if agua_ref and agua_ref.is_inside_tree():
-		agua_ref.queue_free()
-		agua_counter -= 1
+		agua_pool.append(agua_ref)
 
 
 func _on_world_boundary_body_exited(body: Node2D) -> void:

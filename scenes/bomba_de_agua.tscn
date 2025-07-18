@@ -7,14 +7,14 @@
 [ext_resource type="AudioStream" uid="uid://dk1qai613tp6l" path="res://assets/sfx/tres/sfx_manija.tres" id="5_ovrru"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_fhwoo"]
-radius = 2.0
-height = 4.0
+radius = 3.0
+height = 10.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_uubxu"]
-radius = 11.5
+radius = 12.4036
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jne1g"]
-size = Vector2(5, 1)
+size = Vector2(9, 1.5)
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_ovrru"]
 random_pitch = 1.1
@@ -33,10 +33,12 @@ script = ExtResource("1_fhwoo")
 
 [node name="cadena" type="Line2D" parent="."]
 position = Vector2(0, -10.5)
+points = PackedVector2Array(2, -13.5, 9, -12.5)
 width = 0.5
 default_color = Color(0, 0.364706, 0.576471, 1)
 
 [node name="cuerpo" type="Sprite2D" parent="."]
+scale = Vector2(1.25, 1.25)
 texture = ExtResource("1_ftpvq")
 offset = Vector2(3, -12)
 region_enabled = true
@@ -47,7 +49,8 @@ rotation = 1.5708
 shape = SubResource("CapsuleShape2D_fhwoo")
 
 [node name="brazo" type="Sprite2D" parent="."]
-position = Vector2(-8, -24.5)
+position = Vector2(-10, -30)
+scale = Vector2(1.25, 1.25)
 texture = ExtResource("1_ftpvq")
 region_enabled = true
 region_rect = Rect2(39.0943, 0, 16.0946, 31.7516)
@@ -62,7 +65,7 @@ shape = SubResource("CircleShape2D_uubxu")
 position = Vector2(0, -10.5)
 
 [node name="spawn_area_collsh" type="CollisionShape2D" parent="spawn_area"]
-position = Vector2(11.5, -3.5)
+position = Vector2(14.5, -6.5)
 shape = SubResource("RectangleShape2D_jne1g")
 
 [node name="tiempo_plantacion" type="Timer" parent="."]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://ci104613jlym6"]
 
-[ext_resource type="Script" uid="uid://dmdo227tva3de" path="res://scripts/galpon.gd" id="1_c4yty"]
+[ext_resource type="Script" path="res://scripts/galpon.gd" id="1_c4yty"]
 [ext_resource type="Texture2D" uid="uid://bc7knulpdxb7" path="res://assets/sprites/galpon_techo.png" id="2_e1mmm"]
 [ext_resource type="Texture2D" uid="uid://b8a45vhtceg5n" path="res://assets/sprites/galpon_piso.png" id="4_2b1hq"]
 
@@ -12,13 +12,15 @@ script = ExtResource("1_c4yty")
 
 [node name="techo" type="Sprite2D" parent="."]
 position = Vector2(-2, -17)
+scale = Vector2(1.25, 1.25)
 texture = ExtResource("2_e1mmm")
 
 [node name="piso" type="Sprite2D" parent="."]
 z_as_relative = false
 position = Vector2(-2, -17)
+scale = Vector2(1.25, 1.25)
 texture = ExtResource("4_2b1hq")
 
 [node name="collpol" type="CollisionPolygon2D" parent="."]
-polygon = PackedVector2Array(-59, -2, -25, 10, -20, 6, -49, -4, -19, -19, 33, -6, 22, 0, 36, 8, 51, -4, -19, -22)
+polygon = PackedVector2Array(-73, 2, -30, 18, -26, 11, -26, -11, -18, -17, 41, 0, 30, 9, 42, 15, 64, 0, -19, -22)
 disabled = true
