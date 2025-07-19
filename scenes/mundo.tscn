@@ -426,7 +426,6 @@ vertical_alignment = 1
 [node name="toggle_click_stop" type="CheckButton" parent="menu/main_menu/controles"]
 layout_mode = 2
 theme = ExtResource("17_vnytd")
-button_pressed = true
 text = "mantener click para moverse"
 
 [node name="cerrar_controles" type="Button" parent="menu/main_menu/controles"]

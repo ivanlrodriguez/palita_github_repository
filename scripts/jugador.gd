@@ -99,7 +99,7 @@ func _ready():
 # Eventos del input (project/project settings/input map)
 # _unhandled_input: recomendado para gameplay (son acciones pisadas por UI)
 func _unhandled_input(event: InputEvent) -> void:
-	if $"../menu".visible:
+	if $"../menu".visible or intro_block:
 		return
 	if event:
 		time_since_input = 0.0
@@ -942,4 +942,4 @@ func sfx_walking():
 
 func _on_toggle_click_stop_toggled(toggled_on: bool) -> void:
 	click_stop = toggled_on
-	pointer.visible = !toggled_on
+	$"../pointer".visible = !toggled_on

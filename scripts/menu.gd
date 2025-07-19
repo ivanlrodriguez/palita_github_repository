@@ -64,6 +64,7 @@ func _ready():
 	tutorial.visible = false
 	
 	controls_screen.hide()
+	$main_menu/controles/toggle_click_stop.button_pressed = true
 	mixer.hide()
 	btn_continue.visible = false
 	btn_reset.visible = false
@@ -162,6 +163,12 @@ func _input(event):
 		mixer.hide()
 		controls_screen.hide()
 		btn_continue.grab_focus()
+	
+	if event.is_action_pressed("close_menu"):
+		if not visible:
+			return
+		visible = false
+		toggle_pause()
 
 
 func toggle_pause():
