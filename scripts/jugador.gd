@@ -27,16 +27,23 @@ signal toss_triggered(jugador_ref)
 var mov_target = Vector2.ZERO
 var cached_mov_target = Vector2.ZERO
 var mov_direction = Vector2.ZERO
-var prev_cardinal: String = get_direction_cardinal()
-var new_cardinal: String = get_direction_cardinal()
-var dir_cardinal: String = get_direction_cardinal()
+var dir_cardinal: String = ""
+var prev_cardinal: String = ""
+var raw_cardinal: String = ""
+var stable_cardinal: String = ""
+var prev_dir_cardinal := "S"  # Start value — assign this to a top-level var
+var prev_stable_cardinal: String = ""
 var distance = position.distance_to(mov_target)
 
-# estados/flags
+# menu/UI/control
 var is_playing := false
 @onready var timer_restart: Timer = $"../timer_restart"
 var is_clicking := false
 var mouse_en_jugador = false
+var is_joystick_moving := false
+var ui_consumed_click_der := false
+
+# estados/flags
 var walking := false
 var watering := false
 var handling := false
@@ -51,6 +58,8 @@ var collshape_original_positions := {}
 
 # camara
 var espacio_pressed := false
+var toggle_zoom_in := false
+var toggle_zoom_out := false
 @onready var main_camera: Camera2D = $Camera2D
 var click_der_pressed := false
 var camera_look_active := false
@@ -90,6 +99,8 @@ func _ready():
 # Eventos del input (project/project settings/input map)
 # _unhandled_input: recomendado para gameplay (son acciones pisadas por UI)
 func _unhandled_input(event: InputEvent) -> void:
+	if $"../menu".visible:
+		return
 	if event:
 		time_since_input = 0.0
 		timer_started = false
@@ -110,18 +121,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		walk_stop()
 	
 	if event.is_action_pressed("click_der"):
-		click_der_pressed = true
+		toggle_crouch()
 		#click_start_time = Time.get_ticks_msec() / 1000.0
 		#initial_click_world_pos = get_global_mouse_position()
 		#initial_click_viewport_pos = main_camera.get_viewport().get_mouse_position()
 		#initial_player_world_pos = global_position
-	
-	if event.is_action_released("click_der"):
-		click_der_pressed = false
-		#time_since_click_der = 0.0
-		if not camera_look_active and not watering:
-			toggle_crouch()
-	
+
+
 	if event.is_action_pressed("espacio"):
 		espacio_pressed = true
 		initial_click_world_pos = get_global_mouse_position()
@@ -168,15 +174,65 @@ func _unhandled_input(event: InputEvent) -> void:
 		watering = false
 		rotation = 0
 	
+	if event.is_action_pressed("modo_riego_joystick"):
+		if modo_actual != Modo.COPA:
+			return
+		walk_stop()
+		watering = true
+	
+	if event.is_action_released("modo_riego_joystick"):
+		if is_clicking and modo_actual == Modo.STANDING:
+			walk_start()
+		watering = false
+		rotation = 0
+	
 	# zoom
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			change_zoom(1)  # Zoom in
-			change_sfx_bus_vol()
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			change_zoom(-1)   # Zoom out
-			change_sfx_bus_vol()
+	if event.is_action_pressed("zoom_in"):
+		toggle_zoom_in = true
+		change_zoom(1)  # Zoom in
+		change_sfx_bus_vol()
+	
+	if event.is_action_released("zoom_in"):
+		toggle_zoom_in = false
+	
+	if event.is_action_pressed("zoom_out"):
+		toggle_zoom_out = true
+		change_zoom(-1)   # Zoom out
+		change_sfx_bus_vol()
+	
+	if event.is_action_released("zoom_out"):
+		toggle_zoom_out = false
 
+var camera_joystick_active := false
+var right_stick_offset := Vector2.ZERO
+const CAMERA_JOYSTICK_MAX_DISTANCE := 10000.0
+const CAMERA_JOYSTICK_SPEED := 500.0  # Pixels per second
+
+func handle_joystick_camera_movement(delta: float) -> void:
+	if intro_block:
+		return
+
+	var cam_input := Input.get_vector("move_cam_left", "move_cam_right", "move_cam_up", "move_cam_down")
+
+	if cam_input.length() > 0.1:
+		camera_joystick_active = true
+
+		# Desired direction from right stick
+		var desired_offset = cam_input.normalized() * CAMERA_JOYSTICK_MAX_DISTANCE
+
+		# Smooth camera offset toward desired offset
+		# Uses LERP for speed-based interpolation
+		main_camera.offset = main_camera.offset.lerp(desired_offset, CAMERA_JOYSTICK_SPEED * delta / CAMERA_JOYSTICK_MAX_DISTANCE)
+
+	else:
+		# Return to player if joystick released
+		if camera_joystick_active:
+			if main_camera.offset.length() > 0.1:
+				var return_speed := 5.0
+				main_camera.offset = main_camera.offset.lerp(Vector2.ZERO, return_speed * delta)
+			else:
+				main_camera.offset = Vector2.ZERO
+				camera_joystick_active = false
 
 
 #================================
@@ -190,9 +246,10 @@ func walk_start():
 	walking = true
 	if not click_stop:
 		mov_target = cached_mov_target #esto es para cuando uno efectua un toss mientras camina
+		pointer.global_position = mov_target
+		pointer.play("target_define")
 	mov_direction = global_position.direction_to(mov_target)
-	pointer.global_position = mov_target
-	pointer.play("target_define")
+	
 
 
 func walk_stop():
@@ -229,6 +286,26 @@ func _on_restore_player_movement():
 	set_process_unhandled_input(true)
 
 
+func handle_joystick_movement():
+	var joy_input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	
+	if joy_input.length() > 0.1:
+		is_joystick_moving = true
+		
+		# Update direction and movement
+		mov_direction = joy_input.normalized()
+		mov_target = global_position + mov_direction * 10  # Arbitrary distance
+		
+		if not walking:
+			if tossing or watering:
+				walk_stop()
+			else:
+				walk_start()
+	elif is_joystick_moving:
+		is_joystick_moving = false
+		if not is_clicking:  # Don't stop if mouse click is still held
+			walk_stop()
+
 #================================
 
 # MODOS
@@ -240,15 +317,25 @@ func modo_riego_tilt(delta):
 	if not watering:
 		return
 	
-	var mouse_pos = get_global_mouse_position()
-	var direction = (mouse_pos - global_position).normalized()
-	var angle_from_up = Vector2.UP.angle_to(direction)  # relative to downward vector
+	var joy_input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+
+	if Input.is_action_pressed("modo_riego_joystick"):
+		var direction = joy_input.normalized()
+		var angle_from_up = Vector2.UP.angle_to(direction)
+		var clamped_angle = clamp(angle_from_up, -PI / 2, PI / 2)
 	
-	# Clamp the angle to a 180° arc centered on down (i.e., -PI/2 to PI/2)
-	var clamped_angle = clamp(angle_from_up, -PI / 2, PI / 2)
+		const DRAG_STRENGTH := 0.1
+		rotation = lerp_angle(rotation, clamped_angle, DRAG_STRENGTH)
+	else:
+		var mouse_pos = get_global_mouse_position()
+		var direction = (mouse_pos - global_position).normalized()
+		var angle_from_up = Vector2.UP.angle_to(direction)  # relative to downward vector
+		
+		# Clamp the angle to a 180° arc centered on down (i.e., -PI/2 to PI/2)
+		var clamped_angle = clamp(angle_from_up, -PI / 2, PI / 2)
 	
-	const DRAG_STRENGTH := 10
-	rotation = lerp_angle(rotation, clamped_angle, delta * DRAG_STRENGTH)
+		const DRAG_STRENGTH := 0.1
+		rotation = lerp_angle(rotation, clamped_angle, delta * DRAG_STRENGTH)
 
 
 func toggle_crouch():
@@ -443,7 +530,7 @@ func apply_modo_settings():
 	wspeedcount = 0 #resetear movimiento
 	match modo_actual:
 		Modo.STANDING:
-			speedmod = 35.0
+			speedmod = 45.0
 			periodmod = 5.0
 			set_collision_layer_bit(1, false)
 			set_collision_mask_bit(1, false)
@@ -455,7 +542,7 @@ func apply_modo_settings():
 			$area_base_pala.monitoring = false
 		
 		Modo.CROUCHING:
-			speedmod = 25.0
+			speedmod = 35.0
 			periodmod = 2.1
 			set_collision_layer_bit(1, true)
 			set_collision_mask_bit(1, true)
@@ -467,7 +554,7 @@ func apply_modo_settings():
 			$area_base_pala.monitoring = true
 		
 		Modo.COPA:
-			speedmod = 20.0
+			speedmod = 25.0
 			periodmod = 7.0
 			set_collision_layer_bit(1, false)
 			set_collision_mask_bit(1, true)
@@ -504,9 +591,9 @@ func update_coll_mode(coll_mode: String) -> void:
 	match coll_mode:
 		"N":
 			set_coll_shape_visibility("crouchN", $collpol_crouchN, true)
-			$collsh_area_sfx.position = Vector2(0, 1)
 		"S":
 			set_coll_shape_visibility("crouchS", $collpol_crouchS, true)
+			$collsh_area_sfx.position = Vector2(0, -8)
 		"E":
 			set_coll_shape_visibility("crouchE", $collpol_crouchE, true)
 		"O":
@@ -529,23 +616,68 @@ func update_coll_mode(coll_mode: String) -> void:
 #================================
 
 #detectar el cuadrante en el que se encuentra el puntero
+#func get_direction_cardinal() -> String:
+	#var angle = mov_direction.angle()
+	#if angle < 0:
+		#angle += PI * 2  # Normalize to 0–2π
+	#
+	#var direction_index = int(round(angle / (PI / 2))) % 4
+	#match direction_index:
+		#0:
+			#return "E"
+		#1:
+			#return "S"
+		#2:
+			#return "O"
+		#3:
+			#return "N"
+	#return "0"
+
 func get_direction_cardinal() -> String:
+	var angle := mov_direction.angle()
+
+	# Normalize angle to 0–2π
+	if angle < 0:
+		angle += TAU  # TAU = 2 * PI
+
+	# Define ranges (in radians)
+	# Giving overlap priority to cardinal axes
+
+	if angle >= deg_to_rad(45) and angle < deg_to_rad(135):
+		return "S"  # Down
+	elif angle >= deg_to_rad(135) and angle < deg_to_rad(225):
+		return "O"  # Left
+	elif angle >= deg_to_rad(225) and angle < deg_to_rad(315):
+		return "N"  # Up
+	else:
+		return "E"  # Right
+#
+#func get_direction_cardinal_stable() -> String:
+	#var new_dir = get_direction_cardinal()
+	#if new_dir != prev_cardinal:
+		#if mov_direction.length() > 0.5:
+			#prev_cardinal = new_dir
+	#return prev_cardinal
+
+func get_direction_cardinal_stable() -> String:
+	if mov_direction.length() < 0.1:
+		return prev_dir_cardinal  # Stick not moving, don't change
+
 	var angle = mov_direction.angle()
 	if angle < 0:
-		angle += PI * 2  # Normalize to 0–2π
-	
-	var direction_index = int(round(angle / (PI / 2))) % 4
-	match direction_index:
-		0:
-			return "E"
-		1:
-			return "S"
-		2:
-			return "O"
-		3:
-			return "N"
-	return "0"
+		angle += TAU  # Normalize to 0-2π
 
+	# Threshold angle ranges with overlap to reduce flickering
+	if angle >= deg_to_rad(40) and angle < deg_to_rad(140):
+		prev_dir_cardinal = "S"
+	elif angle >= deg_to_rad(130) and angle < deg_to_rad(230):
+		prev_dir_cardinal = "O"
+	elif angle >= deg_to_rad(220) and angle < deg_to_rad(320):
+		prev_dir_cardinal = "N"
+	else:
+		prev_dir_cardinal = "E"
+
+	return prev_dir_cardinal
 
 #================================
 
@@ -616,14 +748,44 @@ func movimiento_jugador(delta):
 		walk_stop()
 		walking = false
 	
-	# Cache direction once
-	dir_cardinal = get_direction_cardinal()
-	new_cardinal = dir_cardinal
-	# Reset phase on cardinal change
-	if new_cardinal != prev_cardinal:
+	# Get raw input angle direction
+	raw_cardinal = get_direction_cardinal()
+	
+	# Only update stable direction if movement is strong enough
+	if mov_direction.length() > 0.5 and raw_cardinal != stable_cardinal:
+		stable_cardinal = raw_cardinal
+	
+	# Then use that to determine if we should update animations, collisions, etc.
+	if stable_cardinal != prev_stable_cardinal:
 		wspeedcount = 0
-		prev_cardinal = new_cardinal
-		# Modo de colision
+		prev_stable_cardinal = stable_cardinal
+	
+		if modo_actual == Modo.CROUCHING:
+			update_coll_mode(stable_cardinal)
+			sfx_pasos_crouching.stop()
+	
+	# Finally assign it to use elsewhere
+	#dir_cardinal = stable_cardinal
+	## Cache direction once
+	#dir_cardinal = get_direction_cardinal_stable()
+	#new_cardinal = dir_cardinal
+	## Reset phase on cardinal change
+	#if new_cardinal != prev_cardinal:
+		#wspeedcount = 0
+		#print('this triggers')
+		#prev_cardinal = new_cardinal
+		## Modo de colision
+		#if modo_actual == Modo.CROUCHING:
+			#update_coll_mode(dir_cardinal)
+			#print(dir_cardinal)
+			#sfx_pasos_crouching.stop()
+	
+	dir_cardinal = get_direction_cardinal_stable()
+	
+	if dir_cardinal != prev_cardinal:
+		wspeedcount = 0
+		prev_cardinal = dir_cardinal
+
 		if modo_actual == Modo.CROUCHING:
 			update_coll_mode(dir_cardinal)
 			sfx_pasos_crouching.stop()
@@ -637,6 +799,9 @@ func _physics_process(delta: float) -> void:
 	
 	if handling or intro_block:
 		return
+	
+	# Handle joystick movement
+	handle_joystick_movement()
 	
 	modo_riego_tilt(delta)
 	
@@ -652,7 +817,7 @@ func _physics_process(delta: float) -> void:
 
 #================================
 
-func change_zoom(zoom_direction: int):  # direction is +1 (out) or -1 (in)
+func change_zoom(zoom_direction: float):  # direction is +1 (out) or -1 (in)
 	if intro_block:
 		return
 	var current_zoom = $Camera2D.zoom.x  # assuming uniform scaling (x = y)
@@ -694,7 +859,15 @@ func _process(delta):
 	$"../ambient/wisdoms_tragedy".volume_linear = abs(sin(time_now_delta/100))
 	$"../ambient/ruido".volume_linear = abs(sin(time_now_delta/100)/2) + 0.5
 	$mugre_awakening.rotation = mov_direction.angle()
-
+	
+	handle_joystick_camera_movement(delta)  # 🔥 ADD THIS LINE
+	
+	if toggle_zoom_in:
+		change_zoom(+0.5)
+	
+	if toggle_zoom_out:
+		change_zoom(-0.5)
+	
 	if espacio_pressed:
 		#time_since_click_der = Time.get_ticks_msec() / 1000.0 - click_start_time
 		#if time_since_click_der >= required_hold_time:

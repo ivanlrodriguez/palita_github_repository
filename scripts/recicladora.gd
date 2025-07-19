@@ -27,7 +27,7 @@ func level_up():
 	sfx_level.stream = level_variants[level - 1]
 	sfx_level.play()
 	if level == final_level:
-		await get_tree().create_timer(3.0).timeout
+		await get_tree().create_timer(1.0).timeout
 		$sfx_bomba_lista.play()
 		$cuerpo_anim.play("bomba_lista")
 		await get_tree().create_timer(3.0).timeout
@@ -75,12 +75,10 @@ func _physics_process(_delta: float) -> void:
 func _on_area_sfx_body_entered(body: Node2D) -> void:
 	if body is CharacterBody2D and not $sfx_motor.playing:
 		$sfx_motor.play()
-		print('sfx play')
 
 func _on_area_sfx_body_exited(body: Node2D) -> void:
 	if body is CharacterBody2D:
 		$sfx_motor.stop()
-		print('sfx stop')
 
 func _on_sfx_motor_finished() -> void:
 	$sfx_motor.play()

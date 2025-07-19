@@ -69,7 +69,7 @@ func on_toss_triggered(player_ref: Node):
 	toss_vector = toss_vector_calculator(dir_cardinal_jugador)
 
 	var offset = Vector2(randf_range(-0.5, 0.5), randf_range(0.1, 0.5))
-	body.apply_impulse(toss_vector, offset)
+	body.apply_impulse(toss_vector * 1.3, offset)
 
 	body.tossed = true
 	if body is mugre:
@@ -132,7 +132,7 @@ func toss_vector_calculator(dir_cardinal_jugador: String) -> Vector2:
 		'N':
 			toss_range_x = randf_range(-1.0, 1.0)
 			toss_range_y = randf_range(0.7, 1.0) * -60
-			landing_threshold = randf_range(40, 50)
+			landing_threshold = randf_range(50, 70)
 			height_tolerance = 2
 		'S':
 			toss_range_x = randf_range(-1.0, 1.0)

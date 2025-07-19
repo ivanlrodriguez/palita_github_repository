@@ -16,8 +16,8 @@ var orbit_data = {
 @onready var despawn_check: Area2D = $despawn_check
 
 var collsh: CollisionShape2D
-var ntype: String
-var nmugre: int
+var ntype := 's'
+var nmugre := 1
 var mugre_id := ['s', 1]
 
 var tossed := false
@@ -43,6 +43,7 @@ func setup(type: String):
 	
 	if type == "small":
 		ntype = "s"
+		$sprite.play(ntype+ "_" + str(nmugre))
 		mass = 0.25
 		$collmugre_s.set_deferred("disabled", false)
 		collsh = $collmugre_s
@@ -52,12 +53,14 @@ func setup(type: String):
 		
 	elif type == "medium":
 		ntype = "m"
+		$sprite.play(ntype+ "_" + str(nmugre))
 		mass = 0.5
 		$collmugre_m.set_deferred("disabled", false)
 		collsh = $collmugre_m
 		# desactivar la otra opcion
 		$collmugre_s.set_deferred("disabled", true)
 		$sfx_toco_piso.pitch_scale = 0.8
+		
 
 func _ready():
 	randomize()

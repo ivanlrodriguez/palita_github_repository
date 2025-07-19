@@ -206,7 +206,6 @@ func _on_reproducir_pasto(ref):
 
 
 func _on_planta_muerta(planta_ref):
-	print('recieved signal from ', planta_ref)
 	planta_counter -= 1
 	# Start a fade-out animation
 	var tween = create_tween()
@@ -232,7 +231,7 @@ func _on_pasto_muerto(pasto_ref):
 @onready var recicladora := $recicladora
 func _on_reciclar(mugre_ref):
 	if is_instance_valid(mugre_ref):
-		if mugre_ref.mugre_id(0) == 'm':
+		if mugre_ref.mugre_id[0] == 'm':
 			mugre_reciclada_counter += 2
 		else:
 			mugre_reciclada_counter += 1
@@ -287,10 +286,10 @@ func _on_agua_toco_piso(agua_ref):
 		agua_pool.append(agua_ref)
 
 
-func _on_world_boundary_body_exited(body: Node2D) -> void:
-	if is_instance_valid(body):
-		if body is mugre and not body.reciclada:
-			body.enter_orbit_system()
+#func _on_world_boundary_body_exited(body: Node2D) -> void:
+	#if is_instance_valid(body):
+		#if body is mugre and not body.reciclada:
+			#body.enter_orbit_system()
 
 
 

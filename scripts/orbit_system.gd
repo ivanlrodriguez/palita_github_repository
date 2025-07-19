@@ -23,8 +23,10 @@ func _swap_to_pre_orbit(rigid_mugre: Node2D, orbit_data: Dictionary) -> void:
 
 
 func update_fall_chance():
-	for orbiter in orbiting_mugres:
-		orbiter.fall_chance = max(0, round(float(3000 - orbiting_mugres.size()) / 10))
+	var rand_mugre_index = randf_range(0, orbiting_mugres.size())
+	var rand_mugre = orbiting_mugres[rand_mugre_index]
+	rand_mugre.fall_chance = max(0, round(float(1000 - orbiting_mugres.size()) / 100))
+	print(rand_mugre.fall_chance)
 
 
 func _process(delta: float) -> void:
@@ -44,18 +46,18 @@ func fell_from_orbit(orbit_mugre: Node2D):
 			rigid_mugre.setup("medium")
 		rigid_mugre.global_position = orbit_mugre.global_position
 		rigid_mugre.visible = true
-		rigid_mugre.set_rigid_mode()
+		rigid_mugre.set_passive_mode()
 		rigid_mugre.play_sfx_toco_piso()
 		
 		mugre_pool.return_to_pool(orbit_mugre)
 		orbiting_mugres.erase(orbit_mugre)
 		update_fall_chance()
-		await get_tree().process_frame
-		if is_instance_valid(rigid_mugre):
-			var rand_angle = randf_range(0, TAU)
-			rigid_mugre.apply_impulse(Vector2.from_angle(rand_angle) * randf_range(10, 100))
-		await get_tree().create_timer(0.5).timeout
-		if is_instance_valid(rigid_mugre):
-			rigid_mugre.set_passive_mode()
+		#await get_tree().process_frame
+		#if is_instance_valid(rigid_mugre):
+			#var rand_angle = randf_range(0, TAU)
+			#rigid_mugre.apply_impulse(Vector2.from_angle(rand_angle) * randf_range(10, 100))
+		#await get_tree().create_timer(0.5).timeout
+		#if is_instance_valid(rigid_mugre):
+			#rigid_mugre.set_passive_mode()
 	
 	

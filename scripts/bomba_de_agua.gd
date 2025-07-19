@@ -11,10 +11,12 @@ var arrancable := false
 var arrancada := true
 var planting := false
 var untouched := true
-var working := false
 var origin_position: Vector2
 const SPRING_STIFFNESS := 2000.0
 
+var working := false
+var can_serve := false
+var joystick_dragged := false
 var dragging := false
 var drag_strength: float
 const UP_DRAG_STRENGTH := 8.0 
@@ -49,6 +51,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		emit_signal("restore_player_movement_signal")
 	
 	if event.is_action_pressed("press_F_to_FLIP"):
+		if can_serve: # joystick - reemplazar por cuadrado
+			dragging = true
+			set_process(true)
+			#emit_signal("stop_player_movement_signal")
+			$sfx_manija.play()
 		if not arrancable:
 			return
 		elif not arrancada:
@@ -62,6 +69,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			set_collision_layer_bit(1, false)
 			set_collision_mask_bit(2, false)
 			apply_torque(sign(randf() - 0.5)* 2500)
+	
+	if event.is_action_released("press_F_to_FLIP"):
+		dragging = false
+		joystick_dragged = true
 
 
 func _ready():
@@ -79,7 +90,7 @@ func _ready():
 	set_collision_layer_bit(8, true)
 	set_collision_mask_bit(1, false)
 	rotation = -PI/3
-	await get_tree().create_timer(6.3).timeout
+	await get_tree().create_timer(8.0).timeout
 	z_index = 3
 	set_physics_process(true)
 	set_collision_layer_bit(2, true)
@@ -103,13 +114,17 @@ func _on_manija_input_event(_viewport: Viewport, event: InputEvent, _shape_idx: 
 var clamped_lerp_brazo_rotation: float
 func _process(delta):
 	if dragging:
-		mouse_pos = get_global_mouse_position()
-		to_mouse = mouse_pos - $brazo.global_position
-		rotation_target = to_mouse.angle() - PI/2
-		if to_mouse.y < 0:
+		if Input.is_action_pressed("press_F_to_FLIP"):
+			rotation_target = PI/2
 			drag_strength = UP_DRAG_STRENGTH
 		else:
-			drag_strength = DOWN_DRAG_STRENGTH
+			mouse_pos = get_global_mouse_position()
+			to_mouse = mouse_pos - $brazo.global_position
+			rotation_target = to_mouse.angle() - PI/2
+			if to_mouse.y < 0:
+				drag_strength = UP_DRAG_STRENGTH
+			else:
+				drag_strength = DOWN_DRAG_STRENGTH
 		var lerp_brazo_rotation = lerp_angle($brazo.rotation, rotation_target, delta * DOWN_DRAG_STRENGTH)
 		clamped_lerp_brazo_rotation = clamp(lerp_brazo_rotation, 0, PI/2)
 		$brazo.rotation = clamped_lerp_brazo_rotation
@@ -125,11 +140,15 @@ func _process(delta):
 	else:
 		rotation_target = 0.0
 		$brazo.rotation = lerp_angle($brazo.rotation, rotation_target, delta * DOWN_DRAG_STRENGTH)
-		agua_spawn_timer -= delta/10
+		if joystick_dragged:
+			agua_spawn_timer -= delta/3
+		else:
+			agua_spawn_timer -= delta/10
 		if agua_spawn_timer <= 0:
 			agua_spawn_timer = agua_spawn_cooldown
 			emit_signal("spawn_agua_signal", self)
 		if $brazo.rotation <= 0.01:
+			joystick_dragged = false
 			set_process(false)
 	
 	var start_point = Vector2(0, -13.0) # Fixed anchor point in ChainLine's local space
@@ -169,7 +188,6 @@ func _physics_process(_delta: float) -> void:
 func _on_tiempo_plantacion_timeout() -> void:
 	if untouched:
 		return
-	print('plantada')
 	origin_position = global_position
 	planting = false
 	arrancada = false
@@ -206,3 +224,13 @@ func bombeo_sfx_trigger():
 		is_above_bot_threshold = true
 	elif clamped_lerp_brazo_rotation <= bot_threshold:
 		is_above_bot_threshold = false
+
+
+func _on_area_servir_joystick_body_entered(body: Node2D) -> void:
+	if body is CharacterBody2D:
+		can_serve = true
+
+
+func _on_area_servir_joystick_body_exited(body: Node2D) -> void:
+	if body is CharacterBody2D:
+		can_serve = false

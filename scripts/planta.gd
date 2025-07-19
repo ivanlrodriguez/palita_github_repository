@@ -38,8 +38,21 @@ var origin_position: Vector2
 var origin_rotation: float
 const SPRING_STIFFNESS := 200.0
 
+# Timers
+@export var tiempo_crecimiento := 60.0
+@export var tiempo_regada := 60.0
+@export var tiempo_vejez := 120.0
+@export var tiempo_curacion := 10.0
+@export var tiempo_intoxicacion := 10.0
+@export var tiempo_decay_intox := 30.0
 
 func _ready():
+	$timer_crecimiento.set("wait_time", tiempo_crecimiento)
+	$timer_regada.set("wait_time", tiempo_regada)
+	$decay_vejez.set("wait_time", tiempo_vejez)
+	$timer_curacion.set("wait_time", tiempo_curacion)
+	$timer_intoxicacion.set("wait_time", tiempo_intoxicacion)
+	$decay_intoxicacion.set("wait_time", tiempo_decay_intox)
 	$intox_anim.visible = false
 	origin_position = global_position
 	origin_rotation = rotation
@@ -158,7 +171,6 @@ func set_particles(particles: String, mode: String) -> void:
 
 func _on_area_a_regar_body_exited(body: Node2D) -> void:
 	if body is agua and body.toco_piso:
-		print('awita')
 		if planta_arrancada:
 			set_planta_arrancada(false)
 		if estado_planta == Estado.MUERTA:
@@ -303,7 +315,6 @@ func _on_decay_vejez_timeout() -> void:
 		$decay_vejez.start()
 
 func check_death():
-	print('decay', decay_counter)
 	if decay_counter >= 5:
 		estado_planta = Estado.MUERTA
 		toggle_intox_anim()

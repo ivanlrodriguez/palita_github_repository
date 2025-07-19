@@ -6,6 +6,7 @@ enum Modo { MUSIC, SFX, SILENT, FESTI }
 @export var modo_sonido := Modo.SILENT
 var prueba_sonido: bool = false
 var esc_block: bool = true
+var ui_consumed_click_der: bool = true
 
 @onready var camara = get_node("/root/mundo/jugador/Camera2D")
 @onready var player = get_node("/root/mundo/jugador")
@@ -41,7 +42,8 @@ var esc_block: bool = true
 @onready var menu_click: AudioStreamPlayer2D = $menu_click
 @onready var intro_whoosh: AudioStreamPlayer2D = $intro_whoosh
 
-@onready var musica_extended: AudioStreamPlayer2D = $"../music/musica_extended"
+@onready var musica_full_2min: AudioStreamPlayer2D = $"../music/musica_full_2min"
+
 @onready var timer_prueba: Timer = $"../timer_prueba"
 @onready var timer_restart: Timer = $"../timer_restart"
 
@@ -76,12 +78,12 @@ func _ready():
 		AudioServer.set_bus_mute(AudioServer.get_bus_index("SFX"), false)
 		AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), -64.0)
 	
-	
 	if prueba_sonido:
 		main_menu.visible = false
 		sound_test.visible = true
 	else:
 		main_menu.visible = true
+		btn_start.grab_focus()
 
 
 func match_modo_sonido():
@@ -159,6 +161,8 @@ func _input(event):
 		main_menu_botones.show()
 		mixer.hide()
 		controls_screen.hide()
+		btn_continue.grab_focus()
+
 
 func toggle_pause():
 	get_tree().paused = !get_tree().paused
@@ -166,7 +170,7 @@ func toggle_pause():
 func _on_start_pressed():
 	menu_click.play()
 	if modo_sonido != Modo.SILENT:
-		musica_extended.play()
+		musica_full_2min.play()
 	game_started = true
 	if modo_sonido != Modo.FESTI:
 		timer_prueba.start()
@@ -212,21 +216,25 @@ func _on_controls_pressed():
 	menu_click.play()
 	controls_screen.show()
 	main_menu_botones.hide()
+	$main_menu/controles/cerrar_controles.grab_focus()
 
 func _on_cerrar_controles_pressed() -> void:
 	menu_click.play()
 	controls_screen.hide()
 	main_menu_botones.show()
+	btn_controls.grab_focus()
 
-func _on_options_pressed():
+func _on_mixer_pressed():
 	menu_click.play()
 	mixer.show()
 	main_menu_botones.hide()
+	$main_menu/mixer/cerrar_opciones.grab_focus()
 
 func _on_cerrar_opciones_pressed() -> void:
 	menu_click.play()
 	mixer.hide()
 	main_menu_botones.show()
+	btn_mixer.grab_focus()
 
 
 # mixer

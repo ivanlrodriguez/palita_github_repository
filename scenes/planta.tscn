@@ -1733,6 +1733,9 @@ sleeping = true
 linear_damp = 5.0
 angular_damp = 10.0
 script = ExtResource("1_jgb6y")
+tiempo_crecimiento = 30.0
+tiempo_regada = 30.0
+tiempo_vejez = 60.0
 
 [node name="tossable_component" type="Node2D" parent="."]
 script = ExtResource("5_l7v54")
@@ -1781,10 +1784,6 @@ one_shot = true
 wait_time = 60.0
 one_shot = true
 
-[node name="decay_intoxicacion" type="Timer" parent="."]
-wait_time = 10.0
-one_shot = true
-
 [node name="decay_arrancada" type="Timer" parent="."]
 wait_time = 15.0
 one_shot = true
@@ -1793,11 +1792,15 @@ one_shot = true
 wait_time = 60.0
 one_shot = true
 
+[node name="timer_curacion" type="Timer" parent="."]
+wait_time = 10.0
+one_shot = true
+
 [node name="timer_intoxicacion" type="Timer" parent="."]
 wait_time = 10.0
 one_shot = true
 
-[node name="timer_curacion" type="Timer" parent="."]
+[node name="decay_intoxicacion" type="Timer" parent="."]
 wait_time = 10.0
 one_shot = true
 
@@ -1868,8 +1871,8 @@ bus = &"SFX"
 [connection signal="body_exited" from="area_a_regar" to="." method="_on_area_a_regar_body_exited"]
 [connection signal="timeout" from="timer_crecimiento" to="." method="_on_timer_crecimiento_timeout"]
 [connection signal="timeout" from="timer_regada" to="." method="_on_timer_regada_timeout"]
-[connection signal="timeout" from="decay_intoxicacion" to="." method="_on_decay_intoxicacion_timeout"]
 [connection signal="timeout" from="decay_arrancada" to="." method="_on_decay_arrancada_timeout"]
 [connection signal="timeout" from="decay_vejez" to="." method="_on_decay_vejez_timeout"]
-[connection signal="timeout" from="timer_intoxicacion" to="." method="_on_timer_intoxicacion_timeout"]
 [connection signal="timeout" from="timer_curacion" to="." method="_on_timer_curacion_timeout"]
+[connection signal="timeout" from="timer_intoxicacion" to="." method="_on_timer_intoxicacion_timeout"]
+[connection signal="timeout" from="decay_intoxicacion" to="." method="_on_decay_intoxicacion_timeout"]

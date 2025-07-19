@@ -311,6 +311,7 @@ stream_0/stream = ExtResource("3_xbfqu")
 [node name="mugre_orbiting" type="AnimatedSprite2D"]
 z_index = 2
 z_as_relative = false
+scale = Vector2(1.25, 1.25)
 sprite_frames = SubResource("SpriteFrames_8yrml")
 animation = &"m_10"
 script = ExtResource("2_xbfqu")

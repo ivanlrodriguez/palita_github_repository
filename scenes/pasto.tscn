@@ -897,6 +897,10 @@ z_index = 1
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("1_mwkgt")
+tiempo_crecimiento = 30.0
+tiempo_reproduccion = 60.0
+tiempo_intoxicacion = 20.0
+tiempo_decay_intox = 20.0
 
 [node name="collsh" type="CollisionShape2D" parent="."]
 rotation = 1.5708
